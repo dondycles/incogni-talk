@@ -30,6 +30,7 @@ export default function Feed() {
     },
     initialPageParam: 1,
     refetchOnMount: false,
+    retry: 2,
   });
   const publicPosts = publicPostsData?.pages.flatMap((page) => page);
   const { data: user, error } = useQuery({

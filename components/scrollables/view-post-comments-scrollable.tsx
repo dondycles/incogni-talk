@@ -44,28 +44,31 @@ export default function ViewPostCommentsScrollable({
 
   return (
     <div className="w-full max-h-full h-full flex flex-col gap-4 ">
-      <ScrollArea className="flex-1">
-        <div className="flex-1 space-y-2">
-          {isLoading
-            ? Array.from({ length: 4 }, (_, i) => (
-                <CardSkeleton type="comment" />
-              ))
-            : comments?.map((comment) => {
-                return <CommentCard key={comment?.id} comment={comment} />;
-              })}
-        </div>
-        {commentsCount != comments?.length && (
-          <Button
-            variant={"ghost"}
-            size={"sm"}
-            onClick={() => fetchNextPage()}
-            ref={veryLastPost}
-            className="w-full"
-          >
-            Load More
-          </Button>
-        )}
-      </ScrollArea>
+      {commentsCount > 0 ? (
+        <ScrollArea className="flex-1">
+          <div className="flex-1 space-y-2">
+            {isLoading
+              ? Array.from({ length: 4 }, (_, i) => (
+                  <CardSkeleton type="comment" />
+                ))
+              : comments?.map((comment) => {
+                  return <CommentCard key={comment?.id} comment={comment} />;
+                })}
+          </div>
+          {commentsCount != comments?.length && (
+            <Button
+              variant={"ghost"}
+              size={"sm"}
+              onClick={() => fetchNextPage()}
+              ref={veryLastPost}
+              className="w-full"
+            >
+              Load More
+            </Button>
+          )}
+        </ScrollArea>
+      ) : null}
+
       <AddCommentForm postId={postId} />
     </div>
   );
