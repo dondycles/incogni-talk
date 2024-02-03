@@ -17,8 +17,20 @@ import PostActions from "../actions/actions";
 import PostCommentsScrollable from "../scrollables/post-comments-scrollable";
 import { useQuery } from "@tanstack/react-query";
 import { getAllCommentCounts } from "@/actions/comment/get-count";
+import { ScrollArea } from "../ui/scroll-area";
+import { AddCommentForm } from "../forms/add-comment";
+import { Button } from "../ui/button";
+import Link from "next/link";
+import { CommentCard } from "./comment-card";
+import { getManyComments } from "@/actions/comment/get-many";
 
-export default function PostCard({ post, auth }: { post: any; auth: any }) {
+export default function PostCard({
+  post,
+  auth,
+}: {
+  post: any[any];
+  auth: any[any];
+}) {
   const timeDifference = getTimeDiff(post?.created_at as string);
   const privacy =
     post?.privacy === "private" ? (
@@ -28,9 +40,9 @@ export default function PostCard({ post, auth }: { post: any; auth: any }) {
     );
 
   const { data: commentsCount, isLoading: commentsCountLoading } = useQuery({
-    queryKey: ["comments-count", post?.id],
+    queryKey: ["post-comments-count", post.id],
     queryFn: async () => {
-      const { count } = await getAllCommentCounts(post?.id);
+      const { count } = await getAllCommentCounts(post.id);
       return count;
     },
   });
@@ -51,14 +63,14 @@ export default function PostCard({ post, auth }: { post: any; auth: any }) {
         <p className="whitespace-pre">{post?.content}</p>
         <PostActions
           user={auth}
-          postId={post?.id}
+          postId={post.id}
           commentsCount={commentsCount as number}
         />
       </CardContent>
       <CardFooter>
         <PostCommentsScrollable
-          postId={post?.id}
           commentsCount={commentsCount as number}
+          postId={post.id}
         />
       </CardFooter>
     </Card>

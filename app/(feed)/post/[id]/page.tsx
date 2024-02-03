@@ -22,7 +22,7 @@ export default function ViewPost({ params }: { params: { id: string } }) {
   });
   return (
     <div className="feed-padding w-full h-[calc(100dvh-71px)] flex ">
-      <ViewPostCard key={data?.id} post={data} auth={user} />
+      {data && <ViewPostCard key={data?.id} post={data} auth={user} />}
     </div>
   );
 }

@@ -16,7 +16,7 @@ export default function ViewPostCommentsScrollable({
   postId: string;
 }) {
   const { data, error, fetchNextPage, isFetchingNextPage } = useInfiniteQuery({
-    queryKey: ["comments", postId],
+    queryKey: ["view-post-comments", postId],
     queryFn: async ({ pageParam }) => {
       const { data } = await getAllComments(postId, pageParam);
       return data ? data : null;
@@ -37,7 +37,7 @@ export default function ViewPostCommentsScrollable({
 
   useEffect(() => {
     if (entry?.isIntersecting) fetchNextPage();
-  }, [entry]);
+  }, [entry, fetchNextPage]);
 
   return (
     <div className="w-full max-h-full h-full flex flex-col gap-4 ">

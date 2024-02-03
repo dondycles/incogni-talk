@@ -34,8 +34,16 @@ export function AddCommentForm({ postId }: { postId: string }) {
   } = useMutation({
     mutationFn: async (values: z.infer<typeof formSchema>) => onSubmit(values),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["comments", postId] });
-      queryClient.invalidateQueries({ queryKey: ["comments-count", postId] });
+      queryClient.invalidateQueries({ queryKey: ["post-comments", postId] });
+      queryClient.invalidateQueries({
+        queryKey: ["post-comments-count", postId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["view-post-comments", postId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["view-post-comments-count", postId],
+      });
     },
   });
 

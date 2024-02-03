@@ -17,10 +17,10 @@ export default function PostCommentsScrollable({
   commentsCount: number;
 }) {
   const { data } = useQuery({
-    queryKey: ["comments", postId],
+    queryKey: ["post-comments", postId],
     queryFn: async () => {
       const { data } = await getManyComments(postId);
-      return data ? data : null;
+      return data;
     },
   });
 
