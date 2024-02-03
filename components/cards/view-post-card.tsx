@@ -58,7 +58,10 @@ export default function ViewPostCard({ post, auth }: { post: any; auth: any }) {
         />
       </CardContent>
       <CardFooter className=" flex-1 overflow-auto">
-        <ViewPostCommentsScrollable postId={post?.id} />
+        <ViewPostCommentsScrollable
+          commentsCount={commentsCount as number}
+          postId={post?.id}
+        />
       </CardFooter>
     </Card>
   );

@@ -12,20 +12,23 @@ import { LucideLoader2 } from "lucide-react";
 
 export default function ViewPostCommentsScrollable({
   postId,
+  commentsCount,
 }: {
   postId: string;
+  commentsCount: number;
 }) {
-  const { data, error, fetchNextPage, isFetchingNextPage } = useInfiniteQuery({
-    queryKey: ["view-post-comments", postId],
-    queryFn: async ({ pageParam }) => {
-      const { data } = await getAllComments(postId, pageParam);
-      return data ? data : null;
-    },
-    getNextPageParam: (_, pages) => {
-      return pages.length + 1;
-    },
-    initialPageParam: 1,
-  });
+  const { data, error, fetchNextPage, isFetchingNextPage, hasNextPage } =
+    useInfiniteQuery({
+      queryKey: ["view-post-comments", postId],
+      queryFn: async ({ pageParam }) => {
+        const { data } = await getAllComments(postId, pageParam);
+        return data ? data : null;
+      },
+      getNextPageParam: (_, pages) => {
+        return pages.length + 1;
+      },
+      initialPageParam: 1,
+    });
   const comments = data?.pages.flatMap((comment) => comment);
 
   const lastPost = useRef<HTMLDivElement>(null);
@@ -47,13 +50,17 @@ export default function ViewPostCommentsScrollable({
             return <CommentCard key={comment?.id} comment={comment} />;
           })}
         </div>
-        <div
-          onClick={() => fetchNextPage()}
-          ref={veryLastPost}
-          className="h-4 w-full"
-        >
-          Load More
-        </div>
+        {commentsCount != comments?.length && (
+          <Button
+            variant={"ghost"}
+            size={"sm"}
+            onClick={() => fetchNextPage()}
+            ref={veryLastPost}
+            className="w-full"
+          >
+            Load More
+          </Button>
+        )}
       </ScrollArea>
       <AddCommentForm postId={postId} />
     </div>

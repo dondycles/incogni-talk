@@ -22,8 +22,8 @@ export const getAllComments = async (postId: string, page: number) => {
       }
     );
 
-    const from = page === 1 ? 0 : page * 2;
-    const to = page === 1 ? 3 : from + 3;
+    const from = page === 1 ? 0 : (page - 1) * 6;
+    const to = from + 5;
 
     const { data, error, count } = await supabase
       .from("comments")
