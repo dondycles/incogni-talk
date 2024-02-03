@@ -9,10 +9,12 @@ export default function PostActions({
   postId,
   commentsCount,
   user,
+  isView,
 }: {
   postId: string;
   commentsCount: number;
   user: any;
+  isView?: boolean;
 }) {
   const queryClient = useQueryClient();
   const userId = user?.cookieData?.user?.id;
@@ -20,8 +22,7 @@ export default function PostActions({
   const { data: likes } = useQuery({
     queryKey: ["post-likes", postId],
     queryFn: async () => {
-      const { success, error } = await getLikes(postId);
-
+      const { success } = await getLikes(postId);
       return success;
     },
   });
@@ -50,12 +51,22 @@ export default function PostActions({
         <Heart className="small-icons" />
         <p className="text-xs text-muted-foreground ml-1">{likes?.length}</p>
       </Button>
-      <Button asChild variant={"secondary"} className="flex-1">
-        <Link href={"/post/" + postId}>
+      {isView ? (
+        <Button variant={"secondary"} className="flex-1">
           <MessageCircle className="small-icons" />
           <p className="text-xs text-muted-foreground ml-1">{commentsCount}</p>
-        </Link>
-      </Button>
+        </Button>
+      ) : (
+        <Button asChild variant={"secondary"} className="flex-1">
+          <Link href={"/post/" + postId}>
+            <MessageCircle className="small-icons" />
+            <p className="text-xs text-muted-foreground ml-1">
+              {commentsCount}
+            </p>
+          </Link>
+        </Button>
+      )}
+
       <Button variant={"secondary"} className="flex-1">
         <Share2 className="small-icons" />
       </Button>

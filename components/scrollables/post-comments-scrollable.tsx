@@ -7,6 +7,7 @@ import { getAllComments } from "@/actions/comment/get-all";
 import { CommentCard } from "../cards/comment-card";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import { getManyComments } from "@/actions/comment/get-many";
 
 export default function PostCommentsScrollable({
   postId,
@@ -18,7 +19,7 @@ export default function PostCommentsScrollable({
   const { data } = useQuery({
     queryKey: ["comments", postId],
     queryFn: async () => {
-      const { data } = await getAllComments(postId, 1);
+      const { data } = await getManyComments(postId);
       return data ? data : null;
     },
   });
@@ -34,7 +35,7 @@ export default function PostCommentsScrollable({
         </div>
       </ScrollArea>
       <AddCommentForm postId={postId} />
-      {commentsCount > 3 ? (
+      {commentsCount > 4 ? (
         <Button asChild variant={"ghost"} className="w-full">
           <Link href={"/post/" + postId}>View Post</Link>
         </Button>

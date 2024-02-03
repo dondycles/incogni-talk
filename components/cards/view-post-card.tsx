@@ -13,7 +13,7 @@ import {
 } from "../ui/dropdown-menu";
 import { Globe, Lock, Pencil, Trash, UserCircle } from "lucide-react";
 import { getTimeDiff } from "@/lib/getTimeDiff";
-import PostActions from "../post/actions";
+import PostActions from "../actions/actions";
 import PostCommentsScrollable from "../scrollables/post-comments-scrollable";
 import { useQuery } from "@tanstack/react-query";
 import { getAllCommentCounts } from "@/actions/comment/get-count";
@@ -53,6 +53,7 @@ export default function ViewPostCard({ post, auth }: { post: any; auth: any }) {
         <PostActions
           user={auth}
           postId={post?.id}
+          isView={true}
           commentsCount={commentsCount as number}
         />
       </CardContent>

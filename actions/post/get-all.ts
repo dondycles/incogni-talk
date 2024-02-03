@@ -22,7 +22,7 @@ export const getAllPosts = async (page: number) => {
         },
       }
     );
-    const from = page === 1 ? 0 : page * 2;
+    const from = page === 1 ? 0 : page * 1;
     const to = page === 1 ? 1 : from + 1;
     const { data } = await supabase
       .from("posts")
