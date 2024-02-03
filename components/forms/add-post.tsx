@@ -34,7 +34,7 @@ const formSchema = z.object({
 
 export function AddPostForm({ close }: { close: () => void }) {
   const optimisticPost = useOptimisticPost();
-  const [queryClient] = useState(() => useQueryClient());
+  const queryClient = useQueryClient();
   const {
     mutate: addPost,
     variables,

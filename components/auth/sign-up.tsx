@@ -22,7 +22,6 @@ import {
 } from "../ui/card";
 import { signup } from "@/actions/auth/sign-up";
 import { useRouter } from "next/navigation";
-import { useUserData } from "@/store";
 
 const formSchema = z
   .object({
