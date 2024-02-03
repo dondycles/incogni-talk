@@ -5,7 +5,7 @@ import Link from "next/link";
 import { getLikes } from "@/actions/post/get-likes";
 import { likePost } from "@/actions/post/like";
 
-export default function PostActions({
+export default function PostInteractions({
   postId,
   commentsCount,
   user,
