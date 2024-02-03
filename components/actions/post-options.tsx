@@ -34,6 +34,7 @@ export default function PostOptions({
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["feed-posts"] });
+      queryClient.invalidateQueries({ queryKey: ["post", post?.id] });
     },
     onError: () => {
       setPending(null, null);

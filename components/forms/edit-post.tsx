@@ -24,6 +24,7 @@ import { addPost as post } from "@/actions/post/add";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useOptimisticPost } from "@/store";
 import { editPost } from "@/actions/post/edit";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   content: z.string().min(1, {
@@ -53,6 +54,7 @@ export function EditPostForm({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["feed-posts"] });
+      queryClient.invalidateQueries({ queryKey: ["post", post?.id] });
       setPending(null, null);
     },
   });

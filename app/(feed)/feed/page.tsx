@@ -28,6 +28,7 @@ export default function Feed() {
       return pages.length + 1;
     },
     initialPageParam: 1,
+    staleTime: 1000,
   });
   const publicPosts = publicPostsData?.pages.flatMap((page) => page);
   const { data: user } = useQuery({
