@@ -23,6 +23,7 @@ export default function PostCommentsScrollable({
       const { data } = await getManyComments(postId);
       return data;
     },
+    staleTime: 1000,
   });
 
   const comments = data?.flatMap((comment) => comment);

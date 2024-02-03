@@ -48,6 +48,7 @@ export default function ViewPostCard({ post, auth }: { post: any; auth: any }) {
       const { count } = await getAllCommentCounts(post?.id);
       return count;
     },
+    staleTime: 1000,
   });
   const isDeletable = auth?.cookieData?.user?.id === post?.author;
   const isEditable = auth?.cookieData?.user?.id === post?.author;

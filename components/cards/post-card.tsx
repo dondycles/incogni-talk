@@ -57,6 +57,7 @@ export default function PostCard({
       const { count } = await getAllCommentCounts(post.id);
       return count;
     },
+    staleTime: 1000,
   });
 
   const isDeletable = auth?.cookieData?.user?.id === post?.author;

@@ -28,6 +28,7 @@ export default function ViewPostCommentsScrollable({
       return pages.length + 1;
     },
     initialPageParam: 1,
+    staleTime: 1000,
   });
   const comments = data?.pages.flatMap((comment) => comment);
 

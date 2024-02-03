@@ -12,6 +12,7 @@ export default function ViewPost({ params }: { params: { id: string } }) {
       return data;
     },
     queryKey: ["post", params.id],
+    staleTime: 1000,
   });
 
   const { data: user } = useQuery({
