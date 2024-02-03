@@ -11,7 +11,6 @@ import { LucideLoader2 } from "lucide-react";
 import CardSkeleton from "@/components/cards/skeleton";
 
 export default function Feed() {
-  const optimisticPost = useOptimisticPost();
   const [isCreatePost, setIsCreatePost] = useState(false);
 
   const {
@@ -29,14 +28,12 @@ export default function Feed() {
       return pages.length + 1;
     },
     initialPageParam: 1,
-    refetchOnMount: false,
-    retry: 2,
   });
   const publicPosts = publicPostsData?.pages.flatMap((page) => page);
-  const { data: user, error } = useQuery({
+  const { data: user } = useQuery({
     queryKey: ["user"],
     queryFn: async () => {
-      const { error, cookieData, dbData } = await getUser();
+      const { cookieData, dbData } = await getUser();
       return { cookieData, dbData };
     },
   });

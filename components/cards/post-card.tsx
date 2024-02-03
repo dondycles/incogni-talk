@@ -63,9 +63,7 @@ export default function PostCard({
   const isEditable = auth?.cookieData?.user?.id === post?.author;
 
   return (
-    <Card
-      className={`modified-card ${isPending.type === "delete" && "opacity-50"}`}
-    >
+    <Card className={`modified-card ${isPending.type && "opacity-50"}`}>
       <CardHeader className="flex flex-row items-start gap-2">
         <div className="flex-1 flex flex-row items-center gap-2">
           <UserCircle className="big-icons" />
