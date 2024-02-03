@@ -67,7 +67,7 @@ export function SignUpForm() {
   return (
     <Card className="w-full mb-auto z-20">
       <CardHeader>
-        <CardTitle>Let's start revealing.</CardTitle>
+        <CardTitle>Let&apos;s start revealing.</CardTitle>
         <CardDescription>
           Enter your credentials to start your account.
         </CardDescription>
