@@ -39,7 +39,7 @@ export default function PostCard({
       <Globe className="small-icons" />
     );
 
-  const { data: commentsCount, isLoading: commentsCountLoading } = useQuery({
+  const { data: commentsCount } = useQuery({
     queryKey: ["post-comments-count", post.id],
     queryFn: async () => {
       const { count } = await getAllCommentCounts(post.id);

@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useIntersection } from "@mantine/hooks";
 import { LucideLoader2 } from "lucide-react";
+import CardSkeleton from "../cards/skeleton";
 
 export default function ViewPostCommentsScrollable({
   postId,
@@ -17,18 +18,17 @@ export default function ViewPostCommentsScrollable({
   postId: string;
   commentsCount: number;
 }) {
-  const { data, error, fetchNextPage, isFetchingNextPage, hasNextPage } =
-    useInfiniteQuery({
-      queryKey: ["view-post-comments", postId],
-      queryFn: async ({ pageParam }) => {
-        const { data } = await getAllComments(postId, pageParam);
-        return data ? data : null;
-      },
-      getNextPageParam: (_, pages) => {
-        return pages.length + 1;
-      },
-      initialPageParam: 1,
-    });
+  const { data, fetchNextPage, isLoading } = useInfiniteQuery({
+    queryKey: ["view-post-comments", postId],
+    queryFn: async ({ pageParam }) => {
+      const { data } = await getAllComments(postId, pageParam);
+      return data ? data : null;
+    },
+    getNextPageParam: (_, pages) => {
+      return pages.length + 1;
+    },
+    initialPageParam: 1,
+  });
   const comments = data?.pages.flatMap((comment) => comment);
 
   const lastPost = useRef<HTMLDivElement>(null);
@@ -45,10 +45,14 @@ export default function ViewPostCommentsScrollable({
   return (
     <div className="w-full max-h-full h-full flex flex-col gap-4 ">
       <ScrollArea className="flex-1">
-        <div className="flex-1">
-          {comments?.map((comment) => {
-            return <CommentCard key={comment?.id} comment={comment} />;
-          })}
+        <div className="flex-1 space-y-2">
+          {isLoading
+            ? Array.from({ length: 4 }, (_, i) => (
+                <CardSkeleton type="comment" />
+              ))
+            : comments?.map((comment) => {
+                return <CommentCard key={comment?.id} comment={comment} />;
+              })}
         </div>
         {commentsCount != comments?.length && (
           <Button

@@ -8,6 +8,7 @@ import { CommentCard } from "../cards/comment-card";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { getManyComments } from "@/actions/comment/get-many";
+import CardSkeleton from "../cards/skeleton";
 
 export default function PostCommentsScrollable({
   postId,
@@ -16,7 +17,7 @@ export default function PostCommentsScrollable({
   postId: string;
   commentsCount: number;
 }) {
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["post-comments", postId],
     queryFn: async () => {
       const { data } = await getManyComments(postId);
@@ -29,9 +30,13 @@ export default function PostCommentsScrollable({
     <div className="w-full space-y-4">
       <ScrollArea>
         <div className="max-h-[300px] space-y-2">
-          {comments?.map((comment) => {
-            return <CommentCard key={comment?.id} comment={comment} />;
-          })}
+          {isLoading
+            ? Array.from({ length: 4 }, (_, i) => (
+                <CardSkeleton type="comment" />
+              ))
+            : comments?.map((comment) => {
+                return <CommentCard key={comment?.id} comment={comment} />;
+              })}
         </div>
       </ScrollArea>
       <AddCommentForm postId={postId} />

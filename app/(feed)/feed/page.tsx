@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { getUser } from "@/actions/user/get";
 import { useIntersection } from "@mantine/hooks";
 import { LucideLoader2 } from "lucide-react";
+import CardSkeleton from "@/components/cards/skeleton";
 
 export default function Feed() {
   const optimisticPost = useOptimisticPost();
@@ -52,10 +53,11 @@ export default function Feed() {
 
   return (
     <main className="feed-padding h-full w-full space-y-4">
-      {publicPosts &&
-        publicPosts?.map((post) => {
-          return <PostCard auth={user} post={post} key={post?.id} />;
-        })}
+      {publicPostsLoading
+        ? Array.from({ length: 3 }, (_, i) => <CardSkeleton type="post" />)
+        : publicPosts?.map((post) => {
+            return <PostCard auth={user} post={post} key={post?.id} />;
+          })}
       {isFetchingNextPublicPosts && (
         <div className="text-xs text-muted-foreground flex items-center gap-2 justify-center">
           <p>loading more...</p>

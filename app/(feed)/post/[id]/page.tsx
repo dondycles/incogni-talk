@@ -1,11 +1,12 @@
 "use client";
 import { getOnePost } from "@/actions/post/get-one";
 import { getUser } from "@/actions/user/get";
+import CardSkeleton from "@/components/cards/skeleton";
 import ViewPostCard from "@/components/cards/view-post-card";
 import { useQuery } from "@tanstack/react-query";
 
 export default function ViewPost({ params }: { params: { id: string } }) {
-  const { data, isFetching } = useQuery({
+  const { data, isLoading } = useQuery({
     queryFn: async () => {
       const { data } = await getOnePost(params.id);
       return data;
@@ -13,7 +14,7 @@ export default function ViewPost({ params }: { params: { id: string } }) {
     queryKey: ["post", params.id],
   });
 
-  const { data: user, error } = useQuery({
+  const { data: user } = useQuery({
     queryKey: ["user"],
     queryFn: async () => {
       const { cookieData, dbData } = await getUser();
@@ -22,7 +23,11 @@ export default function ViewPost({ params }: { params: { id: string } }) {
   });
   return (
     <div className="feed-padding w-full h-[calc(100dvh-71px)] flex ">
-      {data && <ViewPostCard key={data?.id} post={data} auth={user} />}
+      {isLoading ? (
+        <CardSkeleton type="post" isView />
+      ) : (
+        <ViewPostCard key={data?.id} post={data} auth={user} />
+      )}
     </div>
   );
 }
