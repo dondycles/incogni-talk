@@ -22,10 +22,10 @@ export const getAllComments = async (postId: string, page: number) => {
       }
     );
 
-    const from = page === 1 ? 0 : (page - 1) * 11;
-    const to = from + 10;
+    const from = page === 1 ? 0 : (page - 1) * 6;
+    const to = from + 5;
 
-    const { data, error, status } = await supabase
+    const { data } = await supabase
       .from("comments")
       .select("*, users(*), posts(*)")
       .order("created_at", { ascending: false })

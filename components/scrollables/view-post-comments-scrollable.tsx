@@ -20,17 +20,18 @@ export default function ViewPostCommentsScrollable({
   commentsCount: number;
   user: any[any];
 }) {
-  const { data, fetchNextPage, isLoading } = useInfiniteQuery({
-    queryKey: ["view-post-comments", postId],
-    queryFn: async ({ pageParam = 1 }) => {
-      const { data } = await getAllComments(postId, pageParam);
-      return data;
-    },
-    getNextPageParam: (_, pages) => {
-      return pages.length + 1;
-    },
-    initialPageParam: 1,
-  });
+  const { data, fetchNextPage, isLoading, isFetchingNextPage } =
+    useInfiniteQuery({
+      queryKey: ["view-post-comments", postId],
+      queryFn: async ({ pageParam = 1 }) => {
+        const { data } = await getAllComments(postId, pageParam);
+        return data;
+      },
+      getNextPageParam: (_, pages) => {
+        return pages.length + 1;
+      },
+      initialPageParam: 1,
+    });
 
   const comments = data?.pages.flatMap((comment) => comment);
 
@@ -41,9 +42,9 @@ export default function ViewPostCommentsScrollable({
     threshold: 1,
   });
 
-  // useEffect(() => {
-  //   if (entry?.isIntersecting) fetchNextPage();
-  // }, [entry]);
+  useEffect(() => {
+    if (entry?.isIntersecting) fetchNextPage();
+  }, [entry]);
 
   return (
     <div className="w-full max-h-full h-full flex flex-col gap-4 ">
@@ -54,7 +55,18 @@ export default function ViewPostCommentsScrollable({
               ? Array.from({ length: 4 }, (_, i) => (
                   <CardSkeleton key={i + "view-post-comments"} type="comment" />
                 ))
-              : comments?.map((comment) => {
+              : comments?.map((comment, i) => {
+                  if (comments.length === i + 1)
+                    return (
+                      <>
+                        <CommentCard
+                          user={user}
+                          key={comment?.id}
+                          comment={comment}
+                        />
+                        <div ref={veryLastPost} className="w-full" />
+                      </>
+                    );
                   return (
                     <CommentCard
                       user={user}
@@ -64,7 +76,7 @@ export default function ViewPostCommentsScrollable({
                   );
                 })}
           </div>
-          {commentsCount != comments?.length && (
+          {/* {commentsCount != comments?.length && (
             <Button
               variant={"ghost"}
               size={"sm"}
@@ -74,7 +86,7 @@ export default function ViewPostCommentsScrollable({
             >
               Load More
             </Button>
-          )}
+          )} */}
         </ScrollArea>
       ) : null}
 
