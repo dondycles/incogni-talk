@@ -39,7 +39,9 @@ export default function PostCommentsScrollable({
       <AddCommentForm postId={postId} />
       {commentsCount > 4 ? (
         <Button asChild variant={"ghost"} className="w-full">
-          <a href={"/post/" + postId}>View Post</a>
+          <Link prefetch={false} href={"/post/" + postId}>
+            View Post
+          </Link>
         </Button>
       ) : null}
     </div>

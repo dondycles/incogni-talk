@@ -6,6 +6,7 @@ import ViewPostCard from "@/components/cards/view-post-card";
 import { useQuery } from "@tanstack/react-query";
 
 export const revalidate = 0;
+export const dynamic = "force-dynamic";
 
 export default function ViewPost({ params }: { params: { id: string } }) {
   const { data, isLoading } = useQuery({

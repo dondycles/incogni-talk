@@ -14,7 +14,7 @@ import { useIntersection } from "@mantine/hooks";
 import { LucideLoader2 } from "lucide-react";
 
 export const revalidate = 0;
-
+export const dynamic = "force-dynamic";
 export default function Feed() {
   const {
     data: publicPostsData,
