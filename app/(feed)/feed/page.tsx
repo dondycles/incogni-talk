@@ -53,7 +53,9 @@ export default function Feed() {
   return (
     <main className="feed-padding h-full w-full space-y-4">
       {publicPosts?.map((post) => {
-        return <PostCard user={user} postId={post?.id} key={post?.id} />;
+        return (
+          <PostCard user={user} postId={post?.id as string} key={post?.id} />
+        );
       })}
 
       <div ref={veryLastPost} className="w-full" />

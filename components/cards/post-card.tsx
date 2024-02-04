@@ -23,13 +23,12 @@ type IsPending = {
   variables: any[any] | null;
 };
 
-export default function PostCard({
-  postId,
-  user,
-}: {
-  postId: any[any];
-  user: any[any];
-}) {
+interface PostCard {
+  postId: string;
+  user: any;
+}
+
+export default function PostCard<T>({ postId, user }: PostCard) {
   const [isPending, setIsPending] = useState<IsPending>({
     type: null,
     variables: null,
@@ -38,7 +37,7 @@ export default function PostCard({
   const { data: post, isLoading } = useQuery({
     queryKey: ["post", postId],
     queryFn: async () => {
-      const { data } = await getOnePost(postId);
+      const { data } = await getOnePost(postId as string);
       return data;
     },
   });
@@ -51,12 +50,12 @@ export default function PostCard({
       <Globe className="small-icons" />
     );
 
-  const comments = post?.comments?.flatMap((comment: any[any]) => comment);
+  const comments = post?.comments?.flatMap((comment) => comment);
 
   const { data: commentsCount } = useQuery({
     queryKey: ["comments-count", postId],
     queryFn: async () => {
-      const { count } = await getAllCommentCounts(postId);
+      const { count } = await getAllCommentCounts(postId as string);
       return count;
     },
   });
