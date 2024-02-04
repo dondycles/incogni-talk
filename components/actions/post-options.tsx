@@ -32,7 +32,7 @@ export default function PostOptions({
     onMutate: () => {
       setPending(null, "delete");
     },
-    onSettled: () => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["feed-posts"] });
       queryClient.invalidateQueries({ queryKey: ["post", post?.id] });
     },

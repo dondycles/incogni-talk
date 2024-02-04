@@ -15,13 +15,11 @@ export default function PostCommentsScrollable({
   postId,
   comments,
   user,
-  isLoading,
   commentsCount,
 }: {
   postId: string;
   comments: any[any];
   user: any[any];
-  isLoading: boolean;
   commentsCount: number;
 }) {
   return (
@@ -29,19 +27,11 @@ export default function PostCommentsScrollable({
       {commentsCount > 0 ? (
         <ScrollArea>
           <div className="max-h-[300px] space-y-2">
-            {isLoading
-              ? Array.from({ length: 4 }, (_, i) => (
-                  <CardSkeleton key={i + "post-comments"} type="comment" />
-                ))
-              : comments?.map((comment: any) => {
-                  return (
-                    <CommentCard
-                      user={user}
-                      key={comment?.id}
-                      comment={comment}
-                    />
-                  );
-                })}
+            {comments?.map((comment: any) => {
+              return (
+                <CommentCard user={user} key={comment?.id} comment={comment} />
+              );
+            })}
           </div>
         </ScrollArea>
       ) : null}
@@ -49,7 +39,7 @@ export default function PostCommentsScrollable({
       <AddCommentForm postId={postId} />
       {commentsCount > 4 ? (
         <Button asChild variant={"ghost"} className="w-full">
-          <Link href={"/post/" + postId}>View Post</Link>
+          <a href={"/post/" + postId}>View Post</a>
         </Button>
       ) : null}
     </div>

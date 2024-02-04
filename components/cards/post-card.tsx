@@ -5,27 +5,18 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import { Globe, Lock, Pencil, Trash, UserCircle } from "lucide-react";
+
+import { Globe, Lock, UserCircle } from "lucide-react";
 import { getTimeDiff } from "@/lib/getTimeDiff";
 import PostActions from "../actions/post-interactions";
 import PostCommentsScrollable from "../scrollables/post-comments-scrollable";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAllCommentCounts } from "@/actions/comment/get-count";
-import { ScrollArea } from "../ui/scroll-area";
-import { AddCommentForm } from "../forms/add-comment";
-import { Button } from "../ui/button";
-import Link from "next/link";
-import { CommentCard } from "./comment-card";
-import { getManyComments } from "@/actions/comment/get-many";
 import PostOptions from "../actions/post-options";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getOnePost } from "@/actions/post/get-one";
+import { supabaseClient } from "@/supabase/client";
+import CardSkeleton from "./skeleton";
 
 type IsPending = {
   type: "delete" | "edit" | null;
@@ -74,6 +65,7 @@ export default function PostCard({
   const isDeletable = user?.cookieData?.user?.id === post?.author;
   const isEditable = user?.cookieData?.user?.id === post?.author;
 
+  if (isLoading) return <CardSkeleton type="post" />;
   return (
     <Card className={`modified-card ${isPending.type && "opacity-50"}`}>
       <CardHeader className="flex flex-row items-start gap-2">
@@ -120,7 +112,6 @@ export default function PostCard({
           user={user}
           comments={comments}
           commentsCount={commentsCount as number}
-          isLoading={isLoading}
           postId={postId}
         />
       </CardFooter>

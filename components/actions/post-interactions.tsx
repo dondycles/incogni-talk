@@ -31,6 +31,7 @@ export default function PostInteractions({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post", postId] });
+      queryClient.invalidateQueries({ queryKey: ["view-post", postId] });
     },
   });
 
@@ -52,10 +53,10 @@ export default function PostInteractions({
         </Button>
       ) : (
         <Button asChild variant={"secondary"} className="flex-1">
-          <Link href={"/post/" + postId}>
+          <a href={"/post/" + postId}>
             <MessageCircle className="small-icons" />
             <p className="text-xs  ml-1">{counts.commentsCount}</p>
-          </Link>
+          </a>
         </Button>
       )}
 

@@ -1,10 +1,11 @@
 "use server";
+import { Database } from "@/database.types";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";
 export const getAllPosts = async (page: number) => {
   try {
     const cookieStore = cookies();
-    const supabase = createServerClient(
+    const supabase = createServerClient<Database>(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {
@@ -21,11 +22,10 @@ export const getAllPosts = async (page: number) => {
         },
       }
     );
-    const from = page === 1 ? 0 : page * 1;
-    const to = page === 1 ? 1 : from + 1;
+    const from = page === 1 ? 0 : (page - 1) * 6;
+    const to = from + 5;
     const { data } = await supabase
       .from("posts")
-      // .select("*, users(*), comments(*, users(*)), likes(*, users(*))")
       .select("id")
       .order("created_at", { ascending: false })
       .range(from, to);

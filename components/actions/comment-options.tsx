@@ -34,9 +34,12 @@ export default function CommentOptions({
     onMutate: () => {
       setPending(null, "delete");
     },
-    onSettled: () => {
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["post", comment?.post],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["comments-count", comment?.post],
       });
       queryClient.invalidateQueries({
         queryKey: ["view-post-comments", comment?.post],

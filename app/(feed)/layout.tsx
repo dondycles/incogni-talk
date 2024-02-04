@@ -1,3 +1,4 @@
+"use client";
 import FeedNav from "@/components/shared/nav";
 import { ScrollArea } from "@/components/ui/scroll-area";
 

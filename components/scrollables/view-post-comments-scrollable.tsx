@@ -22,15 +22,16 @@ export default function ViewPostCommentsScrollable({
 }) {
   const { data, fetchNextPage, isLoading } = useInfiniteQuery({
     queryKey: ["view-post-comments", postId],
-    queryFn: async ({ pageParam }) => {
+    queryFn: async ({ pageParam = 1 }) => {
       const { data } = await getAllComments(postId, pageParam);
-      return data ? data : null;
+      return data;
     },
     getNextPageParam: (_, pages) => {
       return pages.length + 1;
     },
     initialPageParam: 1,
   });
+
   const comments = data?.pages.flatMap((comment) => comment);
 
   const lastPost = useRef<HTMLDivElement>(null);
@@ -40,9 +41,9 @@ export default function ViewPostCommentsScrollable({
     threshold: 1,
   });
 
-  useEffect(() => {
-    if (entry?.isIntersecting) fetchNextPage();
-  }, [entry, fetchNextPage]);
+  // useEffect(() => {
+  //   if (entry?.isIntersecting) fetchNextPage();
+  // }, [entry]);
 
   return (
     <div className="w-full max-h-full h-full flex flex-col gap-4 ">

@@ -3,17 +3,22 @@
 import { getAllPosts } from "@/actions/post/get-all";
 import PostCard from "@/components/cards/post-card";
 import { useOptimisticPost } from "@/store";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { getUser } from "@/actions/user/get";
 import { useIntersection } from "@mantine/hooks";
 import { LucideLoader2 } from "lucide-react";
-import CardSkeleton from "@/components/cards/skeleton";
+
+export const revalidate = 0;
 
 export default function Feed() {
   const {
     data: publicPostsData,
-    isLoading: publicPostsLoading,
+    isFetching: publicPostsLoading,
     fetchNextPage: fetchNextPublicPosts,
     isFetchingNextPage: isFetchingNextPublicPosts,
   } = useInfiniteQuery({
@@ -49,13 +54,9 @@ export default function Feed() {
 
   return (
     <main className="feed-padding h-full w-full space-y-4">
-      {publicPostsLoading
-        ? Array.from({ length: 3 }, (_, i) => (
-            <CardSkeleton key={i + "feed"} type="post" />
-          ))
-        : publicPosts?.map((post) => {
-            return <PostCard user={user} postId={post?.id} key={post?.id} />;
-          })}
+      {publicPosts?.map((post) => {
+        return <PostCard user={user} postId={post?.id} key={post?.id} />;
+      })}
       {isFetchingNextPublicPosts && (
         <div className="text-xs text-muted-foreground flex items-center gap-2 justify-center">
           <p>loading more...</p>

@@ -14,8 +14,11 @@ export default function QueryProvider({
         defaultOptions: {
           queries: {
             staleTime: 0,
-            retry: true,
-            refetchInterval: 30000,
+            retry: false,
+            refetchOnReconnect: false,
+            refetchOnWindowFocus: false,
+            refetchIntervalInBackground: false,
+            refetchOnMount: false,
           },
         },
       })
