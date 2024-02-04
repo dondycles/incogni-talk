@@ -3,6 +3,7 @@ import { Button } from "../ui/button";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { likePost } from "@/actions/post/like";
+import { useEffect, useState } from "react";
 
 export default function PostInteractions({
   postId,
@@ -20,7 +21,7 @@ export default function PostInteractions({
   const queryClient = useQueryClient();
   const userId = user?.cookieData?.user?.id;
 
-  const isLiked = likes?.filter((like: any) => like.liker === userId).length
+  let isLiked = likes?.filter((like: any) => like.liker === userId).length
     ? true
     : false;
 
@@ -34,11 +35,24 @@ export default function PostInteractions({
     },
   });
 
+  const [optimisticLiked, setOptimisticLiked] = useState(isLiked);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setOptimisticLiked(isLiked);
+    }, 1000);
+    return () => clearTimeout(timeout);
+  }, [isLiked]);
+
   return (
     <div className="w-full flex gap-2">
       <Button
-        onClick={() => _likePost()}
-        variant={isLiked ? "default" : "secondary"}
+        onClick={() => {
+          if (_likePostPending) return;
+          setOptimisticLiked((prev) => !prev);
+          _likePost();
+        }}
+        variant={optimisticLiked ? "default" : "secondary"}
         disabled={_likePostPending}
         className="flex-1"
       >

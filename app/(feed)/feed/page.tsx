@@ -57,7 +57,6 @@ export default function Feed() {
           <PostCard user={user} postId={post?.id as string} key={post?.id} />
         );
       })}
-
       <div ref={veryLastPost} className="w-full" />
     </main>
   );
