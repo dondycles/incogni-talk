@@ -1,11 +1,11 @@
 "use server";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";
-
+import {Database}
 export const login = async (values: { password: string; username: string }) => {
   const cookieStore = cookies();
 
-  const supabase = createServerClient(
+  const supabase = createServerClient<Database(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
