@@ -14,11 +14,13 @@ import CardSkeleton from "../cards/skeleton";
 export default function ViewPostCommentsScrollable({
   postId,
   commentsCount,
+  user,
 }: {
   postId: string;
   commentsCount: number;
+  user: any[any];
 }) {
-  const { data, fetchNextPage, isLoading } = useInfiniteQuery({
+  const { data, fetchNextPage, isFetching } = useInfiniteQuery({
     queryKey: ["view-post-comments", postId],
     queryFn: async ({ pageParam }) => {
       const { data } = await getAllComments(postId, pageParam);
@@ -28,7 +30,6 @@ export default function ViewPostCommentsScrollable({
       return pages.length + 1;
     },
     initialPageParam: 1,
-    staleTime: 1000,
   });
   const comments = data?.pages.flatMap((comment) => comment);
 
@@ -48,12 +49,18 @@ export default function ViewPostCommentsScrollable({
       {commentsCount > 0 ? (
         <ScrollArea className="flex-1">
           <div className="flex-1 space-y-2">
-            {isLoading
+            {isFetching
               ? Array.from({ length: 4 }, (_, i) => (
-                  <CardSkeleton type="comment" />
+                  <CardSkeleton key={i + "view-post-comments"} type="comment" />
                 ))
               : comments?.map((comment) => {
-                  return <CommentCard key={comment?.id} comment={comment} />;
+                  return (
+                    <CommentCard
+                      user={user}
+                      key={comment?.id}
+                      comment={comment}
+                    />
+                  );
                 })}
           </div>
           {commentsCount != comments?.length && (

@@ -28,7 +28,6 @@ export default function Feed() {
       return pages.length + 1;
     },
     initialPageParam: 1,
-    staleTime: 1000,
   });
   const publicPosts = publicPostsData?.pages.flatMap((page) => page);
   const { data: user } = useQuery({
@@ -53,9 +52,11 @@ export default function Feed() {
   return (
     <main className="feed-padding h-full w-full space-y-4">
       {publicPostsLoading
-        ? Array.from({ length: 3 }, (_, i) => <CardSkeleton type="post" />)
+        ? Array.from({ length: 3 }, (_, i) => (
+            <CardSkeleton key={i + "feed"} type="post" />
+          ))
         : publicPosts?.map((post) => {
-            return <PostCard auth={user} post={post} key={post?.id} />;
+            return <PostCard user={user} post={post} key={post?.id} />;
           })}
       {isFetchingNextPublicPosts && (
         <div className="text-xs text-muted-foreground flex items-center gap-2 justify-center">

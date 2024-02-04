@@ -12,7 +12,7 @@ export default function ViewPost({ params }: { params: { id: string } }) {
       return data;
     },
     queryKey: ["post", params.id],
-    staleTime: 1000,
+    enabled: !!params.id,
   });
 
   const { data: user } = useQuery({
@@ -28,7 +28,7 @@ export default function ViewPost({ params }: { params: { id: string } }) {
       {isLoading ? (
         <CardSkeleton type="post" isView />
       ) : (
-        <ViewPostCard key={data?.id} post={data} auth={user} />
+        <ViewPostCard key={data?.id} post={data} user={user} />
       )}
     </div>
   );

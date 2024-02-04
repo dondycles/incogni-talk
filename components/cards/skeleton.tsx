@@ -54,7 +54,10 @@ export default function CardSkeleton({
         </CardContent>
         <CardFooter className="flex flex-col gap-2">
           {Array.from({ length: 2 }, (_, i) => (
-            <div className="w-full flex items-start gap-2">
+            <div
+              key={i + "skeleton-comments"}
+              className="w-full flex items-start gap-2"
+            >
               <Skeleton className="medium-icons rounded-full" />
               <div className="w-full space-y-2">
                 <Skeleton className="w-full h-14" />

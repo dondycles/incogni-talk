@@ -13,17 +13,18 @@ import CardSkeleton from "../cards/skeleton";
 export default function PostCommentsScrollable({
   postId,
   commentsCount,
+  user,
 }: {
   postId: string;
   commentsCount: number;
+  user: any[any];
 }) {
-  const { data, isLoading } = useQuery({
+  const { data, isFetching } = useQuery({
     queryKey: ["post-comments", postId],
     queryFn: async () => {
       const { data } = await getManyComments(postId);
       return data;
     },
-    staleTime: 1000,
   });
 
   const comments = data?.flatMap((comment) => comment);
@@ -32,12 +33,18 @@ export default function PostCommentsScrollable({
       {commentsCount > 0 ? (
         <ScrollArea>
           <div className="max-h-[300px] space-y-2">
-            {isLoading
+            {isFetching
               ? Array.from({ length: 4 }, (_, i) => (
-                  <CardSkeleton type="comment" />
+                  <CardSkeleton key={i + "post-comments"} type="comment" />
                 ))
               : comments?.map((comment) => {
-                  return <CommentCard key={comment?.id} comment={comment} />;
+                  return (
+                    <CommentCard
+                      user={user}
+                      key={comment?.id}
+                      comment={comment}
+                    />
+                  );
                 })}
           </div>
         </ScrollArea>

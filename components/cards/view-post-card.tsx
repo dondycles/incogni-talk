@@ -14,13 +14,11 @@ import {
 import { Globe, Lock, Pencil, Trash, UserCircle } from "lucide-react";
 import { getTimeDiff } from "@/lib/getTimeDiff";
 import PostActions from "../actions/post-interactions";
-import PostCommentsScrollable from "../scrollables/post-comments-scrollable";
 import { useQuery } from "@tanstack/react-query";
 import { getAllCommentCounts } from "@/actions/comment/get-count";
 import ViewPostCommentsScrollable from "../scrollables/view-post-comments-scrollable";
 import PostOptions from "../actions/post-options";
 import { useEffect, useState } from "react";
-import { Skeleton } from "../ui/skeleton";
 import CardSkeleton from "./skeleton";
 
 type IsPending = {
@@ -28,7 +26,7 @@ type IsPending = {
   variables: any[any] | null;
 };
 
-export default function ViewPostCard({ post, auth }: { post: any; auth: any }) {
+export default function ViewPostCard({ post, user }: { post: any; user: any }) {
   const [isPending, setIsPending] = useState<IsPending>({
     type: null,
     variables: null,
@@ -50,8 +48,8 @@ export default function ViewPostCard({ post, auth }: { post: any; auth: any }) {
     },
     staleTime: 1000,
   });
-  const isDeletable = auth?.cookieData?.user?.id === post?.author;
-  const isEditable = auth?.cookieData?.user?.id === post?.author;
+  const isDeletable = user?.cookieData?.user?.id === post?.author;
+  const isEditable = user?.cookieData?.user?.id === post?.author;
 
   return (
     <Card
@@ -94,7 +92,7 @@ export default function ViewPostCard({ post, auth }: { post: any; auth: any }) {
           <CardContent className="space-y-4 ">
             <p className="whitespace-pre">{post?.content}</p>
             <PostActions
-              user={auth}
+              user={user}
               postId={post?.id}
               isView={true}
               commentsCount={commentsCount as number}
@@ -102,6 +100,7 @@ export default function ViewPostCard({ post, auth }: { post: any; auth: any }) {
           </CardContent>
           <CardFooter className=" flex-1 overflow-auto">
             <ViewPostCommentsScrollable
+              user={user}
               commentsCount={commentsCount as number}
               postId={post?.id}
             />

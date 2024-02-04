@@ -33,10 +33,10 @@ type IsPending = {
 
 export default function PostCard({
   post,
-  auth,
+  user,
 }: {
   post: any[any];
-  auth: any[any];
+  user: any[any];
 }) {
   const [isPending, setIsPending] = useState<IsPending>({
     type: null,
@@ -60,8 +60,8 @@ export default function PostCard({
     staleTime: 1000,
   });
 
-  const isDeletable = auth?.cookieData?.user?.id === post?.author;
-  const isEditable = auth?.cookieData?.user?.id === post?.author;
+  const isDeletable = user?.cookieData?.user?.id === post?.author;
+  const isEditable = user?.cookieData?.user?.id === post?.author;
 
   return (
     <Card className={`modified-card ${isPending.type && "opacity-50"}`}>
@@ -95,13 +95,14 @@ export default function PostCard({
             : post?.content}
         </p>
         <PostActions
-          user={auth}
+          user={user}
           postId={post.id}
           commentsCount={commentsCount as number}
         />
       </CardContent>
       <CardFooter>
         <PostCommentsScrollable
+          user={user}
           commentsCount={commentsCount as number}
           postId={post.id}
         />
