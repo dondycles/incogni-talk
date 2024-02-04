@@ -25,6 +25,7 @@ import { CommentCard } from "./comment-card";
 import { getManyComments } from "@/actions/comment/get-many";
 import PostOptions from "../actions/post-options";
 import { useState } from "react";
+import { getOnePost } from "@/actions/post/get-one";
 
 type IsPending = {
   type: "delete" | "edit" | null;
@@ -32,15 +33,23 @@ type IsPending = {
 };
 
 export default function PostCard({
-  post,
+  postId,
   user,
 }: {
-  post: any[any];
+  postId: any[any];
   user: any[any];
 }) {
   const [isPending, setIsPending] = useState<IsPending>({
     type: null,
     variables: null,
+  });
+
+  const { data: post, isLoading } = useQuery({
+    queryKey: ["post", postId],
+    queryFn: async () => {
+      const { data } = await getOnePost(postId);
+      return data;
+    },
   });
 
   const timeDifference = getTimeDiff(post?.created_at as string);
@@ -51,15 +60,17 @@ export default function PostCard({
       <Globe className="small-icons" />
     );
 
+  const comments = post?.comments?.flatMap((comment: any[any]) => comment);
+
   const { data: commentsCount } = useQuery({
-    queryKey: ["post-comments-count", post.id],
+    queryKey: ["post-comments-count", postId],
     queryFn: async () => {
-      const { count } = await getAllCommentCounts(post.id);
+      const { count } = await getAllCommentCounts(postId);
       return count;
     },
-    staleTime: 1000,
   });
-
+  const likes = post?.likes;
+  const likesCount = likes?.length;
   const isDeletable = user?.cookieData?.user?.id === post?.author;
   const isEditable = user?.cookieData?.user?.id === post?.author;
 
@@ -95,16 +106,22 @@ export default function PostCard({
             : post?.content}
         </p>
         <PostActions
+          likes={likes}
           user={user}
-          postId={post.id}
-          commentsCount={commentsCount as number}
+          postId={postId}
+          counts={{
+            commentsCount: commentsCount as number,
+            likesCount: likesCount as number,
+          }}
         />
       </CardContent>
       <CardFooter>
         <PostCommentsScrollable
           user={user}
+          comments={comments}
           commentsCount={commentsCount as number}
-          postId={post.id}
+          isLoading={isLoading}
+          postId={postId}
         />
       </CardFooter>
     </Card>

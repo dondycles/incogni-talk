@@ -54,7 +54,7 @@ export default function Feed() {
             <CardSkeleton key={i + "feed"} type="post" />
           ))
         : publicPosts?.map((post) => {
-            return <PostCard user={user} post={post} key={post?.id} />;
+            return <PostCard user={user} postId={post?.id} key={post?.id} />;
           })}
       {isFetchingNextPublicPosts && (
         <div className="text-xs text-muted-foreground flex items-center gap-2 justify-center">

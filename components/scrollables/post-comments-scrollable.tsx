@@ -9,25 +9,21 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import { getManyComments } from "@/actions/comment/get-many";
 import CardSkeleton from "../cards/skeleton";
+import { getAllCommentCounts } from "@/actions/comment/get-count";
 
 export default function PostCommentsScrollable({
   postId,
-  commentsCount,
+  comments,
   user,
+  isLoading,
+  commentsCount,
 }: {
   postId: string;
-  commentsCount: number;
+  comments: any[any];
   user: any[any];
+  isLoading: boolean;
+  commentsCount: number;
 }) {
-  const { data, isLoading } = useQuery({
-    queryKey: ["post-comments", postId],
-    queryFn: async () => {
-      const { data } = await getManyComments(postId);
-      return data;
-    },
-  });
-
-  const comments = data?.flatMap((comment) => comment);
   return (
     <div className="w-full space-y-4">
       {commentsCount > 0 ? (
@@ -37,7 +33,7 @@ export default function PostCommentsScrollable({
               ? Array.from({ length: 4 }, (_, i) => (
                   <CardSkeleton key={i + "post-comments"} type="comment" />
                 ))
-              : comments?.map((comment) => {
+              : comments?.map((comment: any) => {
                   return (
                     <CommentCard
                       user={user}

@@ -41,13 +41,16 @@ export default function ViewPostCard({ post, user }: { post: any; user: any }) {
     );
 
   const { data: commentsCount, isLoading: commentsCountLoading } = useQuery({
-    queryKey: ["view-post-comments-count", post?.id],
+    queryKey: ["post-comments-count", post?.id],
     queryFn: async () => {
       const { count } = await getAllCommentCounts(post?.id);
       return count;
     },
     staleTime: 1000,
   });
+
+  const likes = post?.likes;
+  const likesCount = likes?.length;
   const isDeletable = user?.cookieData?.user?.id === post?.author;
   const isEditable = user?.cookieData?.user?.id === post?.author;
 
@@ -95,7 +98,11 @@ export default function ViewPostCard({ post, user }: { post: any; user: any }) {
               user={user}
               postId={post?.id}
               isView={true}
-              commentsCount={commentsCount as number}
+              likes={likes}
+              counts={{
+                likesCount: likesCount,
+                commentsCount: commentsCount as number,
+              }}
             />
           </CardContent>
           <CardFooter className=" flex-1 overflow-auto">

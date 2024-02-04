@@ -25,7 +25,8 @@ export const getAllPosts = async (page: number) => {
     const to = page === 1 ? 1 : from + 1;
     const { data } = await supabase
       .from("posts")
-      .select("*, users(*), comments(*, users(*)), likes(*, users(*))")
+      // .select("*, users(*), comments(*, users(*)), likes(*, users(*))")
+      .select("id")
       .order("created_at", { ascending: false })
       .range(from, to);
 

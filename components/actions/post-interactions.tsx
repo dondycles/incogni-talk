@@ -7,27 +7,21 @@ import { likePost } from "@/actions/post/like";
 
 export default function PostInteractions({
   postId,
-  commentsCount,
+  counts,
   user,
+  likes,
   isView,
 }: {
   postId: string;
-  commentsCount: number;
+  counts: { commentsCount: number; likesCount: number };
   user: any;
+  likes: any;
   isView?: boolean;
 }) {
   const queryClient = useQueryClient();
   const userId = user?.cookieData?.user?.id;
 
-  const { data: likes } = useQuery({
-    queryKey: ["post-likes", postId],
-    queryFn: async () => {
-      const { success } = await getLikes(postId);
-      return success;
-    },
-  });
-
-  const isLiked = likes?.filter((like) => like.liker === userId).length
+  const isLiked = likes?.filter((like: any) => like.liker === userId).length
     ? true
     : false;
 
@@ -36,7 +30,7 @@ export default function PostInteractions({
       await likePost(postId, isLiked, userId);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["post-likes", postId] });
+      queryClient.invalidateQueries({ queryKey: ["post", postId] });
     },
   });
 
@@ -49,18 +43,18 @@ export default function PostInteractions({
         className="flex-1"
       >
         <Heart className="small-icons" />
-        <p className="text-xs  ml-1">{likes?.length}</p>
+        <p className="text-xs  ml-1">{counts.likesCount}</p>
       </Button>
       {isView ? (
         <Button variant={"secondary"} className="flex-1">
           <MessageCircle className="small-icons" />
-          <p className="text-xs  ml-1">{commentsCount}</p>
+          <p className="text-xs  ml-1">{counts.commentsCount}</p>
         </Button>
       ) : (
         <Button asChild variant={"secondary"} className="flex-1">
           <Link href={"/post/" + postId}>
             <MessageCircle className="small-icons" />
-            <p className="text-xs  ml-1">{commentsCount}</p>
+            <p className="text-xs  ml-1">{counts.commentsCount}</p>
           </Link>
         </Button>
       )}
