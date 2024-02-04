@@ -2,13 +2,8 @@
 
 import { getAllPosts } from "@/actions/post/get-all";
 import PostCard from "@/components/cards/post-card";
-import { useOptimisticPost } from "@/store";
-import {
-  useInfiniteQuery,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
-import { useEffect, useRef, useState } from "react";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useEffect, useRef } from "react";
 import { getUser } from "@/actions/user/get";
 import { useIntersection } from "@mantine/hooks";
 import { LucideLoader2 } from "lucide-react";

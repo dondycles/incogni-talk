@@ -2,7 +2,6 @@ import { Heart, MessageCircle, Reply, Share2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import { getLikes } from "@/actions/post/get-likes";
 import { likePost } from "@/actions/post/like";
 
 export default function PostInteractions({
@@ -55,10 +54,10 @@ export default function PostInteractions({
         </Button>
       ) : (
         <Button asChild variant={"secondary"} className="flex-1">
-          <Link href={"/post/" + postId}>
+          <a href={"/post/" + postId}>
             <MessageCircle className="small-icons" />
             <p className="text-xs  ml-1">{counts.commentsCount}</p>
-          </Link>
+          </a>
         </Button>
       )}
 
