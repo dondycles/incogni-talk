@@ -11,11 +11,9 @@ import { LucideLoader2 } from "lucide-react";
 import CardSkeleton from "@/components/cards/skeleton";
 
 export default function Feed() {
-  const [isCreatePost, setIsCreatePost] = useState(false);
-
   const {
     data: publicPostsData,
-    isFetching: publicPostsLoading,
+    isLoading: publicPostsLoading,
     fetchNextPage: fetchNextPublicPosts,
     isFetchingNextPage: isFetchingNextPublicPosts,
   } = useInfiniteQuery({

@@ -14,13 +14,15 @@ export default function QueryProvider({
         defaultOptions: {
           queries: {
             staleTime: 1000,
-            refetchOnWindowFocus: false,
             retry: true,
           },
         },
       })
   );
   return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <QueryClientProvider client={queryClient}>
+      {children}
+      <ReactQueryDevtools initialIsOpen position="bottom" />
+    </QueryClientProvider>
   );
 }
