@@ -20,7 +20,7 @@ export default function ViewPostCommentsScrollable({
   commentsCount: number;
   user: any[any];
 }) {
-  const { data, fetchNextPage, isFetching } = useInfiniteQuery({
+  const { data, fetchNextPage, isLoading } = useInfiniteQuery({
     queryKey: ["view-post-comments", postId],
     queryFn: async ({ pageParam }) => {
       const { data } = await getAllComments(postId, pageParam);
@@ -49,7 +49,7 @@ export default function ViewPostCommentsScrollable({
       {commentsCount > 0 ? (
         <ScrollArea className="flex-1">
           <div className="flex-1 space-y-2">
-            {isFetching
+            {isLoading
               ? Array.from({ length: 4 }, (_, i) => (
                   <CardSkeleton key={i + "view-post-comments"} type="comment" />
                 ))

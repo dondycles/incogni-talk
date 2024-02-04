@@ -13,8 +13,9 @@ export default function QueryProvider({
       new QueryClient({
         defaultOptions: {
           queries: {
-            staleTime: 1000,
+            staleTime: 3000,
             retry: true,
+            refetchInterval: 3000,
           },
         },
       })

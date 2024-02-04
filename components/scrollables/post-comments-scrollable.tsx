@@ -19,7 +19,7 @@ export default function PostCommentsScrollable({
   commentsCount: number;
   user: any[any];
 }) {
-  const { data, isFetching } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["post-comments", postId],
     queryFn: async () => {
       const { data } = await getManyComments(postId);
@@ -33,7 +33,7 @@ export default function PostCommentsScrollable({
       {commentsCount > 0 ? (
         <ScrollArea>
           <div className="max-h-[300px] space-y-2">
-            {isFetching
+            {isLoading
               ? Array.from({ length: 4 }, (_, i) => (
                   <CardSkeleton key={i + "post-comments"} type="comment" />
                 ))
