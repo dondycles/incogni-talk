@@ -38,7 +38,7 @@ export default function FeedNav() {
 
   return (
     <nav className="system-padding w-full flex items-center justify-between border-b-border border-b-solid border-b-[1px] h-[74px]">
-      <a href={"/"} className="font-bold text-lg sm:text-2xl">
+      <a href={"/"} className="font-bold text-lg sm:text-2xl text-primary">
         incognitalk.
       </a>
       <div className="flex items-center gap-4">
