@@ -17,7 +17,6 @@ export default function QueryProvider({
             refetchOnWindowFocus: false,
             retry: true,
           },
-          mutations: {},
         },
       })
   );
