@@ -71,9 +71,11 @@ export default function ViewPostCard({ post, user }: { post: any; user: any }) {
         <>
           <CardHeader className="flex flex-row items-start gap-2 ">
             <div className="flex-1 flex flex-row items-center gap-2">
-              <UserCircle className="big-icons" />
-              <div className="space-y-2">
-                <CardTitle>{post?.users?.username}</CardTitle>
+              <UserCircle className="big-icons text-primary" />
+              <div className="space-y-2 ">
+                <CardTitle className="text-primary">
+                  {post?.users?.username}
+                </CardTitle>
                 <p className="flex text-muted-foreground text-xs space-x-1">
                   <span>{timeDifference}</span>
                   {privacy}

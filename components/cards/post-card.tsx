@@ -70,9 +70,11 @@ export default function PostCard({
     <Card className={`modified-card ${isPending.type && "opacity-50"}`}>
       <CardHeader className="flex flex-row items-start gap-2">
         <div className="flex-1 flex flex-row items-center gap-2">
-          <UserCircle className="big-icons" />
+          <UserCircle className="big-icons text-primary" />
           <div className="space-y-2">
-            <CardTitle>{post?.users?.username}</CardTitle>
+            <CardTitle className="text-primary">
+              {post?.users?.username}
+            </CardTitle>
             <p className="flex text-muted-foreground text-xs space-x-1">
               <span>{timeDifference}</span>
               {privacy}

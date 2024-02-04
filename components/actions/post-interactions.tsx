@@ -43,7 +43,9 @@ export default function PostInteractions({
         disabled={_likePostPending}
         className="flex-1"
       >
-        <Heart className="small-icons" />
+        <Heart
+          className={`small-icons ${isLiked && "fill-primary-foreground"}`}
+        />
         <p className="text-xs  ml-1">{counts.likesCount}</p>
       </Button>
       {isView ? (
@@ -53,10 +55,10 @@ export default function PostInteractions({
         </Button>
       ) : (
         <Button asChild variant={"secondary"} className="flex-1">
-          <a href={"/post/" + postId}>
+          <Link href={"/post/" + postId}>
             <MessageCircle className="small-icons" />
             <p className="text-xs  ml-1">{counts.commentsCount}</p>
-          </a>
+          </Link>
         </Button>
       )}
 
