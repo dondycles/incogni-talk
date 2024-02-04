@@ -28,7 +28,7 @@ import Link from "next/link";
 export default function FeedNav() {
   const [openDialog, setOpenDialog] = useState(false);
 
-  const { data, isLoading } = useQuery({
+  const { data, isFetching } = useQuery({
     queryKey: ["user-nav"],
     queryFn: async () => await getUser(),
     refetchOnWindowFocus: false,
@@ -45,7 +45,7 @@ export default function FeedNav() {
         <Dialog onOpenChange={setOpenDialog} open={openDialog}>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant={"outline"} size={"icon"}>
+              <Button variant={"secondary"} size={"icon"}>
                 <Plus />
               </Button>
             </DropdownMenuTrigger>
@@ -68,8 +68,8 @@ export default function FeedNav() {
           </DialogContent>
         </Dialog>
 
-        {isLoading ? (
-          <Skeleton className="h-[40px] w-[40px] py-2 px-4"></Skeleton>
+        {isFetching ? (
+          <Skeleton className="h-9 w-9 py-2 px-4"></Skeleton>
         ) : (
           <UserNavButton userData={userData} />
         )}

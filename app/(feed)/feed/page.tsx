@@ -15,7 +15,7 @@ export default function Feed() {
 
   const {
     data: publicPostsData,
-    isLoading: publicPostsLoading,
+    isFetching: publicPostsLoading,
     fetchNextPage: fetchNextPublicPosts,
     isFetchingNextPage: isFetchingNextPublicPosts,
   } = useInfiniteQuery({

@@ -49,20 +49,18 @@ export default function PostInteractions({
         className="flex-1"
       >
         <Heart className="small-icons" />
-        <p className="text-xs text-muted-foreground ml-1">{likes?.length}</p>
+        <p className="text-xs  ml-1">{likes?.length}</p>
       </Button>
       {isView ? (
         <Button variant={"secondary"} className="flex-1">
           <MessageCircle className="small-icons" />
-          <p className="text-xs text-muted-foreground ml-1">{commentsCount}</p>
+          <p className="text-xs  ml-1">{commentsCount}</p>
         </Button>
       ) : (
         <Button asChild variant={"secondary"} className="flex-1">
           <Link href={"/post/" + postId}>
             <MessageCircle className="small-icons" />
-            <p className="text-xs text-muted-foreground ml-1">
-              {commentsCount}
-            </p>
+            <p className="text-xs  ml-1">{commentsCount}</p>
           </Link>
         </Button>
       )}
