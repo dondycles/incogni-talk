@@ -12,35 +12,26 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 import { addPost as post } from "@/actions/post/add";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useOptimisticPost } from "@/store";
 import { editPost } from "@/actions/post/edit";
-import { useRouter } from "next/navigation";
+import { editComment } from "@/actions/comment/edit";
 
 const formSchema = z.object({
   content: z.string().min(1, {
     message: "A message cannot be empty.",
   }),
-  privacy: z.string(),
   id: z.string(),
 });
 
-export function EditPostForm({
+export function EditCommentForm({
   close,
-  post,
+  comment,
   setPending,
 }: {
   close: () => void;
-  post: any[any];
+  comment: any[any];
   setPending: (
     variables: z.infer<typeof formSchema> | null,
     type: "edit" | null
@@ -53,8 +44,10 @@ export function EditPostForm({
       setPending(variables, "edit");
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["feed-posts"] });
-      queryClient.invalidateQueries({ queryKey: ["post", post?.id] });
+      queryClient.invalidateQueries({ queryKey: ["post", comment?.post] });
+      queryClient.invalidateQueries({
+        queryKey: ["view-post-comments", comment?.post],
+      });
       setPending(null, null);
     },
   });
@@ -62,14 +55,13 @@ export function EditPostForm({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      content: post?.content,
-      privacy: post?.privacy,
-      id: post?.id,
+      content: comment?.content,
+      id: comment?.id,
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const { error } = await editPost(values);
+    const { error } = await editComment(values);
     if (error) return form.setError("content", { message: error });
     form.reset();
     close();
@@ -102,27 +94,6 @@ export function EditPostForm({
         />
 
         <div className="flex justify-end gap-4">
-          <FormField
-            control={form.control}
-            name="privacy"
-            render={({ field }) => (
-              <FormItem>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Public" />
-                  </SelectTrigger>
-                  <SelectContent className="">
-                    <SelectItem value={"public"}>Public</SelectItem>
-                    <SelectItem value={"private"}>Private</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
           <Button
             onClick={() => {
               form.reset();
@@ -134,7 +105,7 @@ export function EditPostForm({
             Discard
           </Button>
           <Button className="w-fit" type="submit" disabled={isPending}>
-            {isPending ? "Posting..." : "Post"}
+            {isPending ? "Editing..." : "Edit"}
           </Button>
         </div>
       </form>

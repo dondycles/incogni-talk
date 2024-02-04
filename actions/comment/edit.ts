@@ -24,5 +24,5 @@ export const editComment = async (values: any) => {
     .eq("id", values.id);
 
   if (error) return { error: error.message };
-  return "comment edited";
+  return { success: "comment edited" };
 };

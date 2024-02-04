@@ -63,7 +63,7 @@ export default function PostCard({
   const comments = post?.comments?.flatMap((comment: any[any]) => comment);
 
   const { data: commentsCount } = useQuery({
-    queryKey: ["post-comments-count", postId],
+    queryKey: ["comments-count", postId],
     queryFn: async () => {
       const { count } = await getAllCommentCounts(postId);
       return count;

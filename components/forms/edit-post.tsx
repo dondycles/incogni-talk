@@ -53,7 +53,6 @@ export function EditPostForm({
       setPending(variables, "edit");
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["feed-posts"] });
       queryClient.invalidateQueries({ queryKey: ["post", post?.id] });
       setPending(null, null);
     },

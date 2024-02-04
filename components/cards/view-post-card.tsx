@@ -41,7 +41,7 @@ export default function ViewPostCard({ post, user }: { post: any; user: any }) {
     );
 
   const { data: commentsCount, isLoading: commentsCountLoading } = useQuery({
-    queryKey: ["post-comments-count", post?.id],
+    queryKey: ["comments-count", post?.id],
     queryFn: async () => {
       const { count } = await getAllCommentCounts(post?.id);
       return count;

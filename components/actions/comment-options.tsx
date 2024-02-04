@@ -10,6 +10,8 @@ import { delPost } from "@/actions/post/delete";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import { EditPostForm } from "../forms/edit-post";
 import { useState } from "react";
+import { delComment } from "@/actions/comment/delete";
+import { EditCommentForm } from "../forms/edit-comment";
 
 export default function CommentOptions({
   isEditable,
@@ -28,13 +30,16 @@ export default function CommentOptions({
   const queryClient = useQueryClient();
   const [openEditForm, setOpenEditForm] = useState(false);
   const { mutate: deletePost, isPending } = useMutation({
-    mutationFn: async () => await delPost(comment?.id),
+    mutationFn: async () => await delComment(comment?.id),
     onMutate: () => {
       setPending(null, "delete");
     },
     onSettled: () => {
       queryClient.invalidateQueries({
-        queryKey: ["post-comments", comment?.posts?.id],
+        queryKey: ["post", comment?.post],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["view-post-comments", comment?.post],
       });
     },
     onError: () => {
@@ -62,9 +67,9 @@ export default function CommentOptions({
         </DropdownMenuContent>
       </DropdownMenu>
       <DialogContent>
-        <EditPostForm
+        <EditCommentForm
           setPending={(variables, type) => setPending(variables, type)}
-          post={comment}
+          comment={comment}
           close={() => {
             setOpenEditForm(false);
           }}

@@ -2,6 +2,7 @@ import { getTimeDiff } from "@/lib/getTimeDiff";
 import { User, UserCircle } from "lucide-react";
 import { Button } from "../ui/button";
 import CommentOptions from "../actions/comment-options";
+import { useState } from "react";
 
 export function CommentCard({
   comment,
@@ -10,6 +11,7 @@ export function CommentCard({
   comment: any[any];
   user: any[any];
 }) {
+  const [editComment, setEditComment] = useState(false);
   const timeDifference = getTimeDiff(comment?.created_at as string);
 
   const isDeletable =

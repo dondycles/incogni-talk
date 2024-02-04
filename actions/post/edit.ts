@@ -26,5 +26,5 @@ export const editPost = async (values?: any) => {
     .eq("id", values.id);
 
   if (error) return { error: error.message };
-  return { success: "post added" };
+  return { success: "post edited" };
 };

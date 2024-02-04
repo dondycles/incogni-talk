@@ -36,11 +36,10 @@ export function AddCommentForm({ postId }: { postId: string }) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post", postId] });
       queryClient.invalidateQueries({
-        queryKey: ["post-comments-count", postId],
-      });
-
-      queryClient.invalidateQueries({
         queryKey: ["view-post-comments", postId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["comments-count", postId],
       });
     },
   });

@@ -18,7 +18,6 @@ export const delPost = async (id: string) => {
     );
 
     const { error } = await supabase.from("posts").delete().eq("id", id);
-    console.log(error, id);
     return "post deleted";
   } catch (error) {
     return { error: error };
