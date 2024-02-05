@@ -26,7 +26,16 @@ type IsPending = {
   variables: any[any] | null;
 };
 
-export default function ViewPostCard({ post, user }: { post: any; user: any }) {
+export default function ViewPostCard({
+  post,
+  user,
+}: {
+  post: PostsTypes;
+  user: UserData;
+}) {
+  const postId = post?.id as string;
+  const postAuthor = post?.author as string;
+  const userId = user?.cookieData?.user?.id as string;
   const [isPending, setIsPending] = useState<IsPending>({
     type: null,
     variables: null,
@@ -41,9 +50,9 @@ export default function ViewPostCard({ post, user }: { post: any; user: any }) {
     );
 
   const { data: commentsCount, isLoading: commentsCountLoading } = useQuery({
-    queryKey: ["comments-count", post?.id],
+    queryKey: ["comments-count", postId],
     queryFn: async () => {
-      const { count } = await getAllCommentCounts(post?.id);
+      const { count } = await getAllCommentCounts(postId);
       return count;
     },
     staleTime: 1000,
@@ -51,8 +60,8 @@ export default function ViewPostCard({ post, user }: { post: any; user: any }) {
 
   const likes = post?.likes;
   const likesCount = likes?.length;
-  const isDeletable = user?.cookieData?.user?.id === post?.author;
-  const isEditable = user?.cookieData?.user?.id === post?.author;
+  const isDeletable = userId === postAuthor;
+  const isEditable = userId === postAuthor;
 
   return (
     <Card
@@ -98,11 +107,11 @@ export default function ViewPostCard({ post, user }: { post: any; user: any }) {
             <p className="whitespace-pre">{post?.content}</p>
             <PostActions
               user={user}
-              postId={post?.id}
+              postId={postId}
               isView={true}
               likes={likes}
               counts={{
-                likesCount: likesCount,
+                likesCount: likesCount as number,
                 commentsCount: commentsCount as number,
               }}
             />
@@ -111,7 +120,7 @@ export default function ViewPostCard({ post, user }: { post: any; user: any }) {
             <ViewPostCommentsScrollable
               user={user}
               commentsCount={commentsCount as number}
-              postId={post?.id}
+              postId={postId}
             />
           </CardFooter>
         </>

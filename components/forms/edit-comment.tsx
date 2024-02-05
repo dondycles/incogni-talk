@@ -31,7 +31,7 @@ export function EditCommentForm({
   setPending,
 }: {
   close: () => void;
-  comment: any[any];
+  comment: CommentsTypes;
   setPending: (
     variables: z.infer<typeof formSchema> | null,
     type: "edit" | null

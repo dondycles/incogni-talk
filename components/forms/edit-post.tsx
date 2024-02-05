@@ -40,7 +40,7 @@ export function EditPostForm({
   setPending,
 }: {
   close: () => void;
-  post: any[any];
+  post: PostsTypes;
   setPending: (
     variables: z.infer<typeof formSchema> | null,
     type: "edit" | null

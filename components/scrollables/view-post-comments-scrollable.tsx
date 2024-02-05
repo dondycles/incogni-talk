@@ -18,7 +18,7 @@ export default function ViewPostCommentsScrollable({
 }: {
   postId: string;
   commentsCount: number;
-  user: any[any];
+  user: UserData;
 }) {
   const { data, fetchNextPage, isLoading, isFetchingNextPage } =
     useInfiniteQuery({

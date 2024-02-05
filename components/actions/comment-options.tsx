@@ -21,16 +21,17 @@ export default function CommentOptions({
 }: {
   isEditable: boolean;
   isDeletable: boolean;
-  comment: any[any];
+  comment: CommentsTypes;
   setPending: (
     variables: any[any] | null,
     type: "edit" | "delete" | null
   ) => void;
 }) {
+  const commentId = comment?.id as string;
   const queryClient = useQueryClient();
   const [openEditForm, setOpenEditForm] = useState(false);
   const { mutate: deletePost, isPending } = useMutation({
-    mutationFn: async () => await delComment(comment?.id),
+    mutationFn: async () => await delComment(commentId),
     onMutate: () => {
       setPending(null, "delete");
     },

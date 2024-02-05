@@ -3,21 +3,21 @@ import { User, UserCircle } from "lucide-react";
 import { Button } from "../ui/button";
 import CommentOptions from "../actions/comment-options";
 import { useState } from "react";
+import { Database, Tables } from "@/database.types";
 
 export function CommentCard({
   comment,
   user,
 }: {
-  comment: any[any];
-  user: any[any];
+  comment: CommentsTypes;
+  user: UserData;
 }) {
-  const [editComment, setEditComment] = useState(false);
   const timeDifference = getTimeDiff(comment?.created_at as string);
+  const userId = user?.cookieData?.user?.id as string;
 
   const isDeletable =
-    user?.cookieData?.user?.id === comment?.commenter ||
-    user?.cookieData?.user?.id === comment?.posts?.author;
-  const isEditable = user?.cookieData?.user?.id === comment?.commenter;
+    userId === comment?.commenter || userId === comment?.commenter;
+  const isEditable = userId === comment?.commenter;
 
   return (
     <div className="w-full flex flex-row gap-2 items-start">

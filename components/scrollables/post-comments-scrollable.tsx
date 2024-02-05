@@ -10,7 +10,7 @@ import Link from "next/link";
 import { getManyComments } from "@/actions/comment/get-many";
 import CardSkeleton from "../cards/skeleton";
 import { getAllCommentCounts } from "@/actions/comment/get-count";
-
+import { Database, Tables } from "@/database.types";
 export default function PostCommentsScrollable({
   postId,
   comments,
@@ -18,8 +18,8 @@ export default function PostCommentsScrollable({
   commentsCount,
 }: {
   postId: string;
-  comments: any[any];
-  user: any[any];
+  comments: CommentsTypes[] | undefined;
+  user: UserData;
   commentsCount: number;
 }) {
   return (
@@ -27,7 +27,7 @@ export default function PostCommentsScrollable({
       {commentsCount > 0 ? (
         <ScrollArea>
           <div className="max-h-[300px] space-y-2">
-            {comments?.map((comment: any) => {
+            {comments?.map((comment) => {
               return (
                 <CommentCard user={user} key={comment?.id} comment={comment} />
               );

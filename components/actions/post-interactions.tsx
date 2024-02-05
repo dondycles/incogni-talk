@@ -14,14 +14,14 @@ export default function PostInteractions({
 }: {
   postId: string;
   counts: { commentsCount: number; likesCount: number };
-  user: any;
-  likes: any;
+  user: UserData;
+  likes: LikesTypes[] | undefined;
   isView?: boolean;
 }) {
   const queryClient = useQueryClient();
-  const userId = user?.cookieData?.user?.id;
+  const userId = user?.cookieData?.user.id as string;
 
-  let isLiked = likes?.filter((like: any) => like.liker === userId).length
+  let isLiked = likes?.filter((like) => like?.liker === userId).length
     ? true
     : false;
 

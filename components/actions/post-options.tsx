@@ -19,22 +19,23 @@ export default function PostOptions({
 }: {
   isEditable: boolean;
   isDeletable: boolean;
-  post: any[any];
+  post: PostsTypes;
   setPending: (
     variables: any[any] | null,
     type: "edit" | "delete" | null
   ) => void;
 }) {
   const queryClient = useQueryClient();
+  const postId = post?.id as string;
   const [openEditForm, setOpenEditForm] = useState(false);
   const { mutate: deletePost, isPending } = useMutation({
-    mutationFn: async () => await delPost(post?.id),
+    mutationFn: async () => await delPost(postId),
     onMutate: () => {
       setPending(null, "delete");
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["feed-posts"] });
-      queryClient.invalidateQueries({ queryKey: ["post", post?.id] });
+      queryClient.invalidateQueries({ queryKey: ["post", postId] });
     },
     onError: () => {
       setPending(null, null);

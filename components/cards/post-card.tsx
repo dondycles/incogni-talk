@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import { getOnePost } from "@/actions/post/get-one";
 import { supabaseClient } from "@/supabase/client";
 import CardSkeleton from "./skeleton";
+import { User } from "@supabase/supabase-js";
 
 type IsPending = {
   type: "delete" | "edit" | null;
@@ -25,7 +26,7 @@ type IsPending = {
 
 interface PostCard {
   postId: string;
-  user: any;
+  user: UserData;
 }
 
 export default function PostCard<T>({ postId, user }: PostCard) {
@@ -37,7 +38,7 @@ export default function PostCard<T>({ postId, user }: PostCard) {
   const { data: post, isLoading } = useQuery({
     queryKey: ["post", postId],
     queryFn: async () => {
-      const { data } = await getOnePost(postId as string);
+      const { data } = await getOnePost(postId);
       return data;
     },
   });
@@ -55,7 +56,7 @@ export default function PostCard<T>({ postId, user }: PostCard) {
   const { data: commentsCount } = useQuery({
     queryKey: ["comments-count", postId],
     queryFn: async () => {
-      const { count } = await getAllCommentCounts(postId as string);
+      const { count } = await getAllCommentCounts(postId);
       return count;
     },
   });
