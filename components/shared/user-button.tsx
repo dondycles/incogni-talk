@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import ThemeToggle from "../theme-toggle";
 
-export default function UserNavButton({ userData }: { userData: any }) {
+export default function UserNavButton({ userData }: { userData: UserData }) {
   const [isLogginOut, setIsLogginOut] = useState(false);
   const route = useRouter();
   const logout = async () => {

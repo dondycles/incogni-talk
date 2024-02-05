@@ -27,10 +27,8 @@ declare global {
 
   type UserData =
     | {
-        cookieData: { user: User } | undefined;
-        dbData:
-          | { created_at: string; id: string; username: string }
-          | undefined;
+        cookieData?: { user: User } | undefined;
+        dbData?: Tables<"users"> | undefined;
       }
     | undefined;
 }
