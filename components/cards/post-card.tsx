@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/dialog";
 import PostEditsDialog from "./post-edits-history-dialog";
 import SharedPostCard from "./shared-post-card";
+import UserHoverCard from "./user-hover-card";
 
 type IsPending = {
   type: "delete" | "edit" | null;
@@ -95,7 +96,7 @@ export default function PostCard<T>({ postId, user }: PostCard) {
           <UserCircle className="big-icons text-primary" />
           <div className="space-y-2">
             <CardTitle className="text-primary">
-              {post?.users?.username}
+              <UserHoverCard user={post?.users as Users} />
               <span className="text-muted-foreground font-normal">
                 {" "}
                 {post?.shared_post && "shared a "}{" "}

@@ -87,6 +87,38 @@ export type Database = {
           }
         ]
       }
+      friends: {
+        Row: {
+          accepted: boolean
+          created_at: string
+          friend: string
+          id: number
+          user: string
+        }
+        Insert: {
+          accepted?: boolean
+          created_at?: string
+          friend: string
+          id?: number
+          user?: string
+        }
+        Update: {
+          accepted?: boolean
+          created_at?: string
+          friend?: string
+          id?: number
+          user?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "friends_friend_fkey"
+            columns: ["friend"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       hidden_posts: {
         Row: {
           created_at: string

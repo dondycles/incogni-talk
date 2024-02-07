@@ -20,6 +20,7 @@ import ViewPostCommentsScrollable from "../scrollables/view-post-comments-scroll
 import PostOptions from "../actions/post-options";
 import { useEffect, useState } from "react";
 import CardSkeleton from "./skeleton";
+import UserHoverCard from "./user-hover-card";
 
 type IsPending = {
   type: "delete" | "edit" | null;
@@ -83,7 +84,7 @@ export default function ViewPostCard({
               <UserCircle className="big-icons text-primary" />
               <div className="space-y-2 ">
                 <CardTitle className="text-primary">
-                  {post?.users?.username}
+                  <UserHoverCard user={post?.users} />
                 </CardTitle>
                 <p className="flex text-muted-foreground text-xs space-x-1">
                   <span>{timeDifference}</span>

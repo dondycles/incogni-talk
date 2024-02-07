@@ -2,7 +2,7 @@ import { Tables } from "@/database.types";
 import { User } from "@supabase/supabase-js";
 
 declare global {
-  type Users = Tables<"users"> | null;
+  type Users = Tables<"users"> | null | undefined;
 
   interface PostsEditHistory extends Tables<"post_edits_history"> {
     users?: Users;
