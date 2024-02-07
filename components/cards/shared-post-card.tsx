@@ -139,7 +139,7 @@ export default function SharedPostCard<T>({
         <PostActions
           likes={likes}
           user={user}
-          postId={sharedPostId}
+          post={sharedPost}
           counts={{
             commentsCount: commentsCount as number,
             likesCount: likesCount as number,
@@ -147,12 +147,15 @@ export default function SharedPostCard<T>({
         />
       </CardContent>
       <CardFooter>
-        <PostCommentsScrollable
+        {/* <PostCommentsScrollable
           user={user}
           comments={comments}
           commentsCount={commentsCount as number}
           postId={sharedPostId}
-        />
+        /> */}
+        <Button className="w-full" variant={"secondary"}>
+          View post
+        </Button>
       </CardFooter>
     </Card>
   );

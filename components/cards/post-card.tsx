@@ -142,7 +142,7 @@ export default function PostCard<T>({ postId, user }: PostCard) {
         <PostActions
           likes={likes}
           user={user}
-          postId={postId}
+          post={post}
           counts={{
             commentsCount: commentsCount as number,
             likesCount: likesCount as number,

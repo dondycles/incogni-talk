@@ -7,18 +7,19 @@ import { useEffect, useState } from "react";
 import { SharePostForm } from "../forms/share-post";
 
 export default function PostInteractions({
-  postId,
+  post,
   counts,
   user,
   likes,
   isView,
 }: {
-  postId: string;
+  post: PostsTypes;
   counts: { commentsCount: number; likesCount: number };
   user: UserData;
   likes: LikesTypes[] | undefined;
   isView?: boolean;
 }) {
+  const postId = post?.id as string;
   const queryClient = useQueryClient();
   const userId = user?.cookieData?.user.id as string;
 
@@ -76,8 +77,7 @@ export default function PostInteractions({
           </a>
         </Button>
       )}
-
-      <SharePostForm postId={postId} close={() => {}}>
+      <SharePostForm user={user} postId={postId} close={() => {}}>
         <Button variant={"secondary"} className="w-full">
           <Share2 className="small-icons" />
         </Button>

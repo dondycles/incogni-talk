@@ -32,6 +32,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useOptimisticPost } from "@/store";
 import { sharedPost as share } from "@/actions/post/share";
 import { useState } from "react";
+import PostCard from "../cards/post-card";
+import SharedPostCard from "../cards/shared-post-card";
+import { ScrollArea } from "../ui/scroll-area";
 
 const formSchema = z.object({
   content: z.string().min(1, {
@@ -45,10 +48,12 @@ export function SharePostForm({
   close,
   postId,
   children,
+  user,
 }: {
   close: () => void;
   postId: string;
   children: React.ReactNode;
+  user: UserData;
 }) {
   const [openForm, setOpenForm] = useState(false);
   const optimisticPost = useOptimisticPost();
@@ -104,7 +109,7 @@ export function SharePostForm({
                   <FormControl>
                     <Textarea
                       autoFocus={true}
-                      rows={4}
+                      rows={2}
                       placeholder="What are your thoughts?"
                       {...field}
                     />
@@ -152,6 +157,9 @@ export function SharePostForm({
             </div>
           </form>
         </Form>
+        <ScrollArea className="max-h-[300px]">
+          <SharedPostCard sharedPostId={postId} user={user} />
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );
