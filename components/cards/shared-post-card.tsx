@@ -27,59 +27,63 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import PostEditsDialog from "./post-edits-history-dialog";
-import SharedPostCard from "./shared-post-card";
 
 type IsPending = {
   type: "delete" | "edit" | null;
   variables: any[any] | null;
 };
 
-interface PostCard {
-  postId: string;
+interface SharedPostCard {
+  sharedPostId: string;
   user: UserData;
 }
 
-export default function PostCard<T>({ postId, user }: PostCard) {
+export default function SharedPostCard<T>({
+  sharedPostId,
+  user,
+}: SharedPostCard) {
   const [isPending, setIsPending] = useState<IsPending>({
     type: null,
     variables: null,
   });
 
-  const { data: post, isLoading } = useQuery({
-    queryKey: ["post", postId],
+  const [viewComments, setViewComments] = useState(false);
+
+  const { data: sharedPost, isLoading } = useQuery({
+    queryKey: ["shared-post", sharedPostId],
     queryFn: async () => {
-      const { data } = await getOnePost(postId);
+      const { data } = await getOnePost(sharedPostId);
       return data;
     },
   });
 
-  const timeDifference = getTimeDiff(post?.created_at as string);
+  const timeDifference = getTimeDiff(sharedPost?.created_at as string);
   const privacy =
-    post?.privacy === "private" ? (
+    sharedPost?.privacy === "private" ? (
       <Lock className="small-icons" />
     ) : (
       <Globe className="small-icons" />
     );
 
-  const comments = post?.comments?.flatMap((comment) => comment);
+  const comments = sharedPost?.comments?.flatMap((comment) => comment);
 
   const { data: commentsCount } = useQuery({
-    queryKey: ["comments-count", postId],
+    queryKey: ["shared-post-comments-count", sharedPostId],
     queryFn: async () => {
-      const { count } = await getAllCommentCounts(postId);
+      const { count } = await getAllCommentCounts(sharedPostId);
       return count;
     },
   });
-  const likes = post?.likes;
+  const likes = sharedPost?.likes;
   const likesCount = likes?.length;
-  const isDeletable = user?.cookieData?.user?.id === post?.author;
-  const isEditable = user?.cookieData?.user?.id === post?.author;
+  const isDeletable = user?.cookieData?.user?.id === sharedPost?.author;
+  const isEditable = user?.cookieData?.user?.id === sharedPost?.author;
 
   const { data: postEditHistory, isLoading: postEditHistoryLoading } = useQuery(
     {
-      queryKey: ["post-history", postId],
+      queryKey: ["shared-post-history", sharedPostId],
       queryFn: async () => {
-        const { data } = await getAllPostsHistory(postId);
+        const { data } = await getAllPostsHistory(sharedPostId);
         return data;
       },
     }
@@ -95,11 +99,7 @@ export default function PostCard<T>({ postId, user }: PostCard) {
           <UserCircle className="big-icons text-primary" />
           <div className="space-y-2">
             <CardTitle className="text-primary">
-              {post?.users?.username}
-              <span className="text-muted-foreground font-normal">
-                {" "}
-                {post?.shared_post && "shared a post"}
-              </span>
+              {sharedPost?.users?.username}
             </CardTitle>
             <p className="flex text-muted-foreground text-xs space-x-1">
               <span>{timeDifference}</span>
@@ -119,7 +119,7 @@ export default function PostCard<T>({ postId, user }: PostCard) {
           </div>
         </div>
         <PostOptions
-          post={post}
+          post={sharedPost}
           isDeletable={isDeletable}
           isEditable={isEditable}
           setPending={(variables, type) => {
@@ -134,15 +134,12 @@ export default function PostCard<T>({ postId, user }: PostCard) {
         <p className="whitespace-pre">
           {isPending.type === "edit"
             ? isPending?.variables?.content
-            : post?.content}
+            : sharedPost?.content}
         </p>
-        {post?.shared_post ? (
-          <SharedPostCard user={user} sharedPostId={post?.shared_post} />
-        ) : null}
         <PostActions
           likes={likes}
           user={user}
-          postId={postId}
+          postId={sharedPostId}
           counts={{
             commentsCount: commentsCount as number,
             likesCount: likesCount as number,
@@ -154,7 +151,7 @@ export default function PostCard<T>({ postId, user }: PostCard) {
           user={user}
           comments={comments}
           commentsCount={commentsCount as number}
-          postId={postId}
+          postId={sharedPostId}
         />
       </CardFooter>
     </Card>

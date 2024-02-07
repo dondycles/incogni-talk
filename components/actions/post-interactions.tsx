@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { likePost } from "@/actions/post/like";
 import { useEffect, useState } from "react";
+import { SharePostForm } from "../forms/share-post";
 
 export default function PostInteractions({
   postId,
@@ -31,6 +32,7 @@ export default function PostInteractions({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post", postId] });
+      queryClient.invalidateQueries({ queryKey: ["shared-post", postId] });
       queryClient.invalidateQueries({ queryKey: ["view-post", postId] });
     },
   });
@@ -75,9 +77,11 @@ export default function PostInteractions({
         </Button>
       )}
 
-      <Button variant={"secondary"} className="flex-1">
-        <Share2 className="small-icons" />
-      </Button>
+      <SharePostForm postId={postId} close={() => {}}>
+        <Button variant={"secondary"} className="w-full">
+          <Share2 className="small-icons" />
+        </Button>
+      </SharePostForm>
     </div>
   );
 }

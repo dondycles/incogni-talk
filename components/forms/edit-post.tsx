@@ -63,8 +63,8 @@ export function EditPostForm({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      content: post?.content,
-      privacy: post?.privacy,
+      content: post?.content as string,
+      privacy: post?.privacy as string,
       id: post?.id,
     },
   });

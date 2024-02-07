@@ -35,13 +35,17 @@ export default function PostCommentsScrollable({
           </div>
         </ScrollArea>
       ) : null}
-
-      <AddCommentForm postId={postId} />
       {commentsCount > 4 ? (
-        <Button asChild variant={"ghost"} className="w-full">
-          <a href={"/post/" + postId}>View Post</a>
+        <Button
+          asChild
+          variant={"ghost"}
+          className="w-full p-0 m-0"
+          size={"sm"}
+        >
+          <a href={"/post/" + postId}>View more comments</a>
         </Button>
       ) : null}
+      <AddCommentForm postId={postId} />
     </div>
   );
 }

@@ -4,291 +4,327 @@ export type Json =
   | boolean
   | null
   | { [key: string]: Json | undefined }
-  | Json[];
+  | Json[]
 
 export type Database = {
   public: {
     Tables: {
+      comment_edits_history: {
+        Row: {
+          comment: string
+          created_at: string
+          data: Json
+          id: string
+          user: string
+        }
+        Insert: {
+          comment: string
+          created_at?: string
+          data: Json
+          id?: string
+          user?: string
+        }
+        Update: {
+          comment?: string
+          created_at?: string
+          data?: Json
+          id?: string
+          user?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comment_edits_history_comment_fkey"
+            columns: ["comment"]
+            isOneToOne: false
+            referencedRelation: "comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comment_edits_history_user_fkey"
+            columns: ["user"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       comments: {
         Row: {
-          commenter: string;
-          content: string;
-          created_at: string;
-          id: string;
-          post: string;
-        };
+          commenter: string
+          content: string
+          created_at: string
+          id: string
+          post: string
+        }
         Insert: {
-          commenter?: string;
-          content: string;
-          created_at?: string;
-          id?: string;
-          post: string;
-        };
+          commenter?: string
+          content: string
+          created_at?: string
+          id?: string
+          post: string
+        }
         Update: {
-          commenter?: string;
-          content?: string;
-          created_at?: string;
-          id?: string;
-          post?: string;
-        };
+          commenter?: string
+          content?: string
+          created_at?: string
+          id?: string
+          post?: string
+        }
         Relationships: [
           {
-            foreignKeyName: "comments_commenter_fkey";
-            columns: ["commenter"];
-            isOneToOne: false;
-            referencedRelation: "users";
-            referencedColumns: ["id"];
+            foreignKeyName: "comments_commenter_fkey"
+            columns: ["commenter"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "comments_post_fkey";
-            columns: ["post"];
-            isOneToOne: false;
-            referencedRelation: "posts";
-            referencedColumns: ["id"];
+            foreignKeyName: "comments_post_fkey"
+            columns: ["post"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
           }
-        ];
-      };
+        ]
+      }
       hidden: {
         Row: {
-          created_at: string;
-          id: number;
-          post: string;
-          user: string;
-        };
+          created_at: string
+          id: number
+          post: string
+          user: string
+        }
         Insert: {
-          created_at?: string;
-          id?: number;
-          post: string;
-          user?: string;
-        };
+          created_at?: string
+          id?: number
+          post: string
+          user?: string
+        }
         Update: {
-          created_at?: string;
-          id?: number;
-          post?: string;
-          user?: string;
-        };
+          created_at?: string
+          id?: number
+          post?: string
+          user?: string
+        }
         Relationships: [
           {
-            foreignKeyName: "hidden_user_fkey";
-            columns: ["user"];
-            isOneToOne: false;
-            referencedRelation: "users";
-            referencedColumns: ["id"];
+            foreignKeyName: "hidden_user_fkey"
+            columns: ["user"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
           }
-        ];
-      };
-      history: {
-        Row: {
-          comment: string | null;
-          created_at: string;
-          data: Json;
-          id: string;
-          post: string | null;
-          type: string;
-          user: string;
-        };
-        Insert: {
-          comment?: string | null;
-          created_at?: string;
-          data: Json;
-          id?: string;
-          post?: string | null;
-          type: string;
-          user?: string;
-        };
-        Update: {
-          comment?: string | null;
-          created_at?: string;
-          data?: Json;
-          id?: string;
-          post?: string | null;
-          type?: string;
-          user?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "history_comment_fkey";
-            columns: ["comment"];
-            isOneToOne: false;
-            referencedRelation: "comments";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "history_post_fkey";
-            columns: ["post"];
-            isOneToOne: false;
-            referencedRelation: "posts";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "history_user_fkey";
-            columns: ["user"];
-            isOneToOne: false;
-            referencedRelation: "users";
-            referencedColumns: ["id"];
-          }
-        ];
-      };
+        ]
+      }
       likes: {
         Row: {
-          comment: string | null;
-          created_at: string;
-          id: number;
-          liker: string;
-          post: string | null;
-        };
+          comment: string | null
+          created_at: string
+          id: number
+          liker: string
+          post: string | null
+        }
         Insert: {
-          comment?: string | null;
-          created_at?: string;
-          id?: number;
-          liker?: string;
-          post?: string | null;
-        };
+          comment?: string | null
+          created_at?: string
+          id?: number
+          liker?: string
+          post?: string | null
+        }
         Update: {
-          comment?: string | null;
-          created_at?: string;
-          id?: number;
-          liker?: string;
-          post?: string | null;
-        };
+          comment?: string | null
+          created_at?: string
+          id?: number
+          liker?: string
+          post?: string | null
+        }
         Relationships: [
           {
-            foreignKeyName: "likes_comment_fkey";
-            columns: ["comment"];
-            isOneToOne: false;
-            referencedRelation: "comments";
-            referencedColumns: ["id"];
+            foreignKeyName: "likes_comment_fkey"
+            columns: ["comment"]
+            isOneToOne: false
+            referencedRelation: "comments"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "likes_liker_fkey";
-            columns: ["liker"];
-            isOneToOne: false;
-            referencedRelation: "users";
-            referencedColumns: ["id"];
+            foreignKeyName: "likes_liker_fkey"
+            columns: ["liker"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "likes_post_fkey";
-            columns: ["post"];
-            isOneToOne: false;
-            referencedRelation: "posts";
-            referencedColumns: ["id"];
+            foreignKeyName: "likes_post_fkey"
+            columns: ["post"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
           }
-        ];
-      };
+        ]
+      }
+      post_edits_history: {
+        Row: {
+          created_at: string
+          data: Json
+          id: string
+          post: string
+          user: string
+        }
+        Insert: {
+          created_at?: string
+          data: Json
+          id?: string
+          post: string
+          user?: string
+        }
+        Update: {
+          created_at?: string
+          data?: Json
+          id?: string
+          post?: string
+          user?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_edits_history_post_fkey"
+            columns: ["post"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_edits_history_user_fkey"
+            columns: ["user"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       posts: {
         Row: {
-          author: string;
-          content: string;
-          created_at: string;
-          id: string;
-          privacy: string;
-        };
+          author: string
+          content: string | null
+          created_at: string
+          id: string
+          privacy: string
+          shared_post: string | null
+        }
         Insert: {
-          author?: string;
-          content: string;
-          created_at?: string;
-          id?: string;
-          privacy: string;
-        };
+          author?: string
+          content?: string | null
+          created_at?: string
+          id?: string
+          privacy: string
+          shared_post?: string | null
+        }
         Update: {
-          author?: string;
-          content?: string;
-          created_at?: string;
-          id?: string;
-          privacy?: string;
-        };
+          author?: string
+          content?: string | null
+          created_at?: string
+          id?: string
+          privacy?: string
+          shared_post?: string | null
+        }
         Relationships: [
           {
-            foreignKeyName: "posts_author_fkey";
-            columns: ["author"];
-            isOneToOne: false;
-            referencedRelation: "users";
-            referencedColumns: ["id"];
+            foreignKeyName: "posts_author_fkey"
+            columns: ["author"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "posts_shared_post_fkey"
+            columns: ["shared_post"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
           }
-        ];
-      };
+        ]
+      }
       ug_comments: {
         Row: {
-          comment: string;
-          commenter: string;
-          content: string;
-          created_at: string;
-          id: string;
-          post: string;
-        };
+          comment: string
+          commenter: string
+          content: string
+          created_at: string
+          id: string
+          post: string
+        }
         Insert: {
-          comment: string;
-          commenter?: string;
-          content: string;
-          created_at?: string;
-          id?: string;
-          post: string;
-        };
+          comment: string
+          commenter?: string
+          content: string
+          created_at?: string
+          id?: string
+          post: string
+        }
         Update: {
-          comment?: string;
-          commenter?: string;
-          content?: string;
-          created_at?: string;
-          id?: string;
-          post?: string;
-        };
+          comment?: string
+          commenter?: string
+          content?: string
+          created_at?: string
+          id?: string
+          post?: string
+        }
         Relationships: [
           {
-            foreignKeyName: "ug_comments_comment_fkey";
-            columns: ["comment"];
-            isOneToOne: false;
-            referencedRelation: "comments";
-            referencedColumns: ["id"];
+            foreignKeyName: "ug_comments_comment_fkey"
+            columns: ["comment"]
+            isOneToOne: false
+            referencedRelation: "comments"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "ug_comments_commenter_fkey";
-            columns: ["commenter"];
-            isOneToOne: false;
-            referencedRelation: "users";
-            referencedColumns: ["id"];
+            foreignKeyName: "ug_comments_commenter_fkey"
+            columns: ["commenter"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "ug_comments_post_fkey";
-            columns: ["post"];
-            isOneToOne: false;
-            referencedRelation: "posts";
-            referencedColumns: ["id"];
+            foreignKeyName: "ug_comments_post_fkey"
+            columns: ["post"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
           }
-        ];
-      };
+        ]
+      }
       users: {
         Row: {
-          created_at: string;
-          id: string;
-          username: string;
-        };
+          created_at: string
+          id: string
+          username: string
+        }
         Insert: {
-          created_at?: string;
-          id?: string;
-          username: string;
-        };
+          created_at?: string
+          id?: string
+          username: string
+        }
         Update: {
-          created_at?: string;
-          id?: string;
-          username?: string;
-        };
-        Relationships: [];
-      };
-    };
+          created_at?: string
+          id?: string
+          username?: string
+        }
+        Relationships: []
+      }
+    }
     Views: {
-      [_ in never]: never;
-    };
+      [_ in never]: never
+    }
     Functions: {
-      [_ in never]: never;
-    };
+      [_ in never]: never
+    }
     Enums: {
-      [_ in never]: never;
-    };
+      [_ in never]: never
+    }
     CompositeTypes: {
-      [_ in never]: never;
-    };
-  };
-};
+      [_ in never]: never
+    }
+  }
+}
 
 export type Tables<
   PublicTableNameOrOptions extends
@@ -301,7 +337,7 @@ export type Tables<
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
       Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
-      Row: infer R;
+      Row: infer R
     }
     ? R
     : never
@@ -309,11 +345,11 @@ export type Tables<
       Database["public"]["Views"])
   ? (Database["public"]["Tables"] &
       Database["public"]["Views"])[PublicTableNameOrOptions] extends {
-      Row: infer R;
+      Row: infer R
     }
     ? R
     : never
-  : never;
+  : never
 
 export type TablesInsert<
   PublicTableNameOrOptions extends
@@ -324,17 +360,17 @@ export type TablesInsert<
     : never = never
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Insert: infer I;
+      Insert: infer I
     }
     ? I
     : never
   : PublicTableNameOrOptions extends keyof Database["public"]["Tables"]
   ? Database["public"]["Tables"][PublicTableNameOrOptions] extends {
-      Insert: infer I;
+      Insert: infer I
     }
     ? I
     : never
-  : never;
+  : never
 
 export type TablesUpdate<
   PublicTableNameOrOptions extends
@@ -345,17 +381,17 @@ export type TablesUpdate<
     : never = never
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Update: infer U;
+      Update: infer U
     }
     ? U
     : never
   : PublicTableNameOrOptions extends keyof Database["public"]["Tables"]
   ? Database["public"]["Tables"][PublicTableNameOrOptions] extends {
-      Update: infer U;
+      Update: infer U
     }
     ? U
     : never
-  : never;
+  : never
 
 export type Enums<
   PublicEnumNameOrOptions extends
@@ -368,4 +404,4 @@ export type Enums<
   ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : PublicEnumNameOrOptions extends keyof Database["public"]["Enums"]
   ? Database["public"]["Enums"][PublicEnumNameOrOptions]
-  : never;
+  : never
