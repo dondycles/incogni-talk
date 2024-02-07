@@ -18,14 +18,27 @@ export const editPost = async (values?: any) => {
     }
   );
 
-  const { error } = await supabase
+  const { error: editPostError, data: postData } = await supabase
     .from("posts")
     .update({
       content: values.content,
       privacy: values.privacy,
     })
+    .eq("id", values.id)
+    .select();
+
+  if (editPostError) return { error: editPostError.message };
+
+  const { error: historyError } = await supabase
+    .from("history")
+    .insert({
+      type: "post",
+      data: postData,
+      post: values.id,
+    })
     .eq("id", values.id);
 
-  if (error) return { error: error.message };
+  if (historyError) return { error: historyError.message };
+
   return { success: "post edited" };
 };

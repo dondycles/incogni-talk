@@ -15,9 +15,18 @@ import { getAllCommentCounts } from "@/actions/comment/get-count";
 import PostOptions from "../actions/post-options";
 import { useEffect, useState } from "react";
 import { getOnePost } from "@/actions/post/get-one";
-import { supabaseClient } from "@/supabase/client";
 import CardSkeleton from "./skeleton";
-import { User } from "@supabase/supabase-js";
+import { getAllPostsHistory } from "@/actions/post/get-history";
+import { Button } from "../ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import PostEditsDialog from "./post-edits-dialog";
 
 type IsPending = {
   type: "delete" | "edit" | null;
@@ -42,6 +51,15 @@ export default function PostCard<T>({ postId, user }: PostCard) {
       return data;
     },
   });
+  const { data: postEditHistory, isLoading: postEditHistoryLoading } = useQuery(
+    {
+      queryKey: ["post-history", postId],
+      queryFn: async () => {
+        const { data } = await getAllPostsHistory(postId);
+        return data;
+      },
+    }
+  );
 
   const timeDifference = getTimeDiff(post?.created_at as string);
   const privacy =
@@ -64,6 +82,7 @@ export default function PostCard<T>({ postId, user }: PostCard) {
   const likesCount = likes?.length;
   const isDeletable = user?.cookieData?.user?.id === post?.author;
   const isEditable = user?.cookieData?.user?.id === post?.author;
+  const hasEditHistory = Boolean(postEditHistory?.length);
 
   if (isLoading) return <CardSkeleton type="post" />;
   return (
@@ -78,6 +97,17 @@ export default function PostCard<T>({ postId, user }: PostCard) {
             <p className="flex text-muted-foreground text-xs space-x-1">
               <span>{timeDifference}</span>
               {privacy}
+              {hasEditHistory ? (
+                <PostEditsDialog data={postEditHistory}>
+                  <Button
+                    size={"sm"}
+                    variant={"ghost"}
+                    className="w-fit h-fit p-0 m-0"
+                  >
+                    Edit
+                  </Button>
+                </PostEditsDialog>
+              ) : null}
             </p>
           </div>
         </div>

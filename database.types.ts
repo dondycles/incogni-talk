@@ -6,7 +6,7 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-export interface Database {
+export type Database = {
   public: {
     Tables: {
       comments: {
@@ -44,6 +44,87 @@ export interface Database {
             columns: ["post"]
             isOneToOne: false
             referencedRelation: "posts"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      hidden: {
+        Row: {
+          created_at: string
+          id: number
+          post: string
+          user: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          post: string
+          user?: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          post?: string
+          user?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hidden_user_fkey"
+            columns: ["user"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      history: {
+        Row: {
+          comment: string | null
+          created_at: string
+          data: Json
+          id: string
+          post: string | null
+          type: string
+          user: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          data: Json
+          id?: string
+          post?: string | null
+          type: string
+          user?: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          data?: Json
+          id?: string
+          post?: string | null
+          type?: string
+          user?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "history_comment_fkey"
+            columns: ["comment"]
+            isOneToOne: false
+            referencedRelation: "comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "history_post_fkey"
+            columns: ["post"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "history_user_fkey"
+            columns: ["user"]
+            isOneToOne: false
+            referencedRelation: "users"
             referencedColumns: ["id"]
           }
         ]

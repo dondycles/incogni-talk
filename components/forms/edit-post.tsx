@@ -54,6 +54,7 @@ export function EditPostForm({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post", post?.id] });
+      queryClient.invalidateQueries({ queryKey: ["post-history", post?.id] });
       queryClient.invalidateQueries({ queryKey: ["view-post", post?.id] });
       setPending(null, null);
     },
