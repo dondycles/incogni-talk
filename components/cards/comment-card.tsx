@@ -53,15 +53,18 @@ export function CommentCard({
           <span className="text-xs text-muted-foreground">
             {timeDifference}
           </span>
-          <CommentEditsHistoryDialog data={commentEditHistory}>
-            <Button
-              size={"sm"}
-              variant={"ghost"}
-              className="w-fit h-fit p-0 m-0 text-muted-foreground text-xs"
-            >
-              Edited
-            </Button>
-          </CommentEditsHistoryDialog>
+          {hasEditHistory ? (
+            <CommentEditsHistoryDialog data={commentEditHistory}>
+              <Button
+                size={"sm"}
+                variant={"ghost"}
+                className="w-fit h-fit p-0 m-0 text-muted-foreground text-xs"
+              >
+                Edited
+              </Button>
+            </CommentEditsHistoryDialog>
+          ) : null}
+
           {/* <Button variant={"ghost"} className="min-h-0 h-fit" size={"sm"}>
             Like
           </Button>
