@@ -33,9 +33,11 @@ export default function UserNavButton({ userData }: { userData: UserData }) {
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>{userData?.dbData?.username}</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <User className="w-4 h-4 mr-2" />
-          Profile
+        <DropdownMenuItem asChild>
+          <a href="/profile">
+            <User className="w-4 h-4 mr-2" />
+            Profile
+          </a>
         </DropdownMenuItem>
         <DropdownMenuItem disabled={isLogginOut} onSelect={logout}>
           <LogOut className="w-4 h-4 mr-2" />
