@@ -19,6 +19,7 @@ export default function PostInteractions({
   likes: LikesTypes[] | undefined;
   isView?: boolean;
 }) {
+  const [openSharePostForm, setOpenSharePostForm] = useState(false);
   const postId = post?.id as string;
   const queryClient = useQueryClient();
   const userId = user?.cookieData?.user.id as string;
@@ -58,6 +59,7 @@ export default function PostInteractions({
         variant={optimisticLiked ? "default" : "secondary"}
         disabled={_likePostPending}
         className="flex-1"
+        size={"sm"}
       >
         <Heart
           className={`small-icons ${isLiked && "fill-primary-foreground"}`}
@@ -65,23 +67,35 @@ export default function PostInteractions({
         <p className="text-xs  ml-1">{counts.likesCount}</p>
       </Button>
       {isView ? (
-        <Button variant={"secondary"} className="flex-1">
+        <Button variant={"secondary"} className="flex-1" size={"sm"}>
           <MessageCircle className="small-icons" />
           <p className="text-xs  ml-1">{counts.commentsCount}</p>
         </Button>
       ) : (
-        <Button asChild variant={"secondary"} className="flex-1">
+        <Button asChild size={"sm"} variant={"secondary"} className="flex-1">
           <a href={"/post/" + postId}>
             <MessageCircle className="small-icons" />
             <p className="text-xs  ml-1">{counts.commentsCount}</p>
           </a>
         </Button>
       )}
-      <SharePostForm user={user} postId={postId} close={() => {}}>
-        <Button variant={"secondary"} className="w-full">
-          <Share2 className="small-icons" />
-        </Button>
-      </SharePostForm>
+      <Button
+        onClick={() => {
+          setOpenSharePostForm(true);
+        }}
+        size={"sm"}
+        variant={"secondary"}
+        className="flex-1 w-full"
+      >
+        <Share2 className="small-icons" />
+      </Button>
+      <SharePostForm
+        openForm={openSharePostForm}
+        setOpenForm={() => setOpenSharePostForm((prev) => !prev)}
+        postId={postId}
+        user={user}
+        close={() => setOpenSharePostForm(false)}
+      />
     </div>
   );
 }

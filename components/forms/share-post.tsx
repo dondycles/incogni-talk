@@ -43,15 +43,16 @@ const formSchema = z.object({
 export function SharePostForm({
   close,
   postId,
-  children,
   user,
+  openForm,
+  setOpenForm,
 }: {
   close: () => void;
+  openForm: boolean;
   postId: string;
-  children: React.ReactNode;
   user: UserData;
+  setOpenForm: () => void;
 }) {
-  const [openForm, setOpenForm] = useState(false);
   const optimisticPost = useOptimisticPost();
   const queryClient = useQueryClient();
   const {
@@ -80,12 +81,12 @@ export function SharePostForm({
     if (error) return form.setError("content", { message: error });
     optimisticPost.setData(null);
     form.reset();
-    setOpenForm(false);
+    setOpenForm();
   }
 
   return (
     <Dialog onOpenChange={setOpenForm} open={openForm}>
-      <DialogTrigger className="flex-1">{children}</DialogTrigger>
+      <DialogTrigger hidden className="pointer-events-none" />
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Share this post?</DialogTitle>
