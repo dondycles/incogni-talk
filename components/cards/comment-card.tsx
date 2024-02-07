@@ -4,6 +4,9 @@ import { Button } from "../ui/button";
 import CommentOptions from "../actions/comment-options";
 import { useState } from "react";
 import { Database, Tables } from "@/database.types";
+import { getAllCommentsHistory } from "@/actions/comment/get-history";
+import { useQuery } from "@tanstack/react-query";
+import CommentEditsHistoryDialog from "./comment-edits-history-dialog";
 
 export function CommentCard({
   comment,
@@ -18,6 +21,17 @@ export function CommentCard({
   const isDeletable =
     userId === comment?.commenter || userId === comment?.commenter;
   const isEditable = userId === comment?.commenter;
+
+  const { data: commentEditHistory, isLoading: commentEditHistoryLoading } =
+    useQuery({
+      queryKey: ["comment-history", comment?.id],
+      queryFn: async () => {
+        const { data } = await getAllCommentsHistory(comment?.id);
+        return data;
+      },
+    });
+
+  const hasEditHistory = Boolean(commentEditHistory?.length);
 
   return (
     <div className="w-full flex flex-row gap-2 items-start">
@@ -39,6 +53,15 @@ export function CommentCard({
           <span className="text-xs text-muted-foreground">
             {timeDifference}
           </span>
+          <CommentEditsHistoryDialog data={commentEditHistory}>
+            <Button
+              size={"sm"}
+              variant={"ghost"}
+              className="w-fit h-fit p-0 m-0 text-muted-foreground text-xs"
+            >
+              Edited
+            </Button>
+          </CommentEditsHistoryDialog>
           {/* <Button variant={"ghost"} className="min-h-0 h-fit" size={"sm"}>
             Like
           </Button>

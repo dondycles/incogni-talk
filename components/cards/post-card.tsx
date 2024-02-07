@@ -26,7 +26,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import PostEditsDialog from "./post-edits-dialog";
+import PostEditsDialog from "./post-edits-history-dialog";
 
 type IsPending = {
   type: "delete" | "edit" | null;
@@ -51,15 +51,6 @@ export default function PostCard<T>({ postId, user }: PostCard) {
       return data;
     },
   });
-  const { data: postEditHistory, isLoading: postEditHistoryLoading } = useQuery(
-    {
-      queryKey: ["post-history", postId],
-      queryFn: async () => {
-        const { data } = await getAllPostsHistory(postId);
-        return data;
-      },
-    }
-  );
 
   const timeDifference = getTimeDiff(post?.created_at as string);
   const privacy =
@@ -82,6 +73,17 @@ export default function PostCard<T>({ postId, user }: PostCard) {
   const likesCount = likes?.length;
   const isDeletable = user?.cookieData?.user?.id === post?.author;
   const isEditable = user?.cookieData?.user?.id === post?.author;
+
+  const { data: postEditHistory, isLoading: postEditHistoryLoading } = useQuery(
+    {
+      queryKey: ["post-history", postId],
+      queryFn: async () => {
+        const { data } = await getAllPostsHistory(postId);
+        return data;
+      },
+    }
+  );
+
   const hasEditHistory = Boolean(postEditHistory?.length);
 
   if (isLoading) return <CardSkeleton type="post" />;
@@ -104,7 +106,7 @@ export default function PostCard<T>({ postId, user }: PostCard) {
                     variant={"ghost"}
                     className="w-fit h-fit p-0 m-0"
                   >
-                    Edit
+                    Edited
                   </Button>
                 </PostEditsDialog>
               ) : null}

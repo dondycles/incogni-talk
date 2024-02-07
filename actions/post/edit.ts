@@ -30,9 +30,8 @@ export const editPost = async (values?: any) => {
   if (editPostError) return { error: editPostError.message };
 
   const { error: historyError } = await supabase
-    .from("history")
+    .from("post_edits_history")
     .insert({
-      type: "post",
       data: postData,
       post: values.id,
     })

@@ -2,7 +2,7 @@
 import { Database } from "@/database.types";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";
-export const getAllPosts = async (page: number) => {
+export const getAllCommentsHistory = async (commentId: any) => {
   try {
     const cookieStore = cookies();
     const supabase = createServerClient<Database>(
@@ -22,15 +22,11 @@ export const getAllPosts = async (page: number) => {
         },
       }
     );
-    const from = page === 1 ? 0 : (page - 1) * 6;
-    const to = from + 5;
     const { data } = await supabase
-      .from("posts")
-      .select("id")
+      .from("comment_edits_history")
+      .select("*")
       .order("created_at", { ascending: false })
-      .eq("privacy", "public")
-      .range(from, to);
-
+      .eq("comment", commentId);
     return { data };
   } catch (error) {
     return { error: error };

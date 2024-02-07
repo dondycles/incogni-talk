@@ -23,11 +23,10 @@ export const getAllPostsHistory = async (postId: any) => {
       }
     );
     const { data } = await supabase
-      .from("history")
+      .from("post_edits_history")
       .select("*")
       .order("created_at", { ascending: false })
       .eq("post", postId);
-
     return { data };
   } catch (error) {
     return { error: error };

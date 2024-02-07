@@ -4,6 +4,14 @@ import { User } from "@supabase/supabase-js";
 declare global {
   type Users = Tables<"users"> | null;
 
+  interface Historyy extends Tables<"history"> {
+    users?: Users;
+    posts?: PostsTypes;
+    comments?: CommentsTypes;
+  }
+
+  type HistoryTypes = Historyy;
+
   interface Comments extends Tables<"comments"> {
     users?: Users;
     posts?: PostsTypes;

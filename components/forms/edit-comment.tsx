@@ -46,6 +46,9 @@ export function EditCommentForm({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post", comment?.post] });
       queryClient.invalidateQueries({
+        queryKey: ["comment-history", comment?.id],
+      });
+      queryClient.invalidateQueries({
         queryKey: ["view-post-comments", comment?.post],
       });
       setPending(null, null);

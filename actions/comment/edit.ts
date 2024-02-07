@@ -17,13 +17,25 @@ export const editComment = async (values: any) => {
     }
   );
 
-  const { error } = await supabase
+  const { error, data: commentData } = await supabase
     .from("comments")
     .update({
       content: values.content,
     })
-    .eq("id", values.id);
+    .eq("id", values.id)
+    .select();
 
   if (error) return { error: error.message };
+
+  const { error: historyError } = await supabase
+    .from("comment_edits_history")
+    .insert({
+      data: commentData,
+      comment: values.id,
+    })
+    .eq("id", values.id);
+
+  if (historyError) return { error: historyError.message };
+
   return { success: "comment edited" };
 };
