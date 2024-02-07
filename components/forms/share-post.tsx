@@ -2,7 +2,6 @@
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -32,14 +31,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useOptimisticPost } from "@/store";
 import { sharedPost as share } from "@/actions/post/share";
 import { useState } from "react";
-import PostCard from "../cards/post-card";
 import SharedPostCard from "../cards/shared-post-card";
 import { ScrollArea } from "../ui/scroll-area";
 
 const formSchema = z.object({
-  content: z.string().min(1, {
-    message: "A message cannot be empty.",
-  }),
+  content: z.string(),
   privacy: z.string(),
   post_id: z.string(),
 });
