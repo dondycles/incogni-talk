@@ -87,7 +87,7 @@ export type Database = {
           }
         ]
       }
-      hidden: {
+      hidden_posts: {
         Row: {
           created_at: string
           id: number
@@ -108,7 +108,14 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "hidden_user_fkey"
+            foreignKeyName: "hidden_posts_post_fkey"
+            columns: ["post"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hidden_posts_user_fkey"
             columns: ["user"]
             isOneToOne: false
             referencedRelation: "users"

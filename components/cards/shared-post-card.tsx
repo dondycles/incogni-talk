@@ -46,7 +46,11 @@ export default function SharedPostCard<T>({
     variables: null,
   });
 
-  const { data: sharedPost, isLoading } = useQuery({
+  const {
+    data: sharedPost,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["shared-post", sharedPostId],
     queryFn: async () => {
       const { data } = await getOneSharedPost(sharedPostId);
@@ -90,6 +94,14 @@ export default function SharedPostCard<T>({
   const hasEditHistory = Boolean(postEditHistory?.length);
 
   if (isLoading) return <CardSkeleton type="post" />;
+  if (!sharedPost)
+    return (
+      <Card className={`modified-card `}>
+        <CardHeader className="text-muted-foreground text-center">
+          This post is either hidden by you or has been deleted.
+        </CardHeader>
+      </Card>
+    );
   return (
     <Card className={`modified-card ${isPending.type && "opacity-50"}`}>
       <CardHeader className="flex flex-row items-start gap-2">

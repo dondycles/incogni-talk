@@ -10,6 +10,7 @@ import { delPost } from "@/actions/post/delete";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import { EditPostForm } from "../forms/edit-post";
 import { useState } from "react";
+import { hidePost } from "@/actions/post/hide";
 
 export default function PostOptions({
   isEditable,
@@ -43,6 +44,14 @@ export default function PostOptions({
     },
   });
 
+  const { mutate: _hidePost } = useMutation({
+    mutationFn: async () => await hidePost(postId),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["feed-posts"] });
+    },
+  });
+
   return (
     <Dialog onOpenChange={setOpenEditForm} open={openEditForm}>
       <DropdownMenu>
@@ -59,7 +68,7 @@ export default function PostOptions({
           <DialogTrigger asChild>
             <DropdownMenuItem disabled={!isEditable}>Edit</DropdownMenuItem>
           </DialogTrigger>
-          <DropdownMenuItem>Hide</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => _hidePost()}>Hide</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
       <DialogContent>
