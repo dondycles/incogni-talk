@@ -107,7 +107,7 @@ export default function ViewPostCard({
             <p className="whitespace-pre">{post?.content}</p>
             <PostActions
               user={user}
-              postId={postId}
+              post={post}
               isView={true}
               likes={likes}
               counts={{
