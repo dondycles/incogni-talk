@@ -6,27 +6,26 @@ import {
   CardTitle,
 } from "../ui/card";
 
-import { Globe, Lock, UserCircle } from "lucide-react";
+import {
+  ExternalLink,
+  Globe,
+  Heart,
+  Lock,
+  MessageCircle,
+  UserCircle,
+} from "lucide-react";
 import { getTimeDiff } from "@/lib/getTimeDiff";
 import PostActions from "../actions/post-interactions";
-import PostCommentsScrollable from "../scrollables/post-comments-scrollable";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { getAllCommentCounts } from "@/actions/comment/get-count";
 import PostOptions from "../actions/post-options";
-import { useEffect, useState } from "react";
-import { getOnePost } from "@/actions/post/get-one";
+import { useState } from "react";
 import CardSkeleton from "./skeleton";
 import { getAllPostsHistory } from "@/actions/post/get-history";
 import { Button } from "../ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+
 import PostEditsDialog from "./post-edits-history-dialog";
+import { getOneSharedPost } from "@/actions/post/get-one-shared-post";
 
 type IsPending = {
   type: "delete" | "edit" | null;
@@ -47,12 +46,10 @@ export default function SharedPostCard<T>({
     variables: null,
   });
 
-  const [viewComments, setViewComments] = useState(false);
-
   const { data: sharedPost, isLoading } = useQuery({
     queryKey: ["shared-post", sharedPostId],
     queryFn: async () => {
-      const { data } = await getOnePost(sharedPostId);
+      const { data } = await getOneSharedPost(sharedPostId);
       return data;
     },
   });
@@ -65,8 +62,6 @@ export default function SharedPostCard<T>({
       <Globe className="small-icons" />
     );
 
-  const comments = sharedPost?.comments?.flatMap((comment) => comment);
-
   const { data: commentsCount } = useQuery({
     queryKey: ["shared-post-comments-count", sharedPostId],
     queryFn: async () => {
@@ -76,8 +71,11 @@ export default function SharedPostCard<T>({
   });
   const likes = sharedPost?.likes;
   const likesCount = likes?.length;
-  const isDeletable = user?.cookieData?.user?.id === sharedPost?.author;
-  const isEditable = user?.cookieData?.user?.id === sharedPost?.author;
+  let isLiked = sharedPost?.likes?.filter(
+    (like) => like?.liker === user?.cookieData?.user.id
+  ).length
+    ? true
+    : false;
 
   const { data: postEditHistory, isLoading: postEditHistoryLoading } = useQuery(
     {
@@ -100,6 +98,16 @@ export default function SharedPostCard<T>({
           <div className="space-y-2">
             <CardTitle className="text-primary">
               {sharedPost?.users?.username}
+              <span className="text-muted-foreground font-normal">
+                {" "}
+                {sharedPost?.shared_post && "shared a "}{" "}
+                <a
+                  className="text-primary"
+                  href={"/post/" + sharedPost?.shared_post}
+                >
+                  post
+                </a>
+              </span>
             </CardTitle>
             <p className="flex text-muted-foreground text-xs space-x-1">
               <span>{timeDifference}</span>
@@ -118,17 +126,6 @@ export default function SharedPostCard<T>({
             </p>
           </div>
         </div>
-        <PostOptions
-          post={sharedPost}
-          isDeletable={isDeletable}
-          isEditable={isEditable}
-          setPending={(variables, type) => {
-            setIsPending({
-              variables: variables,
-              type: type,
-            });
-          }}
-        />
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="whitespace-pre">
@@ -136,26 +133,51 @@ export default function SharedPostCard<T>({
             ? isPending?.variables?.content
             : sharedPost?.content}
         </p>
-        <PostActions
-          likes={likes}
-          user={user}
-          post={sharedPost}
-          counts={{
-            commentsCount: commentsCount as number,
-            likesCount: likesCount as number,
-          }}
-        />
+        <div className="flex gap-2 items-center">
+          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+            <Heart
+              className={`small-icons ${
+                isLiked && "fill-primary text-primary"
+              }`}
+            />
+            {likesCount}
+          </div>
+          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+            <MessageCircle className="small-icons " />
+            {commentsCount}
+          </div>
+        </div>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="flex flex-col gap-2">
         {/* <PostCommentsScrollable
           user={user}
           comments={comments}
           commentsCount={commentsCount as number}
           postId={sharedPostId}
         /> */}
-        <Button className="w-full" variant={"secondary"}>
-          View post
+        <Button
+          asChild
+          className="w-full text-xs text-muted-foreground"
+          variant={"ghost"}
+          size={"sm"}
+        >
+          <a href={"/post/" + sharedPostId}>
+            View post <ExternalLink className="small-icons ml-1" />
+          </a>
         </Button>
+        {sharedPost?.shared_post && (
+          <Button
+            asChild
+            className="w-full text-xs text-muted-foreground"
+            variant={"ghost"}
+            size={"sm"}
+          >
+            <a href={"/post/" + sharedPost?.shared_post}>
+              View post's shared content{" "}
+              <ExternalLink className="small-icons ml-1" />
+            </a>
+          </Button>
+        )}
       </CardFooter>
     </Card>
   );

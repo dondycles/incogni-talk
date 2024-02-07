@@ -11,6 +11,7 @@ import { getManyComments } from "@/actions/comment/get-many";
 import CardSkeleton from "../cards/skeleton";
 import { getAllCommentCounts } from "@/actions/comment/get-count";
 import { Database, Tables } from "@/database.types";
+import { ExternalLink } from "lucide-react";
 export default function PostCommentsScrollable({
   postId,
   comments,
@@ -39,10 +40,12 @@ export default function PostCommentsScrollable({
         <Button
           asChild
           variant={"ghost"}
-          className="w-full p-0 m-0"
+          className="w-full text-xs text-muted-foreground"
           size={"sm"}
         >
-          <a href={"/post/" + postId}>View more comments</a>
+          <a href={"/post/" + postId}>
+            View more comments <ExternalLink className="small-icons ml-1" />
+          </a>
         </Button>
       ) : null}
       <AddCommentForm postId={postId} />

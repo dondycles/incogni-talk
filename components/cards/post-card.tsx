@@ -98,7 +98,10 @@ export default function PostCard<T>({ postId, user }: PostCard) {
               {post?.users?.username}
               <span className="text-muted-foreground font-normal">
                 {" "}
-                {post?.shared_post && "shared a post"}
+                {post?.shared_post && "shared a "}{" "}
+                <a className="text-primary" href={"/post/" + post?.shared_post}>
+                  post
+                </a>
               </span>
             </CardTitle>
             <p className="flex text-muted-foreground text-xs space-x-1">
