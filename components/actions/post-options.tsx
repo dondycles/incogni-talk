@@ -49,6 +49,7 @@ export default function PostOptions({
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["feed-posts"] });
+      queryClient.invalidateQueries({ queryKey: ["shared-post", postId] });
     },
   });
 
