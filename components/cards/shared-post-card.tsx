@@ -185,7 +185,7 @@ export default function SharedPostCard<T>({
             size={"sm"}
           >
             <a href={"/post/" + sharedPost?.shared_post}>
-              View post's shared content{" "}
+              View post&apos;s shared content{" "}
               <ExternalLink className="small-icons ml-1" />
             </a>
           </Button>
