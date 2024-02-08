@@ -2,6 +2,7 @@
 import { getFriends } from "@/actions/user/get-friends";
 import { getUserDb } from "@/actions/user/get-user";
 import UserCard from "@/components/cards/user-card";
+import UserHoverCard from "@/components/cards/user-hover-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useUserData } from "@/store";
 import { useQuery } from "@tanstack/react-query";
@@ -55,13 +56,7 @@ export default function Profile() {
         </CardHeader>
         <CardContent className="space-y-4">
           {friendReqReceive?.map((friend) => {
-            return (
-              <UserCard
-                key={friend.id}
-                id={friend.user as string}
-                type="received"
-              />
-            );
+            return <UserCard id={friend.user as string} type="received" />;
           })}
         </CardContent>
       </Card>

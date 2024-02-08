@@ -3,7 +3,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
-import { User, User2, UserCircle } from "lucide-react";
+import { UserCircle } from "lucide-react";
 import { Button } from "../ui/button";
 import { addFriend } from "@/actions/user/add-friend";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -11,10 +11,10 @@ import { useUserData } from "@/store";
 import { getFriends } from "@/actions/user/get-friends";
 
 export default function UserHoverCard({
-  user,
+  hoveredUser,
   children,
 }: {
-  user: Users;
+  hoveredUser: Users;
   children?: React.ReactNode;
 }) {
   const userData = useUserData();
@@ -24,24 +24,44 @@ export default function UserHoverCard({
       const { success } = await getFriends();
       return success;
     },
-    queryKey: ["friends", user?.id],
+    queryKey: ["friends", hoveredUser?.id],
+    refetchOnMount: true,
   });
-
-  const friend = friends?.filter(
-    (friend) => (friend.users?.id as string) === (user?.id as string)
+  // !! if users id is in the friend field, the user is the request receiver
+  const receivedFriends = friends?.filter(
+    (friend) => friend.friend === userData.id
+  );
+  // !! else, the user is the sender of the request
+  const requestedFriends = friends?.filter(
+    (friend) => friend.user === userData.id
   );
 
-  const isRequested = Boolean(friend?.length);
-  const isAccepted = friend && friend[0] && friend[0].accepted;
+  const isHoveredUserFromReceivedFriends = receivedFriends?.filter(
+    (friend) => friend.user === hoveredUser?.id
+  );
 
-  const {
-    mutate: _addFriend,
-    isPending,
-    isSuccess,
-  } = useMutation({
-    mutationFn: () => addFriend(user?.id as string, isRequested),
+  const isHoveredUserFromRequestedFriends = requestedFriends?.filter(
+    (friend) => friend.friend === hoveredUser?.id
+  );
+
+  // !! this list includes sent requests, received requests, and accepted friends
+  const friendsList = friends?.filter(
+    (friend) =>
+      (friend.users?.id as string) === (hoveredUser?.id as string) ||
+      (friend.users?.id as string) === (userData?.id as string)
+  );
+
+  const isRequested = Boolean(friendsList?.length);
+  const isAccepted = Boolean(
+    friendsList && friendsList[0] && friendsList[0].accepted
+  );
+
+  const unfriend = isRequested || isAccepted;
+
+  const { mutate: _addFriend, isPending } = useMutation({
+    mutationFn: () => addFriend(hoveredUser?.id as string, unfriend),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["friends", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["friends", hoveredUser?.id] });
     },
   });
 
@@ -51,7 +71,7 @@ export default function UserHoverCard({
         {children ? (
           children
         ) : (
-          <a href={"/user/" + user?.username}>{user?.username}</a>
+          <a href={"/user/" + hoveredUser?.username}>{hoveredUser?.username}</a>
         )}
       </HoverCardTrigger>
       <HoverCardContent align="start" className="space-y-4">
@@ -59,30 +79,19 @@ export default function UserHoverCard({
           <UserCircle className="big-icons " />
           <div>
             <p>
-              <a href={"/user/" + user?.username}>{user?.username}</a>{" "}
+              <a href={"/user/" + hoveredUser?.username}>
+                {hoveredUser?.username}
+              </a>{" "}
             </p>
             <p className="font-normal text-muted-foreground text-xs">
               Member since{" "}
-              {new Date(user?.created_at as string).toLocaleDateString()}
+              {new Date(hoveredUser?.created_at as string).toLocaleDateString()}
             </p>
           </div>
         </div>
-        {isAccepted ? (
-          "Friend"
-        ) : isRequested ? (
-          <div className="flex gap-2">
-            <Button className="w-full" disabled variant={"secondary"}>
-              Request Sent
-            </Button>
-            <Button
-              onClick={() => _addFriend()}
-              className="flex-1"
-              variant={"destructive"}
-            >
-              {isPending ? "Cancelling..." : "Cancel"}
-            </Button>
-          </div>
-        ) : userData.id === user?.id ? null : (
+        {userData.id ===
+        hoveredUser?.id ? null : !isHoveredUserFromReceivedFriends?.length &&
+          !isHoveredUserFromRequestedFriends?.length ? (
           <div className="flex gap-2">
             <Button
               disabled={isPending}
@@ -95,6 +104,20 @@ export default function UserHoverCard({
               Block
             </Button>
           </div>
+        ) : (
+          <>
+            {isHoveredUserFromReceivedFriends?.length
+              ? isHoveredUserFromReceivedFriends[0].accepted
+                ? "Friend"
+                : "Request Received"
+              : null}
+
+            {isHoveredUserFromRequestedFriends?.length
+              ? isHoveredUserFromRequestedFriends[0].accepted
+                ? "Friend"
+                : "Requested"
+              : null}
+          </>
         )}
       </HoverCardContent>
     </HoverCard>

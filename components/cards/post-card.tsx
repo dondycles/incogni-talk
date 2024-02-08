@@ -86,12 +86,12 @@ export default function PostCard<T>({ postId }: PostCard) {
     <Card className={`modified-card ${isPending.type && "opacity-50"}`}>
       <CardHeader className="flex flex-row items-start gap-2">
         <div className="flex-1 flex flex-row items-center gap-2">
-          <UserHoverCard user={post?.users as Users}>
+          <UserHoverCard hoveredUser={post?.users as Users}>
             <UserCircle className="big-icons text-primary" />
           </UserHoverCard>
           <div className="space-y-2">
             <CardTitle className="text-primary">
-              <UserHoverCard user={post?.users as Users} />
+              <UserHoverCard hoveredUser={post?.users as Users} />
               <span className="text-muted-foreground font-normal">
                 {" "}
                 {post?.shared_post && "shared a "}{" "}

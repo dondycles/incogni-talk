@@ -5,13 +5,8 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import { Globe, Lock, Pencil, Trash, UserCircle } from "lucide-react";
+
+import { Globe, Lock, UserCircle } from "lucide-react";
 import { getTimeDiff } from "@/lib/getTimeDiff";
 import PostActions from "../actions/post-interactions";
 import { useQuery } from "@tanstack/react-query";
@@ -77,12 +72,12 @@ export default function ViewPostCard({ post }: { post: PostsTypes }) {
         <>
           <CardHeader className="flex flex-row items-start gap-2 ">
             <div className="flex-1 flex flex-row items-center gap-2">
-              <UserHoverCard user={post?.users}>
+              <UserHoverCard hoveredUser={post?.users}>
                 <UserCircle className="big-icons text-primary" />
               </UserHoverCard>
               <div className="space-y-2 ">
                 <CardTitle className="text-primary">
-                  <UserHoverCard user={post?.users} />
+                  <UserHoverCard hoveredUser={post?.users} />
                 </CardTitle>
                 <p className="flex text-muted-foreground text-xs space-x-1">
                   <span>{timeDifference}</span>
