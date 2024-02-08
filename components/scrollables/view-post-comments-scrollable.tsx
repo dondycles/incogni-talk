@@ -14,11 +14,9 @@ import CardSkeleton from "../cards/skeleton";
 export default function ViewPostCommentsScrollable({
   postId,
   commentsCount,
-  user,
 }: {
   postId: string;
   commentsCount: number;
-  user: UserData;
 }) {
   const { data, fetchNextPage, isLoading, isFetchingNextPage } =
     useInfiniteQuery({
@@ -59,21 +57,11 @@ export default function ViewPostCommentsScrollable({
                   if (comments.length === i + 1)
                     return (
                       <>
-                        <CommentCard
-                          user={user}
-                          key={comment?.id}
-                          comment={comment}
-                        />
+                        <CommentCard key={comment?.id} comment={comment} />
                         <div ref={veryLastPost} className="w-full" />
                       </>
                     );
-                  return (
-                    <CommentCard
-                      user={user}
-                      key={comment?.id}
-                      comment={comment}
-                    />
-                  );
+                  return <CommentCard key={comment?.id} comment={comment} />;
                 })}
           </div>
           {/* {commentsCount != comments?.length && (

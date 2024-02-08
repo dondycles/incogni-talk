@@ -10,25 +10,19 @@ import { Globe, Lock, UserCircle } from "lucide-react";
 import { getTimeDiff } from "@/lib/getTimeDiff";
 import PostActions from "../actions/post-interactions";
 import PostCommentsScrollable from "../scrollables/post-comments-scrollable";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { getAllCommentCounts } from "@/actions/comment/get-count";
 import PostOptions from "../actions/post-options";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { getOnePost } from "@/actions/post/get-one";
 import CardSkeleton from "./skeleton";
 import { getAllPostsHistory } from "@/actions/post/get-history";
 import { Button } from "../ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+
 import PostEditsDialog from "./post-edits-history-dialog";
 import SharedPostCard from "./shared-post-card";
 import UserHoverCard from "./user-hover-card";
+import { useUserData } from "@/store";
 
 type IsPending = {
   type: "delete" | "edit" | null;
@@ -37,10 +31,10 @@ type IsPending = {
 
 interface PostCard {
   postId: string;
-  user: UserData;
 }
 
-export default function PostCard<T>({ postId, user }: PostCard) {
+export default function PostCard<T>({ postId }: PostCard) {
+  const userData = useUserData();
   const [isPending, setIsPending] = useState<IsPending>({
     type: null,
     variables: null,
@@ -73,8 +67,8 @@ export default function PostCard<T>({ postId, user }: PostCard) {
   });
   const likes = post?.likes;
   const likesCount = likes?.length;
-  const isDeletable = user?.cookieData?.user?.id === post?.author;
-  const isEditable = user?.cookieData?.user?.id === post?.author;
+  const isDeletable = userData.id === post?.author;
+  const isEditable = userData.id === post?.author;
 
   const { data: postEditHistory, isLoading: postEditHistoryLoading } = useQuery(
     {
@@ -142,11 +136,10 @@ export default function PostCard<T>({ postId, user }: PostCard) {
             : post?.content}
         </p>
         {post?.shared_post ? (
-          <SharedPostCard user={user} sharedPostId={post?.shared_post} />
+          <SharedPostCard sharedPostId={post?.shared_post} />
         ) : null}
         <PostActions
           likes={likes}
-          user={user}
           post={post}
           counts={{
             commentsCount: commentsCount as number,
@@ -156,7 +149,6 @@ export default function PostCard<T>({ postId, user }: PostCard) {
       </CardContent>
       <CardFooter>
         <PostCommentsScrollable
-          user={user}
           comments={comments}
           commentsCount={commentsCount as number}
           postId={postId}

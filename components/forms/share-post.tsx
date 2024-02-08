@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/select";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useOptimisticPost } from "@/store";
+import { useOptimisticPost, useUserData } from "@/store";
 import { sharedPost as share } from "@/actions/post/share";
 import { useState } from "react";
 import SharedPostCard from "../cards/shared-post-card";
@@ -43,14 +43,12 @@ const formSchema = z.object({
 export function SharePostForm({
   close,
   postId,
-  user,
   openForm,
   setOpenForm,
 }: {
   close: () => void;
   openForm: boolean;
   postId: string;
-  user: UserData;
   setOpenForm: () => void;
 }) {
   const optimisticPost = useOptimisticPost();
@@ -155,7 +153,7 @@ export function SharePostForm({
           </form>
         </Form>
         <ScrollArea className="max-h-[300px]">
-          <SharedPostCard sharedPostId={postId} user={user} />
+          <SharedPostCard sharedPostId={postId} />
         </ScrollArea>
       </DialogContent>
     </Dialog>

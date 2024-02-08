@@ -30,7 +30,7 @@ export const signup = async (values: {
     }
   );
 
-  const { error: authError, data: authData } = await supabase.auth.signUp({
+  const { error: authError } = await supabase.auth.signUp({
     email: values.username + "@incognitalk.com",
     password: values.password,
   });
@@ -41,5 +41,5 @@ export const signup = async (values: {
   });
   if (dbError) return { error: dbError.message };
 
-  return { success: authData };
+  return { success: "Signed Up!" };
 };

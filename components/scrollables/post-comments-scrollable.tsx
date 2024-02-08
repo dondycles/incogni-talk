@@ -2,25 +2,16 @@
 
 import { ScrollArea } from "../ui/scroll-area";
 import { AddCommentForm } from "../forms/add-comment";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { getAllComments } from "@/actions/comment/get-all";
 import { CommentCard } from "../cards/comment-card";
 import { Button } from "../ui/button";
-import Link from "next/link";
-import { getManyComments } from "@/actions/comment/get-many";
-import CardSkeleton from "../cards/skeleton";
-import { getAllCommentCounts } from "@/actions/comment/get-count";
-import { Database, Tables } from "@/database.types";
 import { ExternalLink } from "lucide-react";
 export default function PostCommentsScrollable({
   postId,
   comments,
-  user,
   commentsCount,
 }: {
   postId: string;
   comments: CommentsTypes[] | undefined;
-  user: UserData;
   commentsCount: number;
 }) {
   return (
@@ -29,9 +20,7 @@ export default function PostCommentsScrollable({
         <ScrollArea>
           <div className="max-h-[300px] space-y-2">
             {comments?.map((comment) => {
-              return (
-                <CommentCard user={user} key={comment?.id} comment={comment} />
-              );
+              return <CommentCard key={comment?.id} comment={comment} />;
             })}
           </div>
         </ScrollArea>

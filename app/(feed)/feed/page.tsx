@@ -2,16 +2,9 @@
 
 import { getAllPosts } from "@/actions/post/get-all";
 import PostCard from "@/components/cards/post-card";
-import { useOptimisticPost } from "@/store";
-import {
-  useInfiniteQuery,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
-import { useEffect, useRef, useState } from "react";
-import { getUser } from "@/actions/user/get";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useEffect, useRef } from "react";
 import { useIntersection } from "@mantine/hooks";
-import { LucideLoader2 } from "lucide-react";
 
 export default function Feed() {
   const {
@@ -31,13 +24,6 @@ export default function Feed() {
     initialPageParam: 1,
   });
   const publicPosts = publicPostsData?.pages.flatMap((page) => page);
-  const { data: user } = useQuery({
-    queryKey: ["user"],
-    queryFn: async () => {
-      const { cookieData, dbData } = await getUser();
-      return { cookieData, dbData };
-    },
-  });
 
   const lastPost = useRef<HTMLDivElement>(null);
 
@@ -53,9 +39,7 @@ export default function Feed() {
   return (
     <main className="feed-padding h-full w-full space-y-4">
       {publicPosts?.map((post) => {
-        return (
-          <PostCard user={user} postId={post?.id as string} key={post?.id} />
-        );
+        return <PostCard postId={post?.id as string} key={post?.id} />;
       })}
       <div ref={veryLastPost} className="w-full" />
     </main>

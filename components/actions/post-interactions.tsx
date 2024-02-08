@@ -5,24 +5,24 @@ import Link from "next/link";
 import { likePost } from "@/actions/post/like";
 import { useEffect, useState } from "react";
 import { SharePostForm } from "../forms/share-post";
+import { useUserData } from "@/store";
 
 export default function PostInteractions({
   post,
   counts,
-  user,
   likes,
   isView,
 }: {
   post: PostsTypes;
   counts: { commentsCount: number; likesCount: number };
-  user: UserData;
   likes: LikesTypes[] | undefined;
   isView?: boolean;
 }) {
+  const userData = useUserData();
   const [openSharePostForm, setOpenSharePostForm] = useState(false);
   const postId = post?.id as string;
   const queryClient = useQueryClient();
-  const userId = user?.cookieData?.user.id as string;
+  const userId = userData.id as string;
 
   let isLiked = likes?.filter((like) => like?.liker === userId).length
     ? true
@@ -93,7 +93,6 @@ export default function PostInteractions({
         openForm={openSharePostForm}
         setOpenForm={() => setOpenSharePostForm((prev) => !prev)}
         postId={postId}
-        user={user}
         close={() => setOpenSharePostForm(false)}
       />
     </div>

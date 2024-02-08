@@ -31,8 +31,10 @@ export default function FeedNav() {
   const [openDialog, setOpenDialog] = useState(false);
   const { data, isLoading } = useQuery({
     queryKey: ["user-nav"],
-    queryFn: async () => await getUser(),
-    refetchOnWindowFocus: false,
+    queryFn: async () => {
+      const { cookieData, dbData } = await getUser();
+      return { cookieData, dbData };
+    },
   });
 
   const _userData = useUserData();

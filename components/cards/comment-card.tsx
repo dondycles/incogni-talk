@@ -7,16 +7,12 @@ import { Database, Tables } from "@/database.types";
 import { getAllCommentsHistory } from "@/actions/comment/get-history";
 import { useQuery } from "@tanstack/react-query";
 import CommentEditsHistoryDialog from "./comment-edits-history-dialog";
+import { useUserData } from "@/store";
 
-export function CommentCard({
-  comment,
-  user,
-}: {
-  comment: CommentsTypes;
-  user: UserData;
-}) {
+export function CommentCard({ comment }: { comment: CommentsTypes }) {
+  const userData = useUserData();
   const timeDifference = getTimeDiff(comment?.created_at as string);
-  const userId = user?.cookieData?.user?.id as string;
+  const userId = userData.id as string;
 
   const isDeletable =
     userId === comment?.commenter || userId === comment?.commenter;

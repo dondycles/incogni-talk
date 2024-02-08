@@ -27,6 +27,7 @@ import { Button } from "../ui/button";
 import PostEditsDialog from "./post-edits-history-dialog";
 import { getOneSharedPost } from "@/actions/post/get-one-shared-post";
 import UserHoverCard from "./user-hover-card";
+import { useUserData } from "@/store";
 
 type IsPending = {
   type: "delete" | "edit" | null;
@@ -35,13 +36,10 @@ type IsPending = {
 
 interface SharedPostCard {
   sharedPostId: string;
-  user: UserData;
 }
 
-export default function SharedPostCard<T>({
-  sharedPostId,
-  user,
-}: SharedPostCard) {
+export default function SharedPostCard<T>({ sharedPostId }: SharedPostCard) {
+  const userData = useUserData();
   const [isPending, setIsPending] = useState<IsPending>({
     type: null,
     variables: null,
@@ -76,9 +74,8 @@ export default function SharedPostCard<T>({
   });
   const likes = sharedPost?.likes;
   const likesCount = likes?.length;
-  let isLiked = sharedPost?.likes?.filter(
-    (like) => like?.liker === user?.cookieData?.user.id
-  ).length
+  let isLiked = sharedPost?.likes?.filter((like) => like?.liker === userData.id)
+    .length
     ? true
     : false;
 

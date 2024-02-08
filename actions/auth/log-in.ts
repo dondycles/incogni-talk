@@ -23,12 +23,12 @@ export const login = async (values: { password: string; username: string }) => {
     }
   );
 
-  const { data, error } = await supabase.auth.signInWithPassword({
+  const { error } = await supabase.auth.signInWithPassword({
     email: values.username + "@incognitalk.com",
     password: values.password,
   });
 
   if (error) return { error: error };
 
-  return { success: data };
+  return { success: "Logged In!" };
 };

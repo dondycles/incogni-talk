@@ -22,6 +22,7 @@ import {
 } from "../ui/card";
 import { signup } from "@/actions/auth/sign-up";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 const formSchema = z
   .object({
@@ -41,6 +42,7 @@ const formSchema = z
   });
 
 export function SignUpForm() {
+  const queryClient = useQueryClient();
   const route = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -52,15 +54,14 @@ export function SignUpForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const { error, success } = await signup(values);
-
-    console.log(success && success, error && error);
+    const { error } = await signup(values);
 
     if (error)
       return form.setError("username", {
         message: String(error),
       });
-
+    queryClient.invalidateQueries({ queryKey: ["user-nav"] });
+    queryClient.invalidateQueries({ queryKey: ["feed-posts"] });
     route.push("/feed");
   }
 

@@ -21,22 +21,18 @@ import PostOptions from "../actions/post-options";
 import { useEffect, useState } from "react";
 import CardSkeleton from "./skeleton";
 import UserHoverCard from "./user-hover-card";
+import { useUserData } from "@/store";
 
 type IsPending = {
   type: "delete" | "edit" | null;
   variables: any[any] | null;
 };
 
-export default function ViewPostCard({
-  post,
-  user,
-}: {
-  post: PostsTypes;
-  user: UserData;
-}) {
+export default function ViewPostCard({ post }: { post: PostsTypes }) {
+  const userData = useUserData();
   const postId = post?.id as string;
   const postAuthor = post?.author as string;
-  const userId = user?.cookieData?.user?.id as string;
+  const userId = userData.id as string;
   const [isPending, setIsPending] = useState<IsPending>({
     type: null,
     variables: null,
@@ -109,7 +105,6 @@ export default function ViewPostCard({
           <CardContent className="space-y-4 ">
             <p className="whitespace-pre">{post?.content}</p>
             <PostActions
-              user={user}
               post={post}
               isView={true}
               likes={likes}
@@ -121,7 +116,6 @@ export default function ViewPostCard({
           </CardContent>
           <CardFooter className=" flex-1 overflow-auto">
             <ViewPostCommentsScrollable
-              user={user}
               commentsCount={commentsCount as number}
               postId={postId}
             />
