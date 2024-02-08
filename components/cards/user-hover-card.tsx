@@ -6,12 +6,25 @@ import {
 import { User, User2, UserCircle } from "lucide-react";
 import { Button } from "../ui/button";
 import { addFriend } from "@/actions/user/add-friend";
+import { useQuery } from "@tanstack/react-query";
+import { useUserData } from "@/store";
 
-export default function UserHoverCard({ user }: { user: Users }) {
+export default function UserHoverCard({
+  user,
+  children,
+}: {
+  user: Users;
+  children?: React.ReactNode;
+}) {
+  const userData = useUserData();
   return (
-    <HoverCard openDelay={0} closeDelay={500}>
+    <HoverCard openDelay={100} closeDelay={100}>
       <HoverCardTrigger>
-        <a href={"/user/" + user?.username}>{user?.username}</a>{" "}
+        {children ? (
+          children
+        ) : (
+          <a href={"/user/" + user?.username}>{user?.username}</a>
+        )}
       </HoverCardTrigger>
       <HoverCardContent align="start" className="space-y-4">
         <div className="flex flex-row gap-2 items-center text-primary">
@@ -26,17 +39,19 @@ export default function UserHoverCard({ user }: { user: Users }) {
             </p>
           </div>
         </div>
-        <div className="flex gap-2">
-          <Button
-            className="flex-1"
-            onClick={() => addFriend(user?.id as string)}
-          >
-            Add Friend
-          </Button>
-          <Button className="flex-1" variant={"secondary"}>
-            Block
-          </Button>
-        </div>
+        {userData.id === user?.id ? null : (
+          <div className="flex gap-2">
+            <Button
+              className="flex-1"
+              onClick={() => addFriend(user?.id as string)}
+            >
+              Add Friend
+            </Button>
+            <Button className="flex-1" variant={"secondary"}>
+              Block
+            </Button>
+          </div>
+        )}
       </HoverCardContent>
     </HoverCard>
   );

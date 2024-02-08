@@ -20,23 +20,31 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { AddPostForm } from "../forms/add-post";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getUser } from "@/actions/user/get";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useUserData } from "@/store";
 
 export default function FeedNav() {
   const [openDialog, setOpenDialog] = useState(false);
-
   const { data, isLoading } = useQuery({
     queryKey: ["user-nav"],
     queryFn: async () => await getUser(),
     refetchOnWindowFocus: false,
   });
 
+  const _userData = useUserData();
   const userData = data;
   const pathname = usePathname();
+
+  useEffect(() => {
+    _userData.setData(
+      userData?.dbData?.username,
+      userData?.cookieData?.user.id
+    );
+  }, [data]);
 
   return (
     <nav className="system-padding w-full flex items-center justify-between border-b-border border-b-solid border-b-[1px] h-[74px]">

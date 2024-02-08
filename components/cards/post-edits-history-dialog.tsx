@@ -13,7 +13,7 @@ export default function PostEditsHistoryDialog({
   data,
   children,
 }: {
-  data: any;
+  data: PostsEditHistoryTypes[] | undefined | null;
   children: React.ReactNode;
 }) {
   return (
@@ -24,10 +24,10 @@ export default function PostEditsHistoryDialog({
           <DialogTitle>Post Edit History</DialogTitle>
           <ScrollArea>
             <div className="space-y-2 mt-4 max-h-[300px]">
-              {data?.flatMap((history: any) => {
+              {data?.flatMap((history) => {
                 return (
                   <div
-                    key={history.id}
+                    key={history?.id}
                     className="bg-secondary p-2 rounded-[0.5rem]"
                   >
                     {history?.data &&
@@ -35,10 +35,10 @@ export default function PostEditsHistoryDialog({
                       (history.data.length > 0 ? ( // Check if it has at least one element
                         <div>
                           <p className="w-full whitespace-pre">
-                            {(history.data[0] as any).content}
+                            {(history.data[0] as PostsTypes)?.content}
                           </p>
                           <div className="text-muted-foreground text-xs">
-                            <p>{(history.data[0] as any).privacy}</p>
+                            <p>{(history.data[0] as PostsTypes)?.privacy}</p>
                             <p>{getTimeDiff(history.created_at)} ago</p>
                           </div>
                         </div>

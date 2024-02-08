@@ -9,14 +9,14 @@ declare global {
     posts?: PostsTypes;
   }
 
-  type PostsEditHistoryTypes = PostsEditHistory;
+  type PostsEditHistoryTypes = PostsEditHistory | undefined | null;
 
   interface CommentsEditHistory extends Tables<"comment_edits_history"> {
     users?: Users;
     comments?: CommentsTypes;
   }
 
-  type CommentsEditHistoryTypes = CommentsEditHistory;
+  type CommentsEditHistoryTypes = CommentsEditHistory | undefined | null;
 
   interface Comments extends Tables<"comments"> {
     users?: Users;

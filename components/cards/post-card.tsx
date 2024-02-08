@@ -87,13 +87,14 @@ export default function PostCard<T>({ postId, user }: PostCard) {
   );
 
   const hasEditHistory = Boolean(postEditHistory?.length);
-
   if (isLoading) return <CardSkeleton type="post" />;
   return (
     <Card className={`modified-card ${isPending.type && "opacity-50"}`}>
       <CardHeader className="flex flex-row items-start gap-2">
         <div className="flex-1 flex flex-row items-center gap-2">
-          <UserCircle className="big-icons text-primary" />
+          <UserHoverCard user={post?.users as Users}>
+            <UserCircle className="big-icons text-primary" />
+          </UserHoverCard>
           <div className="space-y-2">
             <CardTitle className="text-primary">
               <UserHoverCard user={post?.users as Users} />

@@ -13,7 +13,7 @@ export default function CommentEditsHistoryDialog({
   data,
   children,
 }: {
-  data: any;
+  data: CommentsEditHistoryTypes[] | null | undefined;
   children: React.ReactNode;
 }) {
   return (
@@ -35,7 +35,7 @@ export default function CommentEditsHistoryDialog({
                       (history.data.length > 0 ? ( // Check if it has at least one element
                         <div>
                           <p className="w-full whitespace-pre">
-                            {(history.data[0] as any).content}
+                            {(history.data[0] as CommentsTypes)?.content}
                           </p>
                           <p className="text-muted-foreground text-xs">
                             {getTimeDiff(history.created_at)} ago
