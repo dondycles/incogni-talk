@@ -91,28 +91,28 @@ export type Database = {
         Row: {
           accepted: boolean
           created_at: string
-          friend: string
           id: number
-          user: string
+          receiver: string
+          requester: string
         }
         Insert: {
           accepted?: boolean
           created_at?: string
-          friend: string
           id?: number
-          user?: string
+          receiver: string
+          requester?: string
         }
         Update: {
           accepted?: boolean
           created_at?: string
-          friend?: string
           id?: number
-          user?: string
+          receiver?: string
+          requester?: string
         }
         Relationships: [
           {
-            foreignKeyName: "friends_friend_fkey"
-            columns: ["friend"]
+            foreignKeyName: "friends_receiver_fkey"
+            columns: ["receiver"]
             isOneToOne: false
             referencedRelation: "users"
             referencedColumns: ["id"]

@@ -21,10 +21,10 @@ export default function Profile() {
   const acceptedFriends = friends?.filter((friend) => friend.accepted === true);
   const friendReqs = friends?.filter((friend) => friend.accepted === false);
   const friendReqSent = friendReqs?.filter(
-    (friend) => friend.friend != userData.id
+    (friend) => friend.receiver != userData.id
   );
   const friendReqReceive = friendReqs?.filter(
-    (friend) => friend.friend === userData.id
+    (friend) => friend.receiver === userData.id
   );
 
   return (
@@ -56,7 +56,7 @@ export default function Profile() {
         </CardHeader>
         <CardContent className="space-y-4">
           {friendReqReceive?.map((friend) => {
-            return <UserCard id={friend.user as string} type="received" />;
+            return <UserCard data={friend} type="received" />;
           })}
         </CardContent>
       </Card>
