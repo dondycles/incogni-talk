@@ -102,7 +102,7 @@ export default function SharedPostCard<T>({ sharedPostId }: SharedPostCard) {
               <UserCircle className="big-icons text-primary" />
               <div className="space-y-2">
                 <CardTitle className="text-primary">
-                  <UserHoverCard user={sharedPost?.users} />
+                  <UserHoverCard hoveredUser={sharedPost?.users} />
                   <span className="text-muted-foreground font-normal">
                     {" "}
                     {sharedPost?.shared_post && (
