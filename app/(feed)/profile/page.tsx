@@ -56,7 +56,7 @@ export default function Profile() {
         </CardHeader>
         <CardContent className="space-y-4">
           {friendReqReceive?.map((friend) => {
-            return <UserCard data={friend} type="received" />;
+            return <UserCard key={friend.id} data={friend} type="received" />;
           })}
         </CardContent>
       </Card>
