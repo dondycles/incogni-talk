@@ -2,7 +2,7 @@
 import { Database } from "@/database.types";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";
-export const getUserProfile = async () => {
+export const getFriends = async () => {
   const cookieStore = cookies();
 
   const supabase = createServerClient<Database>(
@@ -23,19 +23,8 @@ export const getUserProfile = async () => {
     }
   );
 
-  const { data: cookieData, error: cookieError } =
-    await supabase.auth.getUser();
-  console.log(cookieError);
-  if (cookieError) return { error: cookieError.message };
+  const { data, error } = await supabase.from("friends").select("*, users(*)");
+  if (error) return { error: error.message };
 
-  const { data: dbData, error: dbError } = await supabase
-    .from("users")
-    .select("*, users(*)")
-    .eq("id", cookieData.user?.id)
-    .single();
-  console.log(dbError);
-
-  if (dbError) return { error: dbError.message };
-
-  return { cookieData, dbData };
+  return { success: data };
 };

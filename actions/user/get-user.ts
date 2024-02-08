@@ -2,7 +2,7 @@
 import { Database } from "@/database.types";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";
-export const addFriend = async (userId: string, isRequested: boolean) => {
+export const getUserDb = async (id: string) => {
   const cookieStore = cookies();
 
   const supabase = createServerClient<Database>(
@@ -23,20 +23,12 @@ export const addFriend = async (userId: string, isRequested: boolean) => {
     }
   );
 
-  if (isRequested) {
-    const { error } = await supabase
-      .from("friends")
-      .delete()
-      .eq("friend", userId);
-    if (error) return { error: error.message };
-
-    return { success: "friend request cancelled!" };
-  }
-
-  const { error } = await supabase.from("friends").insert({
-    friend: userId,
-  });
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("id", id)
+    .single();
   if (error) return { error: error.message };
 
-  return { success: "friend request sent!" };
+  return { success: data };
 };

@@ -45,4 +45,9 @@ declare global {
         dbData?: Tables<"users"> | undefined;
       }
     | undefined;
+
+  interface Friends extends Tables<"friends"> {
+    users?: Users;
+  }
+  type FriendsTyps = Friends | null | undefined;
 }
