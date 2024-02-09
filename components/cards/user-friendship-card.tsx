@@ -72,7 +72,7 @@ export default function UserFriendshipCard({
       )}
       {type === "sent" && (
         <>
-          <UserData whosData={whosData} />
+          <UserData whosData={whosData} friendship={friendship} />
           <div className="flex flex-row gap-2 items-center w-full sm:w-fit justify-end">
             <Button
               onClick={() => _unfriend()}
@@ -87,7 +87,7 @@ export default function UserFriendshipCard({
       )}
       {type === "received" && (
         <>
-          <UserData whosData={whosData} />
+          <UserData whosData={whosData} friendship={friendship} />
           <div className="flex flex-row gap-2 items-center w-full sm:w-fit justify-end">
             <Button
               onClick={() => _acceptFriend()}
@@ -125,12 +125,16 @@ const UserData = ({
           <div className="flex-1 w-full">
             <p>{whosData?.username}</p>
             <p className="text-xs text-muted-foreground font-normal">
-              {friendship ? (
+              {friendship?.accepted ? (
                 <>
-                  Friends since {getTimeDiff(friendship?.accepted_at as string)}
+                  friended since{" "}
+                  {getTimeDiff(friendship?.accepted_at as string)}
                 </>
               ) : (
-                <>Member since {getTimeDiff(whosData?.created_at as string)}</>
+                <>
+                  requested since{" "}
+                  {getTimeDiff(friendship?.created_at as string)}
+                </>
               )}
             </p>
           </div>
