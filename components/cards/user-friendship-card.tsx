@@ -65,7 +65,7 @@ export default function UserFriendshipCard({
               className=""
               variant={"outline"}
             >
-              Delete
+              Unfriend
             </Button>
           </div>
         </>
