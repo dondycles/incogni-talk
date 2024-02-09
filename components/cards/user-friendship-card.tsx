@@ -54,10 +54,10 @@ export default function UserFriendshipCard({
   );
 
   return (
-    <div className="flex sm:flex-row flex-col gap-2">
+    <div className="flex sm:flex-row flex-col gap-2  border-b-[1px] border-b-border pb-2">
       {type === "friends" && (
         <>
-          <UserData whosData={whosData} />
+          <UserData whosData={whosData} friendship={friendship} />
           <div className="flex flex-row gap-2 items-center w-full sm:w-fit justify-end">
             <Button
               onClick={() => _unfriend()}
@@ -110,7 +110,13 @@ export default function UserFriendshipCard({
   );
 }
 
-const UserData = ({ whosData }: { whosData: Users }) => {
+const UserData = ({
+  whosData,
+  friendship,
+}: {
+  whosData: Users;
+  friendship?: FriendsTyps;
+}) => {
   return (
     <div className="flex-1">
       <UserHoverCard hoveredUser={whosData}>
@@ -119,7 +125,13 @@ const UserData = ({ whosData }: { whosData: Users }) => {
           <div className="flex-1 w-full">
             <p>{whosData?.username}</p>
             <p className="text-xs text-muted-foreground font-normal">
-              Member since {getTimeDiff(whosData?.created_at as string)}
+              {friendship ? (
+                <>
+                  Friends since {getTimeDiff(friendship?.accepted_at as string)}
+                </>
+              ) : (
+                <>Member since {getTimeDiff(whosData?.created_at as string)}</>
+              )}
             </p>
           </div>
         </div>

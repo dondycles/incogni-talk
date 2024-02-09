@@ -44,7 +44,8 @@ export default function FeedNav() {
   useEffect(() => {
     _userData.setData(
       userData?.dbData?.username,
-      userData?.cookieData?.user.id
+      userData?.cookieData?.user.id,
+      userData?.dbData?.created_at
     );
   }, [data]);
 

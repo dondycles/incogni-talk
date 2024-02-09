@@ -23,6 +23,8 @@ export const acceptFriend = async (hoveredUserId: string, userId: string) => {
     }
   );
 
+  const now = new Date();
+
   const { error: e1 } = await supabase
     .from("friends")
     .update({
@@ -30,16 +32,18 @@ export const acceptFriend = async (hoveredUserId: string, userId: string) => {
     })
     .eq("receiver", hoveredUserId)
     .eq("requester", userId);
-
+  console.log(e1);
   if (e1) return { error: e1.message };
 
   const { error: e2 } = await supabase
     .from("friends")
     .update({
       accepted: true,
+      accepted_at: String(now.toUTCString()),
     })
     .eq("receiver", userId)
     .eq("requester", hoveredUserId);
+  console.log(e2);
   if (e2) return { error: e2.message };
 
   return { success: "friend accepted sent!" };

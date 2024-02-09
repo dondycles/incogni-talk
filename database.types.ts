@@ -90,6 +90,7 @@ export type Database = {
       friends: {
         Row: {
           accepted: boolean
+          accepted_at: string | null
           created_at: string
           id: number
           receiver: string
@@ -97,6 +98,7 @@ export type Database = {
         }
         Insert: {
           accepted?: boolean
+          accepted_at?: string | null
           created_at?: string
           id?: number
           receiver: string
@@ -104,6 +106,7 @@ export type Database = {
         }
         Update: {
           accepted?: boolean
+          accepted_at?: string | null
           created_at?: string
           id?: number
           receiver?: string

@@ -12,16 +12,20 @@ export const useOptimisticPost = create<OptimisticPost>()((set) => ({
 type UserData = {
   username: string | null | undefined;
   id: string | null | undefined;
+  created_at: string | null | undefined;
   setData: (
     username: string | null | undefined,
-    id: string | null | undefined
+    id: string | null | undefined,
+    created_at: string | null | undefined
   ) => void;
 };
 
 export const useUserData = create<UserData>()((set) => ({
   username: null,
   id: null,
-  setData: (username, id) => set((state) => ({ username: username, id: id })),
+  created_at: null,
+  setData: (username, id, created_at) =>
+    set((state) => ({ username: username, id: id, created_at: created_at })),
 }));
 
 type OptimisticComent = {
