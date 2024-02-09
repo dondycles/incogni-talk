@@ -40,7 +40,7 @@ export default function PostCard<T>({ postId }: PostCard) {
     variables: null,
   });
 
-  const { data: post, isLoading } = useQuery({
+  const { data: post, isPending: postPending } = useQuery({
     queryKey: ["post", postId],
     queryFn: async () => {
       const { data } = await getOnePost(postId);
@@ -81,7 +81,8 @@ export default function PostCard<T>({ postId }: PostCard) {
   );
 
   const hasEditHistory = Boolean(postEditHistory?.length);
-  if (isLoading) return <CardSkeleton type="post" />;
+  if (postPending) return <CardSkeleton type="post" />;
+  if (!post) return <CardSkeleton type="post" />;
   return (
     <Card className={`modified-card ${isPending.type && "opacity-50"}`}>
       <CardHeader className="flex flex-row items-start gap-2">
