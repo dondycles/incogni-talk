@@ -5,11 +5,11 @@ import { Button } from "../ui/button";
 import { useUserData } from "@/store";
 import UserHoverCard from "./user-hover-card";
 
-export default function UserCard({
-  data,
+export default function UserFriendshipCard({
+  friendship,
   type,
 }: {
-  data?: FriendsTyps;
+  friendship?: FriendsTyps;
   type: "friends" | "received" | "sent";
 }) {
   const userData = useUserData();
@@ -19,9 +19,9 @@ export default function UserCard({
 
   //? gets the requester data if the user is the receiver
   const { data: _requesterData } = useQuery({
-    queryKey: ["friend", data?.requester],
+    queryKey: ["friend", friendship?.requester],
     queryFn: async () => {
-      const { success } = await getUserDb(data?.requester as string);
+      const { success } = await getUserDb(friendship?.requester as string);
       return success;
     },
   });
@@ -32,14 +32,16 @@ export default function UserCard({
         <div className="p-2 bg-muted rounded-[0.5rem] flex flex-col sm:flex-row items-start justify-between gap-4">
           <UserHoverCard
             hoveredUser={
-              data?.receiver === userId ? _requesterData : data?.users
+              friendship?.receiver === userId
+                ? _requesterData
+                : friendship?.users
             }
           >
             <div className="flex gap-2 items-center font-semibold text-primary w-full text-xs">
               <UserCircle2 className="medium-icons" />
-              {data?.receiver === userId
+              {friendship?.receiver === userId
                 ? _requesterData?.username
-                : data?.users?.username}
+                : friendship?.users?.username}
             </div>
           </UserHoverCard>
           <div className="flex flex-row gap-2 items-center w-full justify-end">
@@ -55,14 +57,16 @@ export default function UserCard({
         <div className="p-2 bg-muted rounded-[0.5rem] flex flex-col sm:flex-row items-start justify-between gap-4">
           <UserHoverCard
             hoveredUser={
-              data?.receiver === userId ? _requesterData : data?.users
+              friendship?.receiver === userId
+                ? _requesterData
+                : friendship?.users
             }
           >
             <div className="flex gap-2 items-center font-semibold text-primary w-full text-xs">
               <UserCircle2 className="medium-icons" />
-              {data?.receiver === userId
+              {friendship?.receiver === userId
                 ? _requesterData?.username
-                : data?.users?.username}
+                : friendship?.users?.username}
             </div>
           </UserHoverCard>
           <div className="flex flex-row gap-2 items-center w-full justify-end">
@@ -79,14 +83,16 @@ export default function UserCard({
         <div className="p-2 bg-muted rounded-[0.5rem] flex flex-col sm:flex-row items-start justify-between gap-4">
           <UserHoverCard
             hoveredUser={
-              data?.receiver === userId ? _requesterData : data?.users
+              friendship?.receiver === userId
+                ? _requesterData
+                : friendship?.users
             }
           >
             <div className="flex gap-2 items-center font-semibold text-primary w-full text-xs">
               <UserCircle2 className="medium-icons" />
-              {data?.receiver === userId
+              {friendship?.receiver === userId
                 ? _requesterData?.username
-                : data?.users?.username}
+                : friendship?.users?.username}
             </div>
           </UserHoverCard>
 

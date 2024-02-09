@@ -1,29 +1,37 @@
 "use client";
-import { getFriends } from "@/actions/user/get-friends";
-import { getUserDb } from "@/actions/user/get-user";
-import UserCard from "@/components/cards/user-card";
-import UserHoverCard from "@/components/cards/user-hover-card";
+import { getFriendships } from "@/actions/user/get-friends";
+import UserFriendshipCard from "@/components/cards/user-friendship-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useUserData } from "@/store";
 import { useQuery } from "@tanstack/react-query";
-import { Suspense } from "react";
 
 export default function Profile() {
   const userData = useUserData();
-  const { data: friends } = useQuery({
-    queryKey: ["friends"],
+  const { data: friendships } = useQuery({
+    queryKey: ["friendships"],
     queryFn: async () => {
-      const { success } = await getFriends();
+      const { success } = await getFriendships();
       return success;
     },
   });
 
-  const acceptedFriends = friends?.filter((friend) => friend.accepted === true);
-  const friendReqs = friends?.filter((friend) => friend.accepted === false);
-  const friendReqSent = friendReqs?.filter(
-    (friend) => friend.receiver != userData.id
+  //? gets only the accepted friends regardless of who initiates the request
+  const acceptedFriendships = friendships?.filter(
+    (friendshipData) => friendshipData.accepted === true
   );
-  const friendReqReceive = friendReqs?.filter(
+
+  //? gets only the reqeuest regardless of who sent the request
+  const friendshipReqs = friendships?.filter(
+    (friendshipData) => friendshipData.accepted === false
+  );
+
+  //? gets only the requests sent by the current user
+  const friendshipReqSent = friendshipReqs?.filter(
+    (friendshipData) => friendshipData.requester === userData.id
+  );
+
+  //? gets only the requests received by the current user
+  const friendshipReqReceive = friendshipReqSent?.filter(
     (friend) => friend.receiver === userData.id
   );
 
@@ -35,8 +43,14 @@ export default function Profile() {
           <CardTitle>Friends</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {acceptedFriends?.map((friend) => {
-            return <UserCard key={friend.id} data={friend} type="friends" />;
+          {acceptedFriendships?.map((friendshipData) => {
+            return (
+              <UserFriendshipCard
+                key={friendshipData.id}
+                friendship={friendshipData}
+                type="friends"
+              />
+            );
           })}
         </CardContent>
       </Card>
@@ -45,8 +59,14 @@ export default function Profile() {
           <CardTitle>Friend Requests Sent</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {friendReqSent?.map((friend) => {
-            return <UserCard key={friend.id} data={friend} type="sent" />;
+          {friendshipReqSent?.map((friendship) => {
+            return (
+              <UserFriendshipCard
+                key={friendship.id}
+                friendship={friendship}
+                type="sent"
+              />
+            );
           })}
         </CardContent>
       </Card>
@@ -55,8 +75,14 @@ export default function Profile() {
           <CardTitle>Friend Requests Received</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {friendReqReceive?.map((friend) => {
-            return <UserCard key={friend.id} data={friend} type="received" />;
+          {friendshipReqReceive?.map((friendship) => {
+            return (
+              <UserFriendshipCard
+                key={friendship.id}
+                friendship={friendship}
+                type="received"
+              />
+            );
           })}
         </CardContent>
       </Card>

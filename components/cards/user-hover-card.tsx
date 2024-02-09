@@ -8,7 +8,7 @@ import { Button } from "../ui/button";
 import { addFriend } from "@/actions/user/add-friend";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useUserData } from "@/store";
-import { getFriends } from "@/actions/user/get-friends";
+import { getFriendships } from "@/actions/user/get-friends";
 import { acceptFriend } from "@/actions/user/accept-friend";
 
 export default function UserHoverCard({
@@ -22,7 +22,7 @@ export default function UserHoverCard({
   const queryClient = useQueryClient();
   const { data: friends } = useQuery({
     queryFn: async () => {
-      const { success } = await getFriends();
+      const { success } = await getFriendships();
       return success;
     },
     queryKey: ["hovered-user", hoveredUser?.id],
@@ -30,7 +30,7 @@ export default function UserHoverCard({
     refetchOnWindowFocus: true,
   });
 
-  // ? if users id is in the friend field, the hovered user initiates the request
+  // ? if current users id is in the friend field, the hovered user initiates the request
   const receivedFriends = friends?.filter(
     (friend) => friend.receiver === userData.id
   );
@@ -44,7 +44,7 @@ export default function UserHoverCard({
     (friend) => friend.requester === hoveredUser?.id
   );
 
-  //? checks if the user initiates request first
+  //? checks if the currnt user initiates request first
   const isHoveredUserFromRequestedFriends = requestedFriends?.filter(
     (friend) => friend.receiver === hoveredUser?.id
   );
