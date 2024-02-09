@@ -119,7 +119,7 @@ export default function UserHoverCard({
                   className={`flex-1 }`}
                   onClick={() => _addFriend()}
                 >
-                  {_addFriendPending ? "Unfriending..." : "Unfriend"}
+                  Unfriend
                 </Button>
               </div>
             )}
@@ -132,7 +132,7 @@ export default function UserHoverCard({
                       className={`flex-1 }`}
                       onClick={() => _acceptFriend()}
                     >
-                      {_acceptFriendPending ? "Accepting..." : "Accept"}
+                      Accept
                     </Button>
                     <Button
                       disabled={_addFriendPending}
@@ -140,7 +140,7 @@ export default function UserHoverCard({
                       className="flex-1"
                       variant={"secondary"}
                     >
-                      {_addFriendPending ? "Deleting..." : "Delete"}
+                      Delete
                     </Button>
                   </div>
                 ) : null}
@@ -154,7 +154,7 @@ export default function UserHoverCard({
                       className={`flex-1 }`}
                       onClick={() => _addFriend()}
                     >
-                      {_addFriendPending ? "Cancelling..." : "Cancel"}
+                      Cancel
                     </Button>
                   </div>
                 ) : null}
@@ -167,10 +167,7 @@ export default function UserHoverCard({
                   className={`flex-1 }`}
                   onClick={() => _addFriend()}
                 >
-                  {_addFriendPending ? "Adding..." : "Add Friend"}
-                </Button>
-                <Button className="flex-1" variant={"secondary"}>
-                  Block
+                  Add Friend
                 </Button>
               </div>
             )}

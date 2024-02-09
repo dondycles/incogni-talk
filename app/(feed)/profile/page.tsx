@@ -15,6 +15,8 @@ export default function Profile() {
     },
   });
 
+  console.log(friendships);
+
   //? gets only the accepted friends regardless of who initiates the request
   const acceptedFriendships = friendships?.filter(
     (friendshipData) => friendshipData.accepted === true
@@ -31,14 +33,14 @@ export default function Profile() {
   );
 
   //? gets only the requests received by the current user
-  const friendshipReqReceive = friendshipReqSent?.filter(
+  const friendshipReqReceive = friendshipReqs?.filter(
     (friend) => friend.receiver === userData.id
   );
 
   return (
     <main className="system-padding space-y-4">
       <p className="text-2xl font-bold text-primary">{userData.username}</p>
-      <Card>
+      <Card className="modified-card">
         <CardHeader>
           <CardTitle>Friends</CardTitle>
         </CardHeader>
@@ -54,7 +56,7 @@ export default function Profile() {
           })}
         </CardContent>
       </Card>
-      <Card>
+      <Card className="modified-card">
         <CardHeader>
           <CardTitle>Friend Requests Sent</CardTitle>
         </CardHeader>
@@ -70,7 +72,7 @@ export default function Profile() {
           })}
         </CardContent>
       </Card>
-      <Card>
+      <Card className="modified-card">
         <CardHeader>
           <CardTitle>Friend Requests Received</CardTitle>
         </CardHeader>

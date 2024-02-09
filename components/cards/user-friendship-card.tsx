@@ -1,9 +1,13 @@
 import { getUserDb } from "@/actions/user/get-user";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { UserCircle2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { useUserData } from "@/store";
 import UserHoverCard from "./user-hover-card";
+import { addFriend } from "@/actions/user/add-friend";
+import { Card } from "../ui/card";
+import { getTimeDiff } from "@/lib/getTimeDiff";
+import { acceptFriend } from "@/actions/user/accept-friend";
 
 export default function UserFriendshipCard({
   friendship,
@@ -12,12 +16,11 @@ export default function UserFriendshipCard({
   friendship?: FriendsTyps;
   type: "friends" | "received" | "sent";
 }) {
+  const queryClient = useQueryClient();
   const userData = useUserData();
   const userId = userData.id;
 
-  // ? data?.user is the receiver's user data
-
-  //? gets the requester data if the user is the receiver
+  //? gets the requester data incase the user is the receiver
   const { data: _requesterData } = useQuery({
     queryKey: ["friend", friendship?.requester],
     queryFn: async () => {
@@ -26,83 +29,101 @@ export default function UserFriendshipCard({
     },
   });
 
-  switch (type) {
-    case "friends":
-      return (
-        <div className="p-2 bg-muted rounded-[0.5rem] flex flex-col sm:flex-row items-start justify-between gap-4">
-          <UserHoverCard
-            hoveredUser={
-              friendship?.receiver === userId
-                ? _requesterData
-                : friendship?.users
-            }
-          >
-            <div className="flex gap-2 items-center font-semibold text-primary w-full text-xs">
-              <UserCircle2 className="medium-icons" />
-              {friendship?.receiver === userId
-                ? _requesterData?.username
-                : friendship?.users?.username}
-            </div>
-          </UserHoverCard>
-          <div className="flex flex-row gap-2 items-center w-full justify-end">
-            <Button className="" variant={"outline"}>
+  //? makes sure that the current user data is not getting used
+  const whosData =
+    friendship?.receiver === userId ? _requesterData : friendship?.users;
+
+  const { mutate: _unfriend, isPending: unfriendPending } = useMutation({
+    mutationFn: async () => {
+      await addFriend(whosData?.id as string, true, userData?.id as string);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["friendships"] });
+    },
+  });
+
+  const { mutate: _acceptFriend, isPending: acceptFriendPending } = useMutation(
+    {
+      mutationFn: async () => {
+        await acceptFriend(whosData?.id as string, userData?.id as string);
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["friendships"] });
+      },
+    }
+  );
+
+  return (
+    <div className="flex sm:flex-row flex-col gap-2">
+      {type === "friends" && (
+        <>
+          <UserData whosData={whosData} />
+          <div className="flex flex-row gap-2 items-center w-full sm:w-fit justify-end">
+            <Button
+              onClick={() => _unfriend()}
+              disabled={unfriendPending}
+              className=""
+              variant={"outline"}
+            >
               Delete
             </Button>
           </div>
-        </div>
-      );
-      break;
-    case "received":
-      return (
-        <div className="p-2 bg-muted rounded-[0.5rem] flex flex-col sm:flex-row items-start justify-between gap-4">
-          <UserHoverCard
-            hoveredUser={
-              friendship?.receiver === userId
-                ? _requesterData
-                : friendship?.users
-            }
-          >
-            <div className="flex gap-2 items-center font-semibold text-primary w-full text-xs">
-              <UserCircle2 className="medium-icons" />
-              {friendship?.receiver === userId
-                ? _requesterData?.username
-                : friendship?.users?.username}
-            </div>
-          </UserHoverCard>
-          <div className="flex flex-row gap-2 items-center w-full justify-end">
-            <Button>Accept</Button>
-            <Button className="" variant={"outline"}>
-              Reject
-            </Button>
-          </div>
-        </div>
-      );
-      break;
-    case "sent":
-      return (
-        <div className="p-2 bg-muted rounded-[0.5rem] flex flex-col sm:flex-row items-start justify-between gap-4">
-          <UserHoverCard
-            hoveredUser={
-              friendship?.receiver === userId
-                ? _requesterData
-                : friendship?.users
-            }
-          >
-            <div className="flex gap-2 items-center font-semibold text-primary w-full text-xs">
-              <UserCircle2 className="medium-icons" />
-              {friendship?.receiver === userId
-                ? _requesterData?.username
-                : friendship?.users?.username}
-            </div>
-          </UserHoverCard>
-
-          <div className="flex flex-row gap-2 items-center w-full justify-end">
-            <Button className="" variant={"outline"}>
+        </>
+      )}
+      {type === "sent" && (
+        <>
+          <UserData whosData={whosData} />
+          <div className="flex flex-row gap-2 items-center w-full sm:w-fit justify-end">
+            <Button
+              onClick={() => _unfriend()}
+              disabled={unfriendPending}
+              className=""
+              variant={"outline"}
+            >
               Cancel
             </Button>
           </div>
-        </div>
-      );
-      break;
-  }
+        </>
+      )}
+      {type === "received" && (
+        <>
+          <UserData whosData={whosData} />
+          <div className="flex flex-row gap-2 items-center w-full sm:w-fit justify-end">
+            <Button
+              onClick={() => _acceptFriend()}
+              disabled={acceptFriendPending}
+            >
+              Accept
+            </Button>
+            <Button
+              onClick={() => _unfriend()}
+              disabled={unfriendPending}
+              className=""
+              variant={"outline"}
+            >
+              Reject
+            </Button>
+          </div>
+        </>
+      )}
+    </div>
+  );
 }
+
+const UserData = ({ whosData }: { whosData: Users }) => {
+  return (
+    <div className="flex-1">
+      <UserHoverCard hoveredUser={whosData}>
+        <div className="flex gap-2 items-start font-semibold text-primary w-full flex-1">
+          <UserCircle2 className="big-icons" />
+          <div className="flex-1 w-full">
+            <p>{whosData?.username}</p>
+            <p className="text-xs text-muted-foreground font-normal">
+              Member since {getTimeDiff(whosData?.created_at as string)}
+            </p>
+          </div>
+        </div>
+      </UserHoverCard>
+    </div>
+  );
+};
