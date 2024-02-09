@@ -121,7 +121,7 @@ export default function Profile() {
                   })
                 ) : (
                   <p className="text-xs text-muted-foreground text-center">
-                    Don't.
+                    Don&apos;t.
                   </p>
                 )}
               </CardHeader>
