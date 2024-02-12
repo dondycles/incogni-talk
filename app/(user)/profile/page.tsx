@@ -28,7 +28,7 @@ export default function Profile() {
 
   const { data: usersPosts, fetchNextPage: fetchNextPublicPosts } =
     useInfiniteQuery({
-      queryKey: ["profile-posts"],
+      queryKey: ["profile-posts", userData?.cookieData?.user?.id as string],
       queryFn: async ({ pageParam }) => {
         const { data } = await getUserAllPosts(
           pageParam,
