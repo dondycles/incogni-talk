@@ -25,15 +25,12 @@ export default function Profile() {
       return { cookieData, dbData };
     },
   });
-
+  const userId = userData?.cookieData?.user?.id as string;
   const { data: usersPosts, fetchNextPage: fetchNextPublicPosts } =
     useInfiniteQuery({
-      queryKey: ["profile-posts", userData?.cookieData?.user?.id as string],
+      queryKey: ["profile-posts", userId],
       queryFn: async ({ pageParam }) => {
-        const { data } = await getUserAllPosts(
-          pageParam,
-          userData?.cookieData?.user?.id as string
-        );
+        const { data } = await getUserAllPosts(pageParam, userId);
         return data;
       },
       getNextPageParam: (_, pages) => {
@@ -62,13 +59,12 @@ export default function Profile() {
 
   //? gets only the requests sent by the current user
   const friendshipReqSent = friendshipReqs?.filter(
-    (friendshipData) =>
-      friendshipData.requester === userData?.cookieData?.user?.id
+    (friendshipData) => friendshipData.requester === userId
   );
 
   //? gets only the requests received by the current user
   const friendshipReqReceive = friendshipReqs?.filter(
-    (friend) => friend.receiver === userData?.cookieData?.user?.id
+    (friend) => friend.receiver === userId
   );
 
   const usersAllPosts = usersPosts?.pages.flatMap((page) => page);
