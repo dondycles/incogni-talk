@@ -8,7 +8,7 @@ import {
 
 import { Globe, Lock, UserCircle } from "lucide-react";
 import { getTimeDiff } from "@/lib/getTimeDiff";
-import PostActions from "../actions/post-interactions";
+import PostActions from "../actions/post-actions";
 import { useQuery } from "@tanstack/react-query";
 import { getAllCommentCounts } from "@/actions/comment/get-count";
 import ViewPostCommentsScrollable from "../scrollables/view-post-comments-scrollable";

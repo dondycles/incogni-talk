@@ -8,7 +8,7 @@ import {
 
 import { Globe, Lock, UserCircle } from "lucide-react";
 import { getTimeDiff } from "@/lib/getTimeDiff";
-import PostActions from "../actions/post-interactions";
+import PostActions from "../actions/post-actions";
 import PostCommentsScrollable from "../scrollables/post-comments-scrollable";
 import { useQuery } from "@tanstack/react-query";
 import { getAllCommentCounts } from "@/actions/comment/get-count";
@@ -24,7 +24,7 @@ import SharedPostCard from "./shared-post-card";
 import UserHoverCard from "./user-hover-card";
 import { useUserData } from "@/store";
 
-type IsPending = {
+type ModifyPending = {
   type: "delete" | "edit" | null;
   variables: any[any] | null;
 };
@@ -35,12 +35,8 @@ interface PostCard {
 
 export default function PostCard<T>({ postId }: PostCard) {
   const userData = useUserData();
-  const [isPending, setIsPending] = useState<IsPending>({
-    type: null,
-    variables: null,
-  });
 
-  const { data: post, isPending: postPending } = useQuery({
+  const { data: post, isPending: postDataPending } = useQuery({
     queryKey: ["post", postId],
     queryFn: async () => {
       const { data } = await getOnePost(postId);
@@ -49,6 +45,8 @@ export default function PostCard<T>({ postId }: PostCard) {
   });
 
   const timeDifference = getTimeDiff(post?.created_at as string);
+
+  // * checks if the post is public or private
   const privacy =
     post?.privacy === "private" ? (
       <Lock className="small-icons" />
@@ -70,21 +68,28 @@ export default function PostCard<T>({ postId }: PostCard) {
   const isDeletable = userData.id === post?.author;
   const isEditable = userData.id === post?.author;
 
-  const { data: postEditHistory, isLoading: postEditHistoryLoading } = useQuery(
-    {
-      queryKey: ["post-history", postId],
-      queryFn: async () => {
-        const { data } = await getAllPostsHistory(postId);
-        return data;
-      },
-    }
-  );
+  // * gets the edit history of the post
+  const { data: postEditHistory } = useQuery({
+    queryKey: ["post-history", postId],
+    queryFn: async () => {
+      const { data } = await getAllPostsHistory(postId);
+      return data;
+    },
+  });
 
+  // * checks if the post has been edited at least once
   const hasEditHistory = Boolean(postEditHistory?.length);
-  if (postPending) return <CardSkeleton type="post" />;
+
+  // * this for optimistic update if the post is being edited
+  const [isModifyPending, setIsModifyPending] = useState<ModifyPending>({
+    type: null,
+    variables: null,
+  });
+
+  if (postDataPending) return <CardSkeleton type="post" />;
   if (!post) return <CardSkeleton type="post" />;
   return (
-    <Card className={`modified-card ${isPending.type && "opacity-50"}`}>
+    <Card className={`modified-card ${isModifyPending.type && "opacity-50"}`}>
       <CardHeader className="flex flex-row items-start gap-2">
         <div className="flex-1 flex flex-row items-center gap-2">
           <UserHoverCard hoveredUser={post?.users as Users}>
@@ -122,8 +127,8 @@ export default function PostCard<T>({ postId }: PostCard) {
           post={post}
           isDeletable={isDeletable}
           isEditable={isEditable}
-          setPending={(variables, type) => {
-            setIsPending({
+          setModifyPending={(variables, type) => {
+            setIsModifyPending({
               variables: variables,
               type: type,
             });
@@ -132,8 +137,8 @@ export default function PostCard<T>({ postId }: PostCard) {
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="whitespace-pre">
-          {isPending.type === "edit"
-            ? isPending?.variables?.content
+          {isModifyPending.type === "edit"
+            ? isModifyPending?.variables?.content
             : post?.content}
         </p>
         {post?.shared_post ? (

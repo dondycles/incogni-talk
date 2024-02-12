@@ -3,7 +3,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
-import { UserCircle } from "lucide-react";
+import { Loader2, UserCircle } from "lucide-react";
 import { Button } from "../ui/button";
 import { addFriend } from "@/actions/user/add-friend";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -20,7 +20,7 @@ export default function UserHoverCard({
 }) {
   const userData = useUserData();
   const queryClient = useQueryClient();
-  const { data: friends } = useQuery({
+  const { data: friends, isFetching: friendsFetching } = useQuery({
     queryFn: async () => {
       const { success } = await getFriendships();
       return success;
@@ -107,7 +107,11 @@ export default function UserHoverCard({
             </p>
           </div>
         </div>
-        {userData.id === hoveredUser?.id ? null : (
+        {friendsFetching ? (
+          <>
+            <Loader2 className="animate-spin text-muted-foreground" />
+          </>
+        ) : userData.id === hoveredUser?.id ? null : (
           <>
             {getFriendData?.accepted === true && (
               <div className="flex gap-2">

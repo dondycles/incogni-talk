@@ -30,12 +30,14 @@ export default function CommentOptions({
   const commentId = comment?.id as string;
   const queryClient = useQueryClient();
   const [openEditForm, setOpenEditForm] = useState(false);
-  const { mutate: deletePost, isPending } = useMutation({
+
+  const { mutate: deletePost } = useMutation({
     mutationFn: async () => await delComment(commentId),
     onMutate: () => {
       setPending(null, "delete");
     },
     onSuccess: () => {
+      // * refetches the queries related to this comment after deletion
       queryClient.invalidateQueries({
         queryKey: ["post", comment?.post],
       });
@@ -52,6 +54,7 @@ export default function CommentOptions({
   });
 
   return (
+    //* a pop-up for comment's options such as the delete, edit
     <Dialog onOpenChange={setOpenEditForm} open={openEditForm}>
       <DropdownMenu>
         <DropdownMenuTrigger>
@@ -67,13 +70,15 @@ export default function CommentOptions({
           <DialogTrigger asChild>
             <DropdownMenuItem disabled={!isEditable}>Edit</DropdownMenuItem>
           </DialogTrigger>
-          <DropdownMenuItem>Hide</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
       <DialogContent>
         <EditCommentForm
+          // * if the edit is pending, the edit data is set for optimistic update
           setPending={(variables, type) => setPending(variables, type)}
+          // * gets the comment data
           comment={comment}
+          // * when discarding or the edit is successfull, the current pop-up will close
           close={() => {
             setOpenEditForm(false);
           }}

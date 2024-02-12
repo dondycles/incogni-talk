@@ -37,11 +37,11 @@ const formSchema = z.object({
 export function EditPostForm({
   close,
   post,
-  setPending,
+  setModifyPending,
 }: {
   close: () => void;
   post: PostsTypes;
-  setPending: (
+  setModifyPending: (
     variables: z.infer<typeof formSchema> | null,
     type: "edit" | null
   ) => void;
@@ -50,13 +50,13 @@ export function EditPostForm({
   const { mutate: _editPost, isPending } = useMutation({
     mutationFn: async (values: z.infer<typeof formSchema>) => onSubmit(values),
     onMutate: (variables) => {
-      setPending(variables, "edit");
+      setModifyPending(variables, "edit");
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post", post?.id] });
       queryClient.invalidateQueries({ queryKey: ["post-history", post?.id] });
       queryClient.invalidateQueries({ queryKey: ["view-post", post?.id] });
-      setPending(null, null);
+      setModifyPending(null, null);
     },
   });
 

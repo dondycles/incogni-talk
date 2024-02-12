@@ -19,11 +19,12 @@ export default function UserNavButton({ userData }: { userData: UserData }) {
   const route = useRouter();
   const logout = async () => {
     setIsLogginOut(true);
-    const { error, success } = await logOut();
+    const { error } = await logOut();
     if (error) return setIsLogginOut(false);
     route.push("/log-in");
   };
   return (
+    //* A dropdown with menus for user's navigation
     <DropdownMenu>
       <DropdownMenuTrigger>
         <Button size={"icon"}>

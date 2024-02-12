@@ -16,46 +16,48 @@ export default function PostOptions({
   isEditable,
   isDeletable,
   post,
-  setPending,
+  setModifyPending,
 }: {
   isEditable: boolean;
   isDeletable: boolean;
   post: PostsTypes;
-  setPending: (
+  setModifyPending: (
     variables: any[any] | null,
     type: "edit" | "delete" | null
   ) => void;
 }) {
   const queryClient = useQueryClient();
   const postId = post?.id as string;
-  const [openEditForm, setOpenEditForm] = useState(false);
-  const { mutate: deletePost, isPending } = useMutation({
+  // * for the state of edit form
+  const [openEditFormDialog, setOpenEditFormDialog] = useState(false);
+  const { mutate: deletePost } = useMutation({
     mutationFn: async () => await delPost(postId),
     onMutate: () => {
-      setPending(null, "delete");
+      setModifyPending(null, "delete");
     },
     onSuccess: () => {
+      // * refetches queries related to the post after deletion
       queryClient.invalidateQueries({ queryKey: ["feed-posts"] });
       queryClient.invalidateQueries({ queryKey: ["post", postId] });
       queryClient.invalidateQueries({ queryKey: ["shared-post", postId] });
       queryClient.invalidateQueries({ queryKey: ["view-post", postId] });
     },
     onError: () => {
-      setPending(null, null);
+      setModifyPending(null, null);
     },
   });
 
   const { mutate: _hidePost } = useMutation({
     mutationFn: async () => await hidePost(postId),
-
     onSuccess: () => {
+      // * refetches queries related to the post after hiding
       queryClient.invalidateQueries({ queryKey: ["feed-posts"] });
       queryClient.invalidateQueries({ queryKey: ["shared-post", postId] });
     },
   });
 
   return (
-    <Dialog onOpenChange={setOpenEditForm} open={openEditForm}>
+    <Dialog onOpenChange={setOpenEditFormDialog} open={openEditFormDialog}>
       <DropdownMenu>
         <DropdownMenuTrigger>
           <DotsVerticalIcon />
@@ -63,22 +65,31 @@ export default function PostOptions({
         <DropdownMenuContent align="end">
           <DropdownMenuItem
             onClick={() => deletePost()}
+            // * only the post's author can delete post
             disabled={!isDeletable}
           >
             Delete
           </DropdownMenuItem>
           <DialogTrigger asChild>
-            <DropdownMenuItem disabled={!isEditable}>Edit</DropdownMenuItem>
+            <DropdownMenuItem
+              // * only the post's author can edit post
+              disabled={!isEditable}
+            >
+              Edit
+            </DropdownMenuItem>
           </DialogTrigger>
           <DropdownMenuItem onClick={() => _hidePost()}>Hide</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
       <DialogContent>
         <EditPostForm
-          setPending={(variables, type) => setPending(variables, type)}
+          // * while edit is pending, sets the optimisticUpdate
+          setModifyPending={(variables, type) =>
+            setModifyPending(variables, type)
+          }
           post={post}
           close={() => {
-            setOpenEditForm(false);
+            setOpenEditFormDialog(false);
           }}
         />
       </DialogContent>

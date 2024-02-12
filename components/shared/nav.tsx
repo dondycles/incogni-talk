@@ -29,18 +29,25 @@ import { useUserData } from "@/store";
 
 export default function FeedNav() {
   const [openDialog, setOpenDialog] = useState(false);
+
+  // * gets current user's data from cookies and db
   const { data, isLoading } = useQuery({
-    queryKey: ["user-nav"],
+    queryKey: ["user"],
     queryFn: async () => {
       const { cookieData, dbData } = await getUser();
       return { cookieData, dbData };
     },
   });
 
+  // * this the user's data stores in store with zustand
   const _userData = useUserData();
+
+  // * this the user's data from cookies and db
   const userData = data;
+
   const pathname = usePathname();
 
+  // * everytime current user changes, or the user's data changes, the user's data is stored or updated in the store with zustand
   useEffect(() => {
     _userData.setData(
       userData?.dbData?.username,
