@@ -336,16 +336,19 @@ export type Database = {
       }
       users: {
         Row: {
+          bio: string | null
           created_at: string
           id: string
           username: string
         }
         Insert: {
+          bio?: string | null
           created_at?: string
           id?: string
           username: string
         }
         Update: {
+          bio?: string | null
           created_at?: string
           id?: string
           username?: string
