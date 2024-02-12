@@ -62,7 +62,7 @@ export default function FeedNav() {
         incognitalk.
       </a>
       <div className="flex items-center gap-4">
-        {pathname != "/profile" ? (
+        {data && pathname != "/profile" ? (
           <Dialog onOpenChange={setOpenDialog} open={openDialog}>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
