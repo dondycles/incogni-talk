@@ -32,7 +32,7 @@ export default function Profile() {
       queryFn: async ({ pageParam }) => {
         const { data } = await getUserAllPosts(
           pageParam,
-          userData?.cookieData?.user.id as string
+          userData?.cookieData?.user?.id as string
         );
         return data;
       },

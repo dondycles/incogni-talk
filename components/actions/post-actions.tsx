@@ -42,21 +42,23 @@ export default function PostInteractions({
   });
 
   const [optimisticLiked, setOptimisticLiked] = useState(isLiked);
-  const [optimisticLikePending, setOptimisticLikePending] = useState(false);
+  const [disableLike, setDisableLike] = useState(false);
 
   useEffect(() => {
     // * makes sure that the optimisticLike is synchronized with the database
-    // * executes after 1 second everytime the database changes to avoid spam
+    // * executes after 0.5 second everytime the database changes to avoid spam
     const timeout = setTimeout(() => {
       setOptimisticLiked(isLiked);
-    }, 1000);
+    }, 500);
     return () => clearTimeout(timeout);
   }, [isLiked]);
 
   useEffect(() => {
+    //* this is for another layer of security to avoid spam
     const timeout = setTimeout(() => {
-      setOptimisticLikePending(false);
-    }, 1000);
+      // * enables the like function after 0.5 second of the action
+      setDisableLike(false);
+    }, 500);
     return () => clearTimeout(timeout);
   }, [optimisticLiked]);
 
@@ -64,9 +66,12 @@ export default function PostInteractions({
     <div className="w-full flex gap-2">
       <Button
         onClick={() => {
-          setOptimisticLikePending(true);
-          // * returns if like or unlike mutation is pending
-          if (optimisticLikePending) return;
+          // * only executes if the disableLIke is false
+          if (disableLike) return;
+
+          // * disables the function immediately
+          setDisableLike(true);
+
           // * instantly changes the like button for optimistic purposes
           setOptimisticLiked((prev) => !prev);
 
