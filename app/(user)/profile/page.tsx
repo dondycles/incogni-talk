@@ -6,9 +6,19 @@ import { useUserData } from "@/store";
 import { useQuery } from "@tanstack/react-query";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getUser } from "@/actions/user/get";
+import { Loader2 } from "lucide-react";
 
 export default function Profile() {
-  const userData = useUserData();
+  // * gets current user's data from cookies and db
+  const { data: userData, isFetching: userDataLoading } = useQuery({
+    queryKey: ["user"],
+    queryFn: async () => {
+      const { cookieData, dbData } = await getUser();
+      return { cookieData, dbData };
+    },
+  });
+
   const { data: friendships, isPending } = useQuery({
     queryKey: ["friendships"],
     queryFn: async () => {
@@ -29,21 +39,33 @@ export default function Profile() {
 
   //? gets only the requests sent by the current user
   const friendshipReqSent = friendshipReqs?.filter(
-    (friendshipData) => friendshipData.requester === userData.id
+    (friendshipData) =>
+      friendshipData.requester === userData?.cookieData?.user?.id
   );
 
   //? gets only the requests received by the current user
   const friendshipReqReceive = friendshipReqs?.filter(
-    (friend) => friend.receiver === userData.id
+    (friend) => friend.receiver === userData?.cookieData?.user?.id
   );
-
+  if (userDataLoading)
+    return (
+      <main className="system-padding space-y-4">
+        <Loader2 className="text-muted-foreground animate-spin" />
+      </main>
+    );
   return (
     <main className="system-padding space-y-4">
       <div>
-        <p className="text-2xl font-bold text-primary">{userData.username}</p>
+        <p className="text-2xl font-bold text-primary">
+          {userData?.dbData?.username}
+        </p>
         <p className="text-xs text-muted-foreground">
           Member since{" "}
-          {String(new Date(userData.created_at as string).toLocaleDateString())}
+          {String(
+            new Date(
+              userData?.dbData?.created_at as string
+            ).toLocaleDateString()
+          )}
         </p>
       </div>
       {isPending ? (

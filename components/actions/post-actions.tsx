@@ -42,6 +42,7 @@ export default function PostInteractions({
   });
 
   const [optimisticLiked, setOptimisticLiked] = useState(isLiked);
+  const [optimisticLikePending, setOptimisticLikePending] = useState(false);
 
   useEffect(() => {
     // * makes sure that the optimisticLike is synchronized with the database
@@ -52,12 +53,20 @@ export default function PostInteractions({
     return () => clearTimeout(timeout);
   }, [isLiked]);
 
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setOptimisticLikePending(false);
+    }, 1000);
+    return () => clearTimeout(timeout);
+  }, [optimisticLiked]);
+
   return (
     <div className="w-full flex gap-2">
       <Button
         onClick={() => {
+          setOptimisticLikePending(true);
           // * returns if like or unlike mutation is pending
-          if (_likePostPending) return;
+          if (optimisticLikePending) return;
           // * instantly changes the like button for optimistic purposes
           setOptimisticLiked((prev) => !prev);
 
@@ -65,7 +74,6 @@ export default function PostInteractions({
           _likePost();
         }}
         variant={optimisticLiked ? "default" : "secondary"}
-        disabled={_likePostPending}
         className="flex-1"
         size={"sm"}
       >
