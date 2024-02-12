@@ -28,7 +28,7 @@ export default function ViewPostCard({ post }: { post: PostsTypes }) {
   const postId = post?.id as string;
   const postAuthor = post?.author as string;
   const userId = userData.id as string;
-  const [isPending, setIsPending] = useState<IsPending>({
+  const [modifyPending, setModifyPending] = useState<IsPending>({
     type: null,
     variables: null,
   });
@@ -58,7 +58,7 @@ export default function ViewPostCard({ post }: { post: PostsTypes }) {
   return (
     <Card
       className={`modified-card border-none sm:shadow-none flex-1  flex flex-col h-full ${
-        isPending.type && "opacity-50"
+        modifyPending.type && "opacity-50"
       }`}
     >
       {!post?.id ? (
@@ -89,8 +89,8 @@ export default function ViewPostCard({ post }: { post: PostsTypes }) {
               post={post}
               isDeletable={isDeletable}
               isEditable={isEditable}
-              setPending={(variables, type) => {
-                setIsPending({
+              setModifyPending={(variables, type) => {
+                setModifyPending({
                   variables: variables,
                   type: type,
                 });
