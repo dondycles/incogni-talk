@@ -22,8 +22,8 @@ export const getAllPosts = async (page: number) => {
         },
       }
     );
-    const from = page === 1 ? 0 : (page - 1) * 6;
-    const to = from + 5;
+    const from = page === 1 ? 0 : (page - 1) * 4;
+    const to = from + 3;
     const { data } = await supabase
       .from("posts")
       .select("id")
