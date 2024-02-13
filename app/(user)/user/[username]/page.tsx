@@ -40,9 +40,7 @@ export default function ViewUser({ params }: { params: { username: string } }) {
       enabled: userId ? true : false,
     });
 
-  const acceptedFriendships = thisUsersFriends?.filter(
-    (friend) => friend.accepted === true
-  );
+  const acceptedFriendships = thisUsersFriends?.map((friend) => friend);
 
   const {
     data: thisUsersPosts,
@@ -62,7 +60,6 @@ export default function ViewUser({ params }: { params: { username: string } }) {
   });
 
   const usersAllPosts = thisUsersPosts?.pages?.flatMap((post) => post);
-
   useEffect(() => {
     if (myData?.id === userId) return router.push("/profile");
   }, [thisUsersData?.id]);
@@ -118,6 +115,8 @@ export default function ViewUser({ params }: { params: { username: string } }) {
                 acceptedFriendships?.map((friendshipData) => {
                   return (
                     <UserFriendshipCard
+                      // * gets the viewed userdata
+                      viewedUser={thisUsersData}
                       key={friendshipData.id}
                       friendship={friendshipData}
                       type="other-profile-view"

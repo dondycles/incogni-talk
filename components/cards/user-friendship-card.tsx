@@ -10,10 +10,12 @@ import { getTimeDiff } from "@/lib/getTimeDiff";
 import { acceptFriend } from "@/actions/user/accept-friend";
 
 export default function UserFriendshipCard({
+  viewedUser,
   friendship,
   type,
 }: {
   friendship?: FriendsTyps;
+  viewedUser: Users;
   type: "friends" | "received" | "sent" | "other-profile-view";
 }) {
   const queryClient = useQueryClient();
@@ -36,8 +38,10 @@ export default function UserFriendshipCard({
     friendship?.receiver === userId ? _requesterData : friendship?.users;
 
   //! Only applies with "other-profile-view" type
-  const otherUsersFriend =
-    friendship?.receiver !== userId ? _requesterData : friendship?.users;
+  const viewedUsersFriend =
+    friendship?.receiver === viewedUser?.id
+      ? _requesterData
+      : friendship?.users;
 
   const { mutate: _unfriend, isPending: unfriendPending } = useMutation({
     mutationFn: async () => {
@@ -113,7 +117,7 @@ export default function UserFriendshipCard({
         </>
       )}
       {type === "other-profile-view" && (
-        <UserData whosData={otherUsersFriend} friendship={friendship} />
+        <UserData whosData={viewedUsersFriend} friendship={friendship} />
       )}
     </div>
   );
@@ -133,6 +137,7 @@ const UserData = ({
           <UserCircle2 className="big-icons" />
           <div className="flex-1 w-full">
             <p>{whosData?.username}</p>
+
             <p className="text-xs text-muted-foreground font-normal">
               {friendship?.accepted ? (
                 <>

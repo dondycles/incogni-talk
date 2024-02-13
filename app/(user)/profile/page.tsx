@@ -42,7 +42,7 @@ export default function Profile() {
   const { data: friendships, isPending: friendshipsPending } = useQuery({
     queryKey: ["friendships"],
     queryFn: async () => {
-      const { success } = await getFriendships();
+      const { success } = await getFriendships(userId);
       return success;
     },
     enabled: userId ? true : false,
@@ -164,6 +164,7 @@ export default function Profile() {
                       acceptedFriendships?.map((friendshipData) => {
                         return (
                           <UserFriendshipCard
+                            viewedUser={null}
                             key={friendshipData.id}
                             friendship={friendshipData}
                             type="friends"
@@ -185,6 +186,7 @@ export default function Profile() {
                       friendshipReqReceive?.map((friendship) => {
                         return (
                           <UserFriendshipCard
+                            viewedUser={null}
                             key={friendship.id}
                             friendship={friendship}
                             type="received"
@@ -206,6 +208,7 @@ export default function Profile() {
                       friendshipReqSent?.map((friendship) => {
                         return (
                           <UserFriendshipCard
+                            viewedUser={null}
                             key={friendship.id}
                             friendship={friendship}
                             type="sent"

@@ -20,12 +20,14 @@ export default function UserHoverCard({
 }) {
   const userData = useUserData();
   const queryClient = useQueryClient();
+
+  // * get current user's friends
   const { data: friends, isFetching: friendsFetching } = useQuery({
     queryFn: async () => {
-      const { success } = await getFriendships();
+      const { success } = await getFriendships(hoveredUser?.id as string);
       return success;
     },
-    queryKey: ["hovered-user", hoveredUser?.id],
+    queryKey: ["hovered-user", userData?.id],
     refetchOnMount: true,
     refetchOnWindowFocus: true,
   });
@@ -113,7 +115,7 @@ export default function UserHoverCard({
                 }
               >
                 {hoveredUser?.username}
-              </a>{" "}
+              </a>
             </p>
             <p className="font-normal text-muted-foreground text-xs">
               Member since{" "}
