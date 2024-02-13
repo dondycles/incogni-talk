@@ -27,7 +27,7 @@ export default function UserHoverCard({
       const { success } = await getFriendships(hoveredUser?.id as string);
       return success;
     },
-    queryKey: ["hovered-user", userData?.id],
+    queryKey: ["hovered-user", hoveredUser?.id],
     refetchOnMount: true,
     refetchOnWindowFocus: true,
   });
@@ -71,6 +71,9 @@ export default function UserHoverCard({
       queryClient.invalidateQueries({
         queryKey: ["hovered-user", hoveredUser?.id],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["friendships", userData?.id],
+      });
     },
   });
 
@@ -81,6 +84,9 @@ export default function UserHoverCard({
       onSuccess: () => {
         queryClient.invalidateQueries({
           queryKey: ["hovered-user", hoveredUser?.id],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["friendships", userData?.id],
         });
       },
     });

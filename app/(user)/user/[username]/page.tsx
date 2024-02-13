@@ -10,27 +10,32 @@ import { Card, CardHeader } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useUserData } from "@/store";
+import { useIntersection } from "@mantine/hooks";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export default function ViewUser({ params }: { params: { username: string } }) {
   const myData = useUserData();
+
   const username = params?.username as string;
+
   const router = useRouter();
-  const { data: thisUsersData, isFetching: thisUsersDataLoading } = useQuery({
-    queryKey: ["this-user", username],
-    queryFn: async () => {
-      const { userData } = await getThisUser(username);
-      return userData;
-    },
-    enabled: username ? true : false,
-  });
 
-  const userId = thisUsersData?.id as string;
+  const { data: viewedUsersData, isFetching: viewedUsersDataLoading } =
+    useQuery({
+      queryKey: ["viewed-user", username],
+      queryFn: async () => {
+        const { userData } = await getThisUser(username);
+        return userData;
+      },
+      enabled: username ? true : false,
+    });
 
-  const { data: thisUsersFriends, isFetching: thisUsersFriendsLoading } =
+  const userId = viewedUsersData?.id as string;
+
+  const { data: viewedUsersFriends, isFetching: viewedUsersFriendsLoading } =
     useQuery({
       queryKey: ["this-users-friends", userId],
       queryFn: async () => {
@@ -40,7 +45,7 @@ export default function ViewUser({ params }: { params: { username: string } }) {
       enabled: userId ? true : false,
     });
 
-  const acceptedFriendships = thisUsersFriends?.map((friend) => friend);
+  const acceptedFriendships = viewedUsersFriends?.map((friend) => friend);
 
   const {
     data: thisUsersPosts,
@@ -60,11 +65,23 @@ export default function ViewUser({ params }: { params: { username: string } }) {
   });
 
   const usersAllPosts = thisUsersPosts?.pages?.flatMap((post) => post);
+
+  const lastPost = useRef<HTMLDivElement>(null);
+
+  const { ref: veryLastPost, entry } = useIntersection({
+    root: lastPost.current,
+    threshold: 1,
+  });
+
+  useEffect(() => {
+    if (entry?.isIntersecting) fetchNextPublicPosts();
+  }, [entry, fetchNextPublicPosts]);
+
   useEffect(() => {
     if (myData?.id === userId) return router.push("/profile");
-  }, [thisUsersData?.id]);
+  }, [viewedUsersData?.id]);
 
-  if (thisUsersDataLoading)
+  if (viewedUsersDataLoading)
     return (
       <main className="system-padding space-y-4">
         <Loader2 className="text-muted-foreground animate-spin" />
@@ -75,14 +92,14 @@ export default function ViewUser({ params }: { params: { username: string } }) {
     <main className="system-padding space-y-4 ">
       <div>
         <p className="text-2xl font-bold text-primary">
-          {thisUsersData?.username}
+          {viewedUsersData?.username}
         </p>
 
-        <p>{thisUsersData?.bio}</p>
+        <p>{viewedUsersData?.bio}</p>
         <p className="text-xs text-muted-foreground">
           Member since{" "}
           {String(
-            new Date(thisUsersData?.created_at as string).toLocaleDateString()
+            new Date(viewedUsersData?.created_at as string).toLocaleDateString()
           )}
         </p>
       </div>
@@ -93,20 +110,16 @@ export default function ViewUser({ params }: { params: { username: string } }) {
             Posts
           </TabsTrigger>
           <TabsTrigger value="friends" className="flex-1">
-            Friends
+            Friends ({acceptedFriendships?.length})
           </TabsTrigger>
         </TabsList>
-        <TabsContent value="posts">
-          <ScrollArea className="space-y-4 max-h-fulll">
-            {usersAllPosts?.map((post) => {
-              return (
-                <PostCard
-                  key={post?.id as string}
-                  postId={post?.id as string}
-                />
-              );
-            })}
-          </ScrollArea>
+        <TabsContent value="posts" className="space-y-4">
+          {usersAllPosts?.map((post) => {
+            return (
+              <PostCard key={post?.id as string} postId={post?.id as string} />
+            );
+          })}
+          <div ref={veryLastPost} className="w-full" />
         </TabsContent>
         <TabsContent value="friends">
           <Card className="modified-card min-h-[400px]">
@@ -116,7 +129,7 @@ export default function ViewUser({ params }: { params: { username: string } }) {
                   return (
                     <UserFriendshipCard
                       // * gets the viewed userdata
-                      viewedUser={thisUsersData}
+                      viewedUser={viewedUsersData}
                       key={friendshipData.id}
                       friendship={friendshipData}
                       type="other-profile-view"

@@ -71,9 +71,13 @@ export const addFriend = async (
     return { success: "friend request cancelled!" };
   }
 
-  const { error } = await supabase.from("friends").insert({
-    receiver: hoveredUserId,
-  });
+  const { error, data } = await supabase
+    .from("friends")
+    .insert({
+      receiver: hoveredUserId,
+    })
+    .select();
+  console.log(error, data);
   if (error) return { error: error.message };
 
   return { success: "friend request sent!" };

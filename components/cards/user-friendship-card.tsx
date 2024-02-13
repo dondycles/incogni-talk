@@ -8,6 +8,7 @@ import { addFriend } from "@/actions/user/add-friend";
 import { Card } from "../ui/card";
 import { getTimeDiff } from "@/lib/getTimeDiff";
 import { acceptFriend } from "@/actions/user/accept-friend";
+import { Skeleton } from "../ui/skeleton";
 
 export default function UserFriendshipCard({
   viewedUser,
@@ -22,15 +23,17 @@ export default function UserFriendshipCard({
   const userData = useUserData();
   const userId = userData.id;
 
-  //? gets the requester data incase the user is the receiver
-  //! does not apply with "other-profile-view" type
-  const { data: _requesterData } = useQuery({
-    queryKey: ["friend", friendship?.requester],
-    queryFn: async () => {
-      const { success } = await getUserDb(friendship?.requester as string);
-      return success;
-    },
-  });
+  //? gets the requester data incase the current user or viewed user is the receiver
+  // * applies both on current user and viewed user
+  const { data: _requesterData, isFetching: _requesterDataFetching } = useQuery(
+    {
+      queryKey: ["friendship-requester", friendship?.requester],
+      queryFn: async () => {
+        const { success } = await getUserDb(friendship?.requester as string);
+        return success;
+      },
+    }
+  );
 
   //? makes sure that the current user data is not getting used
   //! does not apply with "other-profile-view" type
@@ -48,7 +51,9 @@ export default function UserFriendshipCard({
       await addFriend(whosData?.id as string, true, userData?.id as string);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["friendships"] });
+      queryClient.invalidateQueries({
+        queryKey: ["friendships", userData?.id],
+      });
     },
   });
 
@@ -58,70 +63,90 @@ export default function UserFriendshipCard({
         await acceptFriend(whosData?.id as string, userData?.id as string);
       },
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["friendships"] });
+        queryClient.invalidateQueries({
+          queryKey: ["friendships", userData?.id],
+        });
       },
     }
   );
 
   return (
     <div className="flex sm:flex-row flex-col gap-2  border-b-[1px] border-b-border pb-2">
-      {type === "friends" && (
+      {_requesterDataFetching ? (
+        <LoadingData />
+      ) : (
         <>
-          <UserData whosData={whosData} friendship={friendship} />
-          <div className="flex flex-row gap-2 items-center w-full sm:w-fit justify-end">
-            <Button
-              onClick={() => _unfriend()}
-              disabled={unfriendPending}
-              className=""
-              variant={"outline"}
-            >
-              Unfriend
-            </Button>
-          </div>
+          {type === "friends" && (
+            <>
+              <UserData whosData={whosData} friendship={friendship} />
+              <div className="flex flex-row gap-2 items-center w-full sm:w-fit justify-end">
+                <Button
+                  onClick={() => _unfriend()}
+                  disabled={unfriendPending}
+                  className=""
+                  variant={"outline"}
+                >
+                  Unfriend
+                </Button>
+              </div>
+            </>
+          )}
+          {type === "sent" && (
+            <>
+              <UserData whosData={whosData} friendship={friendship} />
+              <div className="flex flex-row gap-2 items-center w-full sm:w-fit justify-end">
+                <Button
+                  onClick={() => _unfriend()}
+                  disabled={unfriendPending}
+                  className=""
+                  variant={"outline"}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </>
+          )}
+          {type === "received" && (
+            <>
+              <UserData whosData={whosData} friendship={friendship} />
+              <div className="flex flex-row gap-2 items-center w-full sm:w-fit justify-end">
+                <Button
+                  onClick={() => _acceptFriend()}
+                  disabled={acceptFriendPending}
+                >
+                  Accept
+                </Button>
+                <Button
+                  onClick={() => _unfriend()}
+                  disabled={unfriendPending}
+                  className=""
+                  variant={"outline"}
+                >
+                  Reject
+                </Button>
+              </div>
+            </>
+          )}
+          {type === "other-profile-view" && (
+            <UserData whosData={viewedUsersFriend} friendship={friendship} />
+          )}
         </>
-      )}
-      {type === "sent" && (
-        <>
-          <UserData whosData={whosData} friendship={friendship} />
-          <div className="flex flex-row gap-2 items-center w-full sm:w-fit justify-end">
-            <Button
-              onClick={() => _unfriend()}
-              disabled={unfriendPending}
-              className=""
-              variant={"outline"}
-            >
-              Cancel
-            </Button>
-          </div>
-        </>
-      )}
-      {type === "received" && (
-        <>
-          <UserData whosData={whosData} friendship={friendship} />
-          <div className="flex flex-row gap-2 items-center w-full sm:w-fit justify-end">
-            <Button
-              onClick={() => _acceptFriend()}
-              disabled={acceptFriendPending}
-            >
-              Accept
-            </Button>
-            <Button
-              onClick={() => _unfriend()}
-              disabled={unfriendPending}
-              className=""
-              variant={"outline"}
-            >
-              Reject
-            </Button>
-          </div>
-        </>
-      )}
-      {type === "other-profile-view" && (
-        <UserData whosData={viewedUsersFriend} friendship={friendship} />
       )}
     </div>
   );
 }
+
+const LoadingData = () => {
+  return (
+    <div className="flex-1 flex flex-row gap-4">
+      <Skeleton className="big-icons rounded-full" />
+      <div className="flex  flex-col justify-between">
+        <Skeleton className="w-24 h-4" />
+        <Skeleton className="w-24 h-4" />
+      </div>
+    </div>
+  );
+};
 
 const UserData = ({
   whosData,

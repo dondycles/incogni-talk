@@ -32,7 +32,7 @@ export default function FeedNav() {
 
   // * gets current user's data from cookies and db
   const { data, isLoading } = useQuery({
-    queryKey: ["user"],
+    queryKey: ["user-nav"],
     queryFn: async () => {
       const { cookieData, dbData } = await getUser();
       return { cookieData, dbData };

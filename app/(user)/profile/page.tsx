@@ -14,17 +14,24 @@ import PostCard from "@/components/cards/post-card";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { EditBioForm } from "@/components/forms/edit-bio";
 import { Button } from "@/components/ui/button";
+import { useUserData } from "@/store";
 
 export default function Profile() {
+  // * user data stored by the function created in nav
+  const userDataFromStore = useUserData();
+
   // * gets current user's data from cookies and db
   const { data: userData, isFetching: userDataLoading } = useQuery({
-    queryKey: ["user"],
+    queryKey: ["user", userDataFromStore?.id],
     queryFn: async () => {
       const { cookieData, dbData } = await getUser();
       return { cookieData, dbData };
     },
+    enabled: userDataFromStore ? true : false,
   });
+
   const userId = userData?.cookieData?.user?.id as string;
+
   const { data: usersPosts, fetchNextPage: fetchNextPublicPosts } =
     useInfiniteQuery({
       queryKey: ["profile-posts", userId],
@@ -40,7 +47,7 @@ export default function Profile() {
     });
 
   const { data: friendships, isPending: friendshipsPending } = useQuery({
-    queryKey: ["friendships"],
+    queryKey: ["friendships", userId],
     queryFn: async () => {
       const { success } = await getFriendships(userId);
       return success;
@@ -68,6 +75,8 @@ export default function Profile() {
     (friend) => friend.receiver === userId
   );
 
+  const [editBio, setEditBio] = useState(false);
+
   const usersAllPosts = usersPosts?.pages.flatMap((page) => page);
 
   const lastPost = useRef<HTMLDivElement>(null);
@@ -76,8 +85,6 @@ export default function Profile() {
     root: lastPost.current,
     threshold: 1,
   });
-
-  const [editBio, setEditBio] = useState(false);
 
   useEffect(() => {
     if (entry?.isIntersecting) fetchNextPublicPosts();
@@ -117,116 +124,105 @@ export default function Profile() {
           </>
         )}
       </div>
-      {friendshipsPending ? (
-        <div className="w-full min space-y-4">
-          <Skeleton className="w-full min-h-8" />
-          <Skeleton className="w-full min-h-[400px]" />
-        </div>
-      ) : (
-        <Tabs defaultValue="posts">
-          <TabsList className="w-full">
-            <TabsTrigger value="posts" className="flex-1">
-              Posts
-            </TabsTrigger>
-            <TabsTrigger value="friends" className="flex-1">
-              Friends
-            </TabsTrigger>
-          </TabsList>
-          <TabsContent value="posts">
-            <ScrollArea className="space-y-4 max-h-fulll">
-              {usersAllPosts?.map((post) => {
-                return (
-                  <PostCard
-                    key={post?.id as string}
-                    postId={post?.id as string}
-                  />
-                );
-              })}
-            </ScrollArea>
-          </TabsContent>
-          <TabsContent value="friends">
-            <Tabs defaultValue="friends" className="w-full ">
-              <TabsList className="w-full">
-                <TabsTrigger value="friends" className="flex-1">
-                  Friends ({acceptedFriendships?.length})
-                </TabsTrigger>
-                <TabsTrigger value="received" className="flex-1">
-                  Received ({friendshipReqReceive?.length})
-                </TabsTrigger>
-                <TabsTrigger value="requested" className="flex-1">
-                  Requested ({friendshipReqSent?.length})
-                </TabsTrigger>
-              </TabsList>
-              <TabsContent value="friends">
-                <Card className="modified-card min-h-[400px]">
-                  <CardHeader className="space-y-4">
-                    {acceptedFriendships?.length ? (
-                      acceptedFriendships?.map((friendshipData) => {
-                        return (
-                          <UserFriendshipCard
-                            viewedUser={null}
-                            key={friendshipData.id}
-                            friendship={friendshipData}
-                            type="friends"
-                          />
-                        );
-                      })
-                    ) : (
-                      <p className="text-xs text-muted-foreground text-center">
-                        You have no friends yet.
-                      </p>
-                    )}
-                  </CardHeader>
-                </Card>
-              </TabsContent>
-              <TabsContent value="received">
-                <Card className="modified-card min-h-[400px]">
-                  <CardHeader className="space-y-4">
-                    {friendshipReqReceive?.length ? (
-                      friendshipReqReceive?.map((friendship) => {
-                        return (
-                          <UserFriendshipCard
-                            viewedUser={null}
-                            key={friendship.id}
-                            friendship={friendship}
-                            type="received"
-                          />
-                        );
-                      })
-                    ) : (
-                      <p className="text-xs text-muted-foreground text-center">
-                        Not even a single donkey wants to befriend you.
-                      </p>
-                    )}
-                  </CardHeader>
-                </Card>
-              </TabsContent>
-              <TabsContent value="requested">
-                <Card className="modified-card min-h-[400px]">
-                  <CardHeader className="space-y-4">
-                    {friendshipReqSent?.length ? (
-                      friendshipReqSent?.map((friendship) => {
-                        return (
-                          <UserFriendshipCard
-                            viewedUser={null}
-                            key={friendship.id}
-                            friendship={friendship}
-                            type="sent"
-                          />
-                        );
-                      })
-                    ) : (
-                      <p className="text-xs text-muted-foreground text-center">
-                        Don&apos;t.
-                      </p>
-                    )}
-                  </CardHeader>
-                </Card>
-              </TabsContent>
-            </Tabs>
-          </TabsContent>
-        </Tabs>
-      )}
+      <Tabs defaultValue="posts">
+        <TabsList className="w-full">
+          <TabsTrigger value="posts" className="flex-1">
+            Posts
+          </TabsTrigger>
+          <TabsTrigger value="friends" className="flex-1">
+            Friends ({acceptedFriendships?.length})
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="posts" className="space-y-4">
+          {usersAllPosts?.map((post) => {
+            return (
+              <PostCard key={post?.id as string} postId={post?.id as string} />
+            );
+          })}
+          <div ref={veryLastPost} className="w-full" />
+        </TabsContent>
+        <TabsContent value="friends">
+          <Tabs defaultValue="friends" className="w-full ">
+            <TabsList className="w-full">
+              <TabsTrigger value="friends" className="flex-1">
+                Friends ({acceptedFriendships?.length})
+              </TabsTrigger>
+              <TabsTrigger value="received" className="flex-1">
+                Received ({friendshipReqReceive?.length})
+              </TabsTrigger>
+              <TabsTrigger value="requested" className="flex-1">
+                Requested ({friendshipReqSent?.length})
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="friends">
+              <Card className="modified-card min-h-[400px]">
+                <CardHeader className="space-y-4">
+                  {acceptedFriendships?.length ? (
+                    acceptedFriendships?.map((friendshipData) => {
+                      return (
+                        <UserFriendshipCard
+                          viewedUser={null}
+                          key={friendshipData.id}
+                          friendship={friendshipData}
+                          type="friends"
+                        />
+                      );
+                    })
+                  ) : (
+                    <p className="text-xs text-muted-foreground text-center">
+                      You have no friends yet.
+                    </p>
+                  )}
+                </CardHeader>
+              </Card>
+            </TabsContent>
+            <TabsContent value="received">
+              <Card className="modified-card min-h-[400px]">
+                <CardHeader className="space-y-4">
+                  {friendshipReqReceive?.length ? (
+                    friendshipReqReceive?.map((friendship) => {
+                      return (
+                        <UserFriendshipCard
+                          viewedUser={null}
+                          key={friendship.id}
+                          friendship={friendship}
+                          type="received"
+                        />
+                      );
+                    })
+                  ) : (
+                    <p className="text-xs text-muted-foreground text-center">
+                      Not even a single donkey wants to befriend you.
+                    </p>
+                  )}
+                </CardHeader>
+              </Card>
+            </TabsContent>
+            <TabsContent value="requested">
+              <Card className="modified-card min-h-[400px]">
+                <CardHeader className="space-y-4">
+                  {friendshipReqSent?.length ? (
+                    friendshipReqSent?.map((friendship) => {
+                      return (
+                        <UserFriendshipCard
+                          viewedUser={null}
+                          key={friendship.id}
+                          friendship={friendship}
+                          type="sent"
+                        />
+                      );
+                    })
+                  ) : (
+                    <p className="text-xs text-muted-foreground text-center">
+                      Don&apos;t.
+                    </p>
+                  )}
+                </CardHeader>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </TabsContent>
+      </Tabs>
     </main>
   );
 }

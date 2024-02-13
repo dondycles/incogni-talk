@@ -5,15 +5,17 @@ import PostCard from "@/components/cards/post-card";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
 import { useIntersection } from "@mantine/hooks";
+import { useUserData } from "@/store";
 
 export default function Feed() {
+  const userData = useUserData();
   const {
     data: publicPostsData,
     isFetching: publicPostsLoading,
     fetchNextPage: fetchNextPublicPosts,
     isFetchingNextPage: isFetchingNextPublicPosts,
   } = useInfiniteQuery({
-    queryKey: ["feed-posts"],
+    queryKey: ["feed-posts", userData?.id],
     queryFn: async ({ pageParam }) => {
       const { data } = await getAllPosts(pageParam);
       return data;
