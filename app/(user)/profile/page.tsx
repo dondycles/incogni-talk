@@ -133,7 +133,7 @@ export default function Profile() {
             Friends ({acceptedFriendships?.length})
           </TabsTrigger>
         </TabsList>
-        <TabsContent value="posts" className="space-y-4">
+        <TabsContent value="posts" className="space-y-4 -mx-6 sm:mx-0">
           {usersAllPosts?.map((post) => {
             return (
               <PostCard key={post?.id as string} postId={post?.id as string} />
@@ -155,70 +155,58 @@ export default function Profile() {
               </TabsTrigger>
             </TabsList>
             <TabsContent value="friends">
-              <Card className="modified-card min-h-[400px]">
-                <CardHeader className="space-y-4">
-                  {acceptedFriendships?.length ? (
-                    acceptedFriendships?.map((friendshipData) => {
-                      return (
-                        <UserFriendshipCard
-                          viewedUser={null}
-                          key={friendshipData.id}
-                          friendship={friendshipData}
-                          type="friends"
-                        />
-                      );
-                    })
-                  ) : (
-                    <p className="text-xs text-muted-foreground text-center">
-                      You have no friends yet.
-                    </p>
-                  )}
-                </CardHeader>
-              </Card>
+              {acceptedFriendships?.length ? (
+                acceptedFriendships?.map((friendshipData) => {
+                  return (
+                    <UserFriendshipCard
+                      viewedUser={null}
+                      key={friendshipData.id}
+                      friendship={friendshipData}
+                      type="friends"
+                    />
+                  );
+                })
+              ) : (
+                <p className="text-xs text-muted-foreground text-center">
+                  You have no friends yet.
+                </p>
+              )}
             </TabsContent>
             <TabsContent value="received">
-              <Card className="modified-card min-h-[400px]">
-                <CardHeader className="space-y-4">
-                  {friendshipReqReceive?.length ? (
-                    friendshipReqReceive?.map((friendship) => {
-                      return (
-                        <UserFriendshipCard
-                          viewedUser={null}
-                          key={friendship.id}
-                          friendship={friendship}
-                          type="received"
-                        />
-                      );
-                    })
-                  ) : (
-                    <p className="text-xs text-muted-foreground text-center">
-                      Not even a single donkey wants to befriend you.
-                    </p>
-                  )}
-                </CardHeader>
-              </Card>
+              {friendshipReqReceive?.length ? (
+                friendshipReqReceive?.map((friendship) => {
+                  return (
+                    <UserFriendshipCard
+                      viewedUser={null}
+                      key={friendship.id}
+                      friendship={friendship}
+                      type="received"
+                    />
+                  );
+                })
+              ) : (
+                <p className="text-xs text-muted-foreground text-center">
+                  Not even a single donkey wants to befriend you.
+                </p>
+              )}
             </TabsContent>
             <TabsContent value="requested">
-              <Card className="modified-card min-h-[400px]">
-                <CardHeader className="space-y-4">
-                  {friendshipReqSent?.length ? (
-                    friendshipReqSent?.map((friendship) => {
-                      return (
-                        <UserFriendshipCard
-                          viewedUser={null}
-                          key={friendship.id}
-                          friendship={friendship}
-                          type="sent"
-                        />
-                      );
-                    })
-                  ) : (
-                    <p className="text-xs text-muted-foreground text-center">
-                      Don&apos;t.
-                    </p>
-                  )}
-                </CardHeader>
-              </Card>
+              {friendshipReqSent?.length ? (
+                friendshipReqSent?.map((friendship) => {
+                  return (
+                    <UserFriendshipCard
+                      viewedUser={null}
+                      key={friendship.id}
+                      friendship={friendship}
+                      type="sent"
+                    />
+                  );
+                })
+              ) : (
+                <p className="text-xs text-muted-foreground text-center">
+                  Don&apos;t.
+                </p>
+              )}
             </TabsContent>
           </Tabs>
         </TabsContent>

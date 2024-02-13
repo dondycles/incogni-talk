@@ -113,7 +113,7 @@ export default function ViewUser({ params }: { params: { username: string } }) {
             Friends ({acceptedFriendships?.length})
           </TabsTrigger>
         </TabsList>
-        <TabsContent value="posts" className="space-y-4">
+        <TabsContent value="posts" className="space-y-4 -mx-6 sm:mx-0">
           {usersAllPosts?.map((post) => {
             return (
               <PostCard key={post?.id as string} postId={post?.id as string} />
@@ -122,27 +122,23 @@ export default function ViewUser({ params }: { params: { username: string } }) {
           <div ref={veryLastPost} className="w-full" />
         </TabsContent>
         <TabsContent value="friends">
-          <Card className="modified-card min-h-[400px]">
-            <CardHeader className="space-y-4">
-              {acceptedFriendships?.length ? (
-                acceptedFriendships?.map((friendshipData) => {
-                  return (
-                    <UserFriendshipCard
-                      // * gets the viewed userdata
-                      viewedUser={viewedUsersData}
-                      key={friendshipData.id}
-                      friendship={friendshipData}
-                      type="other-profile-view"
-                    />
-                  );
-                })
-              ) : (
-                <p className="text-xs text-muted-foreground text-center">
-                  This user have no friends yet.
-                </p>
-              )}
-            </CardHeader>
-          </Card>
+          {acceptedFriendships?.length ? (
+            acceptedFriendships?.map((friendshipData) => {
+              return (
+                <UserFriendshipCard
+                  // * gets the viewed userdata
+                  viewedUser={viewedUsersData}
+                  key={friendshipData.id}
+                  friendship={friendshipData}
+                  type="other-profile-view"
+                />
+              );
+            })
+          ) : (
+            <p className="text-xs text-muted-foreground text-center">
+              This user have no friends yet.
+            </p>
+          )}
         </TabsContent>
       </Tabs>
     </main>
