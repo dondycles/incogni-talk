@@ -98,13 +98,17 @@ export default function PostCard<T>({ postId }: PostCard) {
           <div className="space-y-2">
             <CardTitle className="text-primary">
               <UserHoverCard hoveredUser={post?.users as Users} />
-              <span className="text-muted-foreground font-normal">
-                {" "}
-                {post?.shared_post && "shared a "}{" "}
-                <a className="text-primary" href={"/post/" + post?.shared_post}>
-                  post
-                </a>
-              </span>
+              {post?.shared_post ? (
+                <span className="text-muted-foreground font-normal">
+                  {post?.shared_post && " shared a "}
+                  <a
+                    className="text-primary"
+                    href={"/post/" + post?.shared_post}
+                  >
+                    post
+                  </a>
+                </span>
+              ) : null}
             </CardTitle>
             <p className="flex text-muted-foreground text-xs space-x-1">
               <span>{timeDifference}</span>

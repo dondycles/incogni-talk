@@ -89,7 +89,15 @@ export default function UserHoverCard({
         {children ? (
           children
         ) : (
-          <a href={"/user/" + hoveredUser?.username}>{hoveredUser?.username}</a>
+          <a
+            href={
+              userData?.id === hoveredUser?.id
+                ? "/profile"
+                : "/user/" + hoveredUser?.username
+            }
+          >
+            {hoveredUser?.username}
+          </a>
         )}
       </HoverCardTrigger>
       <HoverCardContent align="start" className="space-y-4">
@@ -97,7 +105,13 @@ export default function UserHoverCard({
           <UserCircle className="big-icons " />
           <div>
             <p>
-              <a href={"/user/" + hoveredUser?.username}>
+              <a
+                href={
+                  userData?.id === hoveredUser?.id
+                    ? "/profile"
+                    : "/user/" + hoveredUser?.username
+                }
+              >
                 {hoveredUser?.username}
               </a>{" "}
             </p>

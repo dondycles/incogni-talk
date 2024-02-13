@@ -22,7 +22,7 @@ import {
 import { AddPostForm } from "../forms/add-post";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getUser } from "@/actions/user/get";
+import { getUser } from "@/actions/user/get-user-db-auth";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useUserData } from "@/store";

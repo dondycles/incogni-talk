@@ -1,12 +1,11 @@
 "use client";
 import { getFriendships } from "@/actions/user/get-friends";
 import UserFriendshipCard from "@/components/cards/user-friendship-card";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useUserData } from "@/store";
+import { Card, CardHeader } from "@/components/ui/card";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getUser } from "@/actions/user/get";
+import { getUser } from "@/actions/user/get-user-db-auth";
 import { Edit, Loader2 } from "lucide-react";
 import { getUserAllPosts } from "@/actions/post/get-users-posts";
 import { useEffect, useRef, useState } from "react";
@@ -37,14 +36,16 @@ export default function Profile() {
         return pages.length + 1;
       },
       initialPageParam: 1,
+      enabled: userId ? true : false,
     });
 
-  const { data: friendships, isPending } = useQuery({
+  const { data: friendships, isPending: friendshipsPending } = useQuery({
     queryKey: ["friendships"],
     queryFn: async () => {
       const { success } = await getFriendships();
       return success;
     },
+    enabled: userId ? true : false,
   });
 
   //? gets only the accepted friends regardless of who initiates the request
@@ -116,7 +117,7 @@ export default function Profile() {
           </>
         )}
       </div>
-      {isPending ? (
+      {friendshipsPending ? (
         <div className="w-full min space-y-4">
           <Skeleton className="w-full min-h-8" />
           <Skeleton className="w-full min-h-[400px]" />

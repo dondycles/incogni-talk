@@ -2,7 +2,7 @@
 import { Database } from "@/database.types";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";
-export const getUserDb = async (id: string) => {
+export const getThisUser = async (id: string) => {
   const cookieStore = cookies();
 
   const supabase = createServerClient<Database>(
@@ -23,12 +23,12 @@ export const getUserDb = async (id: string) => {
     }
   );
 
-  const { data, error } = await supabase
+  const { data: userData, error: userError } = await supabase
     .from("users")
-    .select("*")
-    .eq("id", id)
+    .select("*, posts(*)")
+    .eq("username", id)
     .single();
-  if (error) return { error: error.message };
+  if (userError) return { error: userError.message };
 
-  return { success: data };
+  return { userData };
 };

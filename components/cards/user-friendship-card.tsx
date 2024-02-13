@@ -1,4 +1,4 @@
-import { getUserDb } from "@/actions/user/get-user";
+import { getUserDb } from "@/actions/user/get-user-db";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { UserCircle2 } from "lucide-react";
 import { Button } from "../ui/button";
@@ -14,13 +14,14 @@ export default function UserFriendshipCard({
   type,
 }: {
   friendship?: FriendsTyps;
-  type: "friends" | "received" | "sent";
+  type: "friends" | "received" | "sent" | "other-profile-view";
 }) {
   const queryClient = useQueryClient();
   const userData = useUserData();
   const userId = userData.id;
 
   //? gets the requester data incase the user is the receiver
+  //! does not apply with "other-profile-view" type
   const { data: _requesterData } = useQuery({
     queryKey: ["friend", friendship?.requester],
     queryFn: async () => {
@@ -30,8 +31,13 @@ export default function UserFriendshipCard({
   });
 
   //? makes sure that the current user data is not getting used
+  //! does not apply with "other-profile-view" type
   const whosData =
     friendship?.receiver === userId ? _requesterData : friendship?.users;
+
+  //! Only applies with "other-profile-view" type
+  const otherUsersFriend =
+    friendship?.receiver !== userId ? _requesterData : friendship?.users;
 
   const { mutate: _unfriend, isPending: unfriendPending } = useMutation({
     mutationFn: async () => {
@@ -105,6 +111,9 @@ export default function UserFriendshipCard({
             </Button>
           </div>
         </>
+      )}
+      {type === "other-profile-view" && (
+        <UserData whosData={otherUsersFriend} friendship={friendship} />
       )}
     </div>
   );
