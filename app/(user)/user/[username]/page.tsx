@@ -32,7 +32,7 @@ export default function ViewUser({ params }: { params: { username: string } }) {
 
   const { data: thisUsersFriends, isFetching: thisUsersFriendsLoading } =
     useQuery({
-      queryKey: ["this-users-friends", username],
+      queryKey: ["this-users-friends", userId],
       queryFn: async () => {
         const { friends } = await getThisUsersFriends(userId);
         return friends;
@@ -49,7 +49,7 @@ export default function ViewUser({ params }: { params: { username: string } }) {
     isFetching: thisUsersPostsFetching,
     fetchNextPage: fetchNextPublicPosts,
   } = useInfiniteQuery({
-    queryKey: ["this-users-posts", username],
+    queryKey: ["this-users-posts", userId],
     queryFn: async ({ pageParam }) => {
       const { data } = await getUserAllPosts(pageParam, userId);
       return data;
