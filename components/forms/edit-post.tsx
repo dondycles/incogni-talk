@@ -26,7 +26,7 @@ import { useOptimisticPost } from "@/store";
 import { editPost } from "@/actions/post/edit";
 import { useRouter } from "next/navigation";
 
-const formSchema = z.object({
+export const editPostFormSchema = z.object({
   content: z.string().min(1, {
     message: "A message cannot be empty.",
   }),
@@ -42,13 +42,14 @@ export function EditPostForm({
   close: () => void;
   post: PostsTypes;
   setModifyPending: (
-    variables: z.infer<typeof formSchema> | null,
+    variables: z.infer<typeof editPostFormSchema> | null,
     type: "edit" | null
   ) => void;
 }) {
   const queryClient = useQueryClient();
   const { mutate: _editPost, isPending } = useMutation({
-    mutationFn: async (values: z.infer<typeof formSchema>) => onSubmit(values),
+    mutationFn: async (values: z.infer<typeof editPostFormSchema>) =>
+      onSubmit(values),
     onMutate: (variables) => {
       setModifyPending(variables, "edit");
     },
@@ -60,8 +61,8 @@ export function EditPostForm({
     },
   });
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof editPostFormSchema>>({
+    resolver: zodResolver(editPostFormSchema),
     defaultValues: {
       content: post?.content as string,
       privacy: post?.privacy as string,
@@ -69,7 +70,7 @@ export function EditPostForm({
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof editPostFormSchema>) {
     const { error } = await editPost(values);
     if (error) return form.setError("content", { message: error });
     form.reset();
@@ -79,8 +80,8 @@ export function EditPostForm({
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit((values: z.infer<typeof formSchema>) =>
-          _editPost(values)
+        onSubmit={form.handleSubmit(
+          (values: z.infer<typeof editPostFormSchema>) => _editPost(values)
         )}
         className="flex flex-col gap-4"
       >

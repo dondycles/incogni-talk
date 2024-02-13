@@ -1,9 +1,13 @@
 "use server";
+import { sharePostFormSchema } from "@/components/forms/share-post";
 import { Database } from "@/database.types";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
-export const sharedPost = async (values?: any) => {
+import * as z from "zod";
+export const sharedPost = async (
+  values: z.infer<typeof sharePostFormSchema>
+) => {
   const cookieStore = cookies();
 
   const supabase = createServerClient<Database>(

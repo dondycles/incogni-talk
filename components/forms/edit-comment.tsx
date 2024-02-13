@@ -18,7 +18,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { editPost } from "@/actions/post/edit";
 import { editComment } from "@/actions/comment/edit";
 
-const formSchema = z.object({
+export const editCommentFormSchema = z.object({
   content: z.string().min(1, {
     message: "A message cannot be empty.",
   }),
@@ -33,13 +33,14 @@ export function EditCommentForm({
   close: () => void;
   comment: CommentsTypes;
   setPending: (
-    variables: z.infer<typeof formSchema> | null,
+    variables: z.infer<typeof editCommentFormSchema> | null,
     type: "edit" | null
   ) => void;
 }) {
   const queryClient = useQueryClient();
   const { mutate: _editPost, isPending } = useMutation({
-    mutationFn: async (values: z.infer<typeof formSchema>) => onSubmit(values),
+    mutationFn: async (values: z.infer<typeof editCommentFormSchema>) =>
+      onSubmit(values),
     onMutate: (variables) => {
       setPending(variables, "edit");
     },
@@ -55,15 +56,15 @@ export function EditCommentForm({
     },
   });
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof editCommentFormSchema>>({
+    resolver: zodResolver(editCommentFormSchema),
     defaultValues: {
       content: comment?.content,
       id: comment?.id,
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof editCommentFormSchema>) {
     const { error } = await editComment(values);
     if (error) return form.setError("content", { message: error });
     form.reset();
@@ -73,8 +74,8 @@ export function EditCommentForm({
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit((values: z.infer<typeof formSchema>) =>
-          _editPost(values)
+        onSubmit={form.handleSubmit(
+          (values: z.infer<typeof editCommentFormSchema>) => _editPost(values)
         )}
         className="flex flex-col gap-4"
       >

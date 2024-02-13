@@ -17,7 +17,7 @@ import { addComment as comment } from "@/actions/comment/add";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 
-const formSchema = z.object({
+export const addCommentFormSchema = z.object({
   content: z.string().min(1, {
     message: "A message cannot be empty.",
   }),
@@ -32,7 +32,8 @@ export function AddCommentForm({ postId }: { postId: string }) {
     variables,
     isPending,
   } = useMutation({
-    mutationFn: async (values: z.infer<typeof formSchema>) => onSubmit(values),
+    mutationFn: async (values: z.infer<typeof addCommentFormSchema>) =>
+      onSubmit(values),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post", postId] });
       queryClient.invalidateQueries({ queryKey: ["shared-post", postId] });
@@ -49,15 +50,15 @@ export function AddCommentForm({ postId }: { postId: string }) {
     },
   });
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof addCommentFormSchema>>({
+    resolver: zodResolver(addCommentFormSchema),
     defaultValues: {
       content: "",
       postId: postId,
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof addCommentFormSchema>) {
     optimisticComment.setData(variables);
 
     const { error } = await comment(values);
@@ -69,8 +70,8 @@ export function AddCommentForm({ postId }: { postId: string }) {
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit((values: z.infer<typeof formSchema>) =>
-          addComment(values)
+        onSubmit={form.handleSubmit(
+          (values: z.infer<typeof addCommentFormSchema>) => addComment(values)
         )}
         className="w-full flex gap-4"
       >

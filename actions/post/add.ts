@@ -1,9 +1,11 @@
 "use server";
+import { addPostFormSchema } from "@/components/forms/add-post";
 import { Database } from "@/database.types";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
-export const addPost = async (values?: any) => {
+import * as z from "zod";
+export const addPost = async (values: z.infer<typeof addPostFormSchema>) => {
   const cookieStore = cookies();
 
   const supabase = createServerClient<Database>(

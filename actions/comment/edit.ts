@@ -1,8 +1,12 @@
 "use server";
+import { editCommentFormSchema } from "@/components/forms/edit-comment";
 import { Database } from "@/database.types";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";
-export const editComment = async (values: any) => {
+import * as z from "zod";
+export const editComment = async (
+  values: z.infer<typeof editCommentFormSchema>
+) => {
   const cookieStore = cookies();
 
   const supabase = createServerClient<Database>(

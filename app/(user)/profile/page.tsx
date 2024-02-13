@@ -1,18 +1,15 @@
 "use client";
 import { getFriendships } from "@/actions/user/get-friends";
 import UserFriendshipCard from "@/components/cards/user-friendship-card";
-import { Card, CardHeader } from "@/components/ui/card";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Skeleton } from "@/components/ui/skeleton";
 import { getUser } from "@/actions/user/get-user-db-auth";
 import { Edit, Loader2 } from "lucide-react";
 import { getUserAllPosts } from "@/actions/post/get-users-posts";
 import { useEffect, useRef, useState } from "react";
 import { useIntersection } from "@mantine/hooks";
 import PostCard from "@/components/cards/post-card";
-import { ScrollArea } from "@radix-ui/react-scroll-area";
-import { EditBioForm } from "@/components/forms/edit-bio";
+import { EditProfileForm } from "@/components/forms/edit-bio";
 import { Button } from "@/components/ui/button";
 import { useUserData } from "@/store";
 
@@ -75,7 +72,7 @@ export default function Profile() {
     (friend) => friend.receiver === userId
   );
 
-  const [editBio, setEditBio] = useState(false);
+  const [editProfile, setEditProfile] = useState(false);
 
   const usersAllPosts = usersPosts?.pages.flatMap((page) => page);
 
@@ -99,16 +96,16 @@ export default function Profile() {
   return (
     <main className="system-padding space-y-4 ">
       <div>
-        <p className="text-2xl font-bold text-primary">
-          {userData?.dbData?.username}
-        </p>
-        {editBio ? (
-          <EditBioForm
-            close={() => setEditBio(false)}
+        {editProfile ? (
+          <EditProfileForm
+            close={() => setEditProfile(false)}
             user={userData?.dbData}
           />
         ) : (
           <>
+            <p className="text-2xl font-bold text-primary">
+              {userData?.dbData?.username}
+            </p>
             <p>{userData?.dbData?.bio}</p>
             <p className="text-xs text-muted-foreground">
               Member since{" "}
@@ -118,8 +115,8 @@ export default function Profile() {
                 ).toLocaleDateString()
               )}
             </p>
-            <Button className="mt-2" onClick={() => setEditBio(true)}>
-              Edit <Edit className="ml-1 small-icons" />
+            <Button className="mt-2" onClick={() => setEditProfile(true)}>
+              Edit profile <Edit className="ml-1 small-icons" />
             </Button>
           </>
         )}

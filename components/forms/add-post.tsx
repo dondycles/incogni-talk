@@ -25,7 +25,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useOptimisticPost } from "@/store";
 
-const formSchema = z.object({
+export const addPostFormSchema = z.object({
   content: z.string().min(1, {
     message: "A message cannot be empty.",
   }),
@@ -40,21 +40,22 @@ export function AddPostForm({ close }: { close: () => void }) {
     variables,
     isPending,
   } = useMutation({
-    mutationFn: async (values: z.infer<typeof formSchema>) => onSubmit(values),
+    mutationFn: async (values: z.infer<typeof addPostFormSchema>) =>
+      onSubmit(values),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["feed-posts"] });
     },
   });
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof addPostFormSchema>>({
+    resolver: zodResolver(addPostFormSchema),
     defaultValues: {
       content: "",
       privacy: "public",
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof addPostFormSchema>) {
     optimisticPost.setData(variables);
     const { error } = await post(values);
     if (error) return form.setError("content", { message: error });
@@ -66,8 +67,8 @@ export function AddPostForm({ close }: { close: () => void }) {
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit((values: z.infer<typeof formSchema>) =>
-          addPost(values)
+        onSubmit={form.handleSubmit(
+          (values: z.infer<typeof addPostFormSchema>) => addPost(values)
         )}
         className="flex flex-col gap-4"
       >

@@ -34,7 +34,7 @@ import { useState } from "react";
 import SharedPostCard from "../cards/shared-post-card";
 import { ScrollArea } from "../ui/scroll-area";
 
-const formSchema = z.object({
+export const sharePostFormSchema = z.object({
   content: z.string(),
   privacy: z.string(),
   post_id: z.string(),
@@ -58,14 +58,15 @@ export function SharePostForm({
     variables,
     isPending,
   } = useMutation({
-    mutationFn: async (values: z.infer<typeof formSchema>) => onSubmit(values),
+    mutationFn: async (values: z.infer<typeof sharePostFormSchema>) =>
+      onSubmit(values),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["feed-posts"] });
     },
   });
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof sharePostFormSchema>>({
+    resolver: zodResolver(sharePostFormSchema),
     defaultValues: {
       content: "",
       privacy: "public",
@@ -73,7 +74,7 @@ export function SharePostForm({
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof sharePostFormSchema>) {
     optimisticPost.setData(variables);
     const { error } = await share(values);
     if (error) return form.setError("content", { message: error });
@@ -91,8 +92,8 @@ export function SharePostForm({
         </DialogHeader>
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit((values: z.infer<typeof formSchema>) =>
-              sharePost(values)
+            onSubmit={form.handleSubmit(
+              (values: z.infer<typeof sharePostFormSchema>) => sharePost(values)
             )}
             className="flex flex-col gap-4"
           >

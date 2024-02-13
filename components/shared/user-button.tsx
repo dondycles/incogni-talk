@@ -32,7 +32,11 @@ export default function UserNavButton({ userData }: { userData: UserData }) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuLabel>{userData?.dbData?.username}</DropdownMenuLabel>
+        <DropdownMenuLabel>
+          {userData?.cookieData?.user.new_email
+            ? userData?.cookieData?.user.new_email
+            : userData?.cookieData?.user.email}
+        </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <a href="/profile">

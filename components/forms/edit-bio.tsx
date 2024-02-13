@@ -21,14 +21,16 @@ import {
 } from "@/components/ui/select";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { editBio } from "@/actions/user/edit-bio";
+import { editProfile } from "@/actions/user/edit-profile";
+import { Input } from "../ui/input";
 
-const formSchema = z.object({
+export const editProfileFormSchema = z.object({
+  username: z.string(),
   bio: z.string(),
   userId: z.string(),
 });
 
-export function EditBioForm({
+export function EditProfileForm({
   user,
   close,
 }: {
@@ -36,43 +38,62 @@ export function EditBioForm({
   close: () => void;
 }) {
   const queryClient = useQueryClient();
-  const { mutate: _editBio, isPending } = useMutation({
-    mutationFn: async (values: z.infer<typeof formSchema>) => onSubmit(values),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user"] });
+  const { mutate: _editProfile, isPending } = useMutation({
+    mutationFn: async (values: z.infer<typeof editProfileFormSchema>) => {
+      await onSubmit(values);
     },
   });
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof editProfileFormSchema>>({
+    resolver: zodResolver(editProfileFormSchema),
     defaultValues: {
+      username: user?.username as string,
       bio: user?.bio as string,
       userId: user?.id as string,
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    const { error } = await editBio(values.userId, values.bio);
-    if (error) return form.setError("bio", { message: error });
+  async function onSubmit(values: z.infer<typeof editProfileFormSchema>) {
+    const { error } = await editProfile(values);
+    if (error) {
+      form.setError("username", { message: error });
+      return { error: error };
+    }
     form.reset();
     close();
+    queryClient.invalidateQueries({ queryKey: ["user-nav"] });
+    queryClient.invalidateQueries({ queryKey: ["user", user?.id] });
+    return { success: "Done" };
   }
 
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit((values: z.infer<typeof formSchema>) =>
-          _editBio(values)
+        onSubmit={form.handleSubmit(
+          (values: z.infer<typeof editProfileFormSchema>) =>
+            _editProfile(values)
         )}
         className="flex flex-col gap-4 mt-4"
       >
+        <FormField
+          control={form.control}
+          name="username"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Input autoFocus={true} {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="bio"
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Textarea autoFocus={true} rows={3} {...field} />
+                <Textarea rows={3} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
