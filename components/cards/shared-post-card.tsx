@@ -94,9 +94,7 @@ export default function SharedPostCard<T>({ sharedPostId }: SharedPostCard) {
   if (isLoading) return <CardSkeleton type="post" />;
 
   return (
-    <Card
-      className={`${isPending.type && "opacity-50"} shadow-none px-6 sm:px-0`}
-    >
+    <Card className={`${isPending.type && "opacity-50"} shadow-none`}>
       {sharedPost ? (
         <>
           <CardHeader className="flex flex-row items-start gap-2">
