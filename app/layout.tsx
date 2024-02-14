@@ -21,7 +21,11 @@ export default function RootLayout({
         className={`${outfit.variable} antialiased font-outfit text-sm sm:text-base`}
       >
         <QueryProvider>
-          <ThemeProvider attribute="class" defaultTheme="light">
+          <ThemeProvider
+            disableTransitionOnChange={true}
+            attribute="class"
+            defaultTheme="light"
+          >
             {children}
           </ThemeProvider>
         </QueryProvider>
