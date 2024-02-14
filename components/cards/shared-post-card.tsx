@@ -26,7 +26,7 @@ import { Button } from "../ui/button";
 
 import PostEditsDialog from "./post-edits-history-dialog";
 import { getOneSharedPost } from "@/actions/post/get-one-shared-post";
-import UserHoverCard from "./user-hover-card";
+import UserHoverCard from "./popup-user-friendship-status-card";
 import { useUserData } from "@/store";
 
 type IsPending = {

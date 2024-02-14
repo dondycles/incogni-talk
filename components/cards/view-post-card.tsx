@@ -15,7 +15,7 @@ import ViewPostCommentsScrollable from "../scrollables/view-post-comments-scroll
 import PostOptions from "../actions/post-options";
 import { useEffect, useState } from "react";
 import CardSkeleton from "./skeleton";
-import UserHoverCard from "./user-hover-card";
+import UserHoverCard from "./popup-user-friendship-status-card";
 import { useUserData } from "@/store";
 
 type IsPending = {

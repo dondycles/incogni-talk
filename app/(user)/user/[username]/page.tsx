@@ -5,6 +5,7 @@ import { getThisUser } from "@/actions/user/get-this-user";
 import { getThisUsersFriends } from "@/actions/user/get-this-users-friends";
 import PostCard from "@/components/cards/post-card";
 import UserFriendshipCard from "@/components/cards/user-friendship-card";
+import UserFriendshipStatusCard from "@/components/cards/user-friendship-status-card";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -90,20 +91,7 @@ export default function ViewUser({ params }: { params: { username: string } }) {
 
   return (
     <main className="system-padding space-y-4 ">
-      <div>
-        <p className="text-2xl font-bold text-primary">
-          {viewedUsersData?.username}
-        </p>
-
-        <p>{viewedUsersData?.bio}</p>
-        <p className="text-xs text-muted-foreground">
-          Member since{" "}
-          {String(
-            new Date(viewedUsersData?.created_at as string).toLocaleDateString()
-          )}
-        </p>
-      </div>
-
+      <UserFriendshipStatusCard viewedUser={viewedUsersData} />
       <Tabs defaultValue="posts">
         <TabsList className="w-full">
           <TabsTrigger value="posts" className="flex-1">

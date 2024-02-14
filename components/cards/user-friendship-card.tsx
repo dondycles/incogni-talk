@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { UserCircle2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { useUserData } from "@/store";
-import UserHoverCard from "./user-hover-card";
+import UserHoverCard from "./popup-user-friendship-status-card";
 import { addFriend } from "@/actions/user/add-friend";
 import { Card } from "../ui/card";
 import { getTimeDiff } from "@/lib/getTimeDiff";
