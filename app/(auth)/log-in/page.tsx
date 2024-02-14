@@ -15,8 +15,8 @@ export default function LogIn() {
       </div>
       <div className="w-fit md:max-w-[300px] mb-auto space-y-4">
         <div className="md:hidden">
-          <h1 className="text-6xl font-bold">incognitalk.</h1>
-          <p>Reaveling the words anonimously.</p>
+          <h1 className="text-6xl font-bold text-primary">incognitalk.</h1>
+          <p className="mt-2">Reaveling the words anonimously.</p>
         </div>
         <LogInForm />
       </div>

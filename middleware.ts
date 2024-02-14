@@ -68,9 +68,12 @@ export async function middleware(request: NextRequest) {
   if (!user && request.nextUrl.pathname === "/feed")
     return NextResponse.redirect(new URL("/log-in", request.url));
 
+  if (!user && request.nextUrl.pathname === "/user")
+    return NextResponse.redirect(new URL("/log-in", request.url));
+
   return response;
 }
 
 export const config = {
-  matcher: ["/", "/feed", "/log-in", "/sign-up"],
+  matcher: ["/", "/feed", "/log-in", "/sign-up", "/user"],
 };
