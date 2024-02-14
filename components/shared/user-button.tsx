@@ -34,8 +34,11 @@ export default function UserNavButton({ userData }: { userData: UserData }) {
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>
           {userData?.cookieData?.user.new_email
-            ? userData?.cookieData?.user.new_email
-            : userData?.cookieData?.user.email}
+            ? userData?.cookieData?.user.new_email?.replace(
+                "@incognitalk.com",
+                ""
+              )
+            : userData?.cookieData?.user.email?.replace("@incognitalk.com", "")}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
