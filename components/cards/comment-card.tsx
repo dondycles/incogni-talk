@@ -36,7 +36,7 @@ export function CommentCard({ comment }: { comment: CommentsTypes }) {
         <div className=" p-2 bg-muted rounded-[0.5rem] w-full flex flex-row items-start">
           <div className="flex-1">
             <p className="font-semibold">{comment?.users?.username}</p>
-            <p className="whitespace-pre">{comment?.content}</p>
+            <p className="whitespace-pre-line">{comment?.content}</p>
           </div>
           <CommentOptions
             isDeletable={isDeletable}
@@ -60,13 +60,6 @@ export function CommentCard({ comment }: { comment: CommentsTypes }) {
               </Button>
             </CommentEditsHistoryDialog>
           ) : null}
-
-          {/* <Button variant={"ghost"} className="min-h-0 h-fit" size={"sm"}>
-            Like
-          </Button>
-          <Button variant={"ghost"} className="min-h-0 h-fit" size={"sm"}>
-            Comment
-          </Button> */}
         </div>
       </div>
     </div>

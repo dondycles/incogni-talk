@@ -140,7 +140,7 @@ export default function PostCard<T>({ postId }: PostCard) {
         />
       </CardHeader>
       <CardContent className="space-y-4">
-        <p className="whitespace-pre">
+        <p className="whitespace-pre-line">
           {isModifyPending.type === "edit"
             ? isModifyPending?.variables?.content
             : post?.content}

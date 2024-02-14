@@ -98,7 +98,7 @@ export default function ViewPostCard({ post }: { post: PostsTypes }) {
             />
           </CardHeader>
           <CardContent className="space-y-4 ">
-            <p className="whitespace-pre">{post?.content}</p>
+            <p className="whitespace-pre-line">{post?.content}</p>
             <PostActions
               post={post}
               isView={true}
